@@ -1,0 +1,1507 @@
+{
+  "name": "GitHelp",
+  "displayName": "GitHelp",
+  "exported": 1520229576,
+  "pages": [
+    {
+      "title": "このサイトについて",
+      "created": 1491961323,
+      "updated": 1519860006,
+      "lines": [
+        {
+          "text": "このサイトについて",
+          "created": 1491961323,
+          "updated": 1491961380
+        },
+        {
+          "text": " [https://github.com/masui/GitHelp GitHelp] のデータをScrapbox上で収集する",
+          "created": 1491961323,
+          "updated": 1491961416
+        },
+        {
+          "text": " 例えば以下のようなデータをScrapboxページに書いておくとgithelpコマンドができる",
+          "created": 1491961458,
+          "updated": 1491961538
+        },
+        {
+          "text": "  e.g. `(よく|頻繁に)(編集|修正)されているファイルを(リスト|表示)する`",
+          "created": 1492827425,
+          "updated": 1495152308
+        },
+        {
+          "text": " 現状はRuby表記だが、もっとわかりやすく書きたい",
+          "created": 1491961540,
+          "updated": 1491961553
+        },
+        {
+          "text": " どういうフォーマットが良いのかわからないのだが、[ファイルの編集回数のランキング]のような書き方でどうだろうか [増井俊之.icon]",
+          "created": 1496465879,
+          "updated": 1519866684
+        },
+        {
+          "text": "  人間がわかる表現を`$ xxx ...` と書く",
+          "created": 1496475576,
+          "updated": 1519860006
+        },
+        {
+          "text": "  その実行コマンドを`% git ...`と書く",
+          "created": 1496475598,
+          "updated": 1496475615
+        },
+        {
+          "text": " ユーザが「ランキング」とか入力するとこの説明が[/icons/わかる.icon]",
+          "created": 1491961593,
+          "updated": 1491961639
+        },
+        {
+          "text": " マクロ定義とかどうすればいいか?",
+          "created": 1491961455,
+          "updated": 1496480406
+        },
+        {
+          "text": "  [/Gyazo/Glossary] みたいに定義する",
+          "created": 1516587281,
+          "updated": 1516587328
+        },
+        {
+          "text": " ライブラリはどうする?",
+          "created": 1516587328,
+          "updated": 1516587337
+        },
+        {
+          "text": "  コード記法で書くか",
+          "created": 1516587338,
+          "updated": 1516587345
+        },
+        {
+          "text": " 目標: UIST投稿",
+          "created": 1519701750,
+          "updated": 1519701759
+        },
+        {
+          "text": "",
+          "created": 1516587320,
+          "updated": 1516587320
+        }
+      ]
+    },
+    {
+      "title": "Gitの様々なundo",
+      "created": 1492827192,
+      "updated": 1492827231,
+      "lines": [
+        {
+          "text": "Gitの様々なundo",
+          "created": 1492827192,
+          "updated": 1492827209
+        },
+        {
+          "text": "https://github.com/blog/2019-how-to-undo-almost-anything-with-git",
+          "created": 1492827209,
+          "updated": 1492827231
+        }
+      ]
+    },
+    {
+      "title": "ファイルの編集回数のランキング",
+      "created": 1492827356,
+      "updated": 1520226397,
+      "lines": [
+        {
+          "text": "ファイルの編集回数のランキング",
+          "created": 1495151440,
+          "updated": 1519866683
+        },
+        {
+          "text": "$ ファイルの(編集|修正)のランキングを(リスト|表示)する",
+          "created": 1492827356,
+          "updated": 1519809412
+        },
+        {
+          "text": "$ (よく|頻繁に)(編集|修正)(されてる|されている)ファイルを(リスト|表示)する",
+          "created": 1496465941,
+          "updated": 1520214644
+        },
+        {
+          "text": "% git log --name-only --pretty=\"format:\" | grep -ve \"^$\" | sort | uniq -c | sort -r | more",
+          "created": 1492827369,
+          "updated": 1520226397
+        },
+        {
+          "text": "",
+          "created": 1492827391,
+          "updated": 1492827391
+        },
+        {
+          "text": "#ランキング #編集 #修正",
+          "created": 1492827391,
+          "updated": 1492827403
+        }
+      ]
+    },
+    {
+      "title": "ファイル追加",
+      "created": 1495151660,
+      "updated": 1520206327,
+      "lines": [
+        {
+          "text": "ファイル追加",
+          "created": 1495151660,
+          "updated": 1495151660
+        },
+        {
+          "text": "$ 最初に「(#{params})」という文字列を含むコミットをした時から現在までに追加されたファイルはどれとどれ？",
+          "created": 1495151711,
+          "updated": 1520206323
+        },
+        {
+          "text": "% git log --oneline --date=iso-strict --format='%cd %s' | grep #{$1} | tail -1 | awk '{print $1}' | xargs githelp-changed",
+          "created": 1495151665,
+          "updated": 1520206327
+        },
+        {
+          "text": "",
+          "created": 1495151666,
+          "updated": 1516588446
+        }
+      ]
+    },
+    {
+      "title": "引数パラメタ",
+      "created": 1495152243,
+      "updated": 1520227476,
+      "lines": [
+        {
+          "text": "引数パラメタ",
+          "created": 1495152243,
+          "updated": 1520137533
+        },
+        {
+          "text": " 引数で与えられたパラメタ",
+          "created": 1520132961,
+          "updated": 1520137469
+        },
+        {
+          "text": "  githelp 'abc'",
+          "created": 1520137537,
+          "updated": 1520149202
+        },
+        {
+          "text": " ', \" で囲む?",
+          "created": 1520137470,
+          "updated": 1520137479
+        },
+        {
+          "text": "",
+          "created": 1520132961,
+          "updated": 1520132961
+        },
+        {
+          "text": "code:params.rb",
+          "created": 1495152243,
+          "updated": 1519893906
+        },
+        {
+          "text": " def params(argv=ARGV)",
+          "created": 1520199776,
+          "updated": 1520199777
+        },
+        {
+          "text": "   a = []",
+          "created": 1520199777,
+          "updated": 1520199777
+        },
+        {
+          "text": "   argv.each { |arg|",
+          "created": 1520199777,
+          "updated": 1520199777
+        },
+        {
+          "text": "     if arg =~ /^(\\d+)[^\\d]*$/ then",
+          "created": 1520199777,
+          "updated": 1520199777
+        },
+        {
+          "text": "       # a << $1                                                                                                                                                                             ",
+          "created": 1520199777,
+          "updated": 1520199777
+        },
+        {
+          "text": "     elsif arg =~ /^'.*'$/ || arg =~ /^\".*\"$/ || arg =~ /^「.*」$/",
+          "created": 1520199777,
+          "updated": 1520199777
+        },
+        {
+          "text": "       a << arg.sub(/^['\"]/,'').sub(/['\"]$/,'').sub('「','').sub('」','')",
+          "created": 1520199777,
+          "updated": 1520199777
+        },
+        {
+          "text": "     else",
+          "created": 1520227469,
+          "updated": 1520227471
+        },
+        {
+          "text": "       a << arg",
+          "created": 1520227472,
+          "updated": 1520227476
+        },
+        {
+          "text": "     end",
+          "created": 1520199777,
+          "updated": 1520199777
+        },
+        {
+          "text": "   }",
+          "created": 1520199777,
+          "updated": 1520199777
+        },
+        {
+          "text": "   a.length > 0 ? a.join('|') : 'xxxxx'",
+          "created": 1520199777,
+          "updated": 1520199777
+        },
+        {
+          "text": " end",
+          "created": 1520199777,
+          "updated": 1520199777
+        },
+        {
+          "text": "",
+          "created": 1520137414,
+          "updated": 1520137414
+        }
+      ]
+    },
+    {
+      "title": "増井俊之",
+      "created": 1496475568,
+      "updated": 1496475568,
+      "lines": [
+        {
+          "text": "増井俊之",
+          "created": 1496475568,
+          "updated": 1496475568
+        },
+        {
+          "text": "[https://i.gyazo.com/ce44a0adde8a39df00cfa744d8f42d95.png]",
+          "created": 1496475568,
+          "updated": 1496475568
+        }
+      ]
+    },
+    {
+      "title": "ファイル復元",
+      "created": 1496645946,
+      "updated": 1520227687,
+      "lines": [
+        {
+          "text": "ファイル復元",
+          "created": 1496645946,
+          "updated": 1496645949
+        },
+        {
+          "text": "$ (1つ|ひとつ)前のコミットで(削除した|消した)(#{files})を(復元する|元に戻す)",
+          "created": 1496645949,
+          "updated": 1520227687
+        },
+        {
+          "text": "% git checkout $(git rev-list -n 1 HEAD -- #{$2})^ -- #{$2}",
+          "created": 1496645975,
+          "updated": 1520211850
+        },
+        {
+          "text": "",
+          "created": 1520210863,
+          "updated": 1520210863
+        },
+        {
+          "text": " `--` の後にファイル名を書ける (getoptの仕様)",
+          "created": 1519826349,
+          "updated": 1520210947
+        },
+        {
+          "text": " `$(...)` は `\\`xxx`` と同じ (bashの記法)",
+          "created": 1520210882,
+          "updated": 1520210931
+        },
+        {
+          "text": "",
+          "created": 1519826349,
+          "updated": 1519826349
+        }
+      ]
+    },
+    {
+      "title": "コミッタ(ユーザー)について調べる",
+      "created": 1496646067,
+      "updated": 1520218296,
+      "lines": [
+        {
+          "text": "コミッタ(ユーザー)について調べる",
+          "created": 1496646067,
+          "updated": 1496646073
+        },
+        {
+          "text": "",
+          "created": 1496646088,
+          "updated": 1496646090
+        },
+        {
+          "text": "$ (コミッタ|ユーザー)のランキングを表示する",
+          "created": 1496646073,
+          "updated": 1519809498
+        },
+        {
+          "text": "% git shortlog -sn",
+          "created": 1496646093,
+          "updated": 1519809499
+        },
+        {
+          "text": "",
+          "created": 1496646140,
+          "updated": 1496646140
+        },
+        {
+          "text": "#$ (#{numbers})週間の(コミッタ|ユーザー)の変更を(リスト|表示)する",
+          "created": 1496646118,
+          "updated": 1520218290
+        },
+        {
+          "text": "#% git log --author=#{user} --since=#{$1}.week",
+          "created": 1496646161,
+          "updated": 1520218292
+        },
+        {
+          "text": "",
+          "created": 1496646207,
+          "updated": 1496646207
+        },
+        {
+          "text": "#$ (コミッタ|ユーザー)のこれまでの変更した行数を(リスト|表示)する",
+          "created": 1496646206,
+          "updated": 1520218294
+        },
+        {
+          "text": "#% git log --author=#{user} --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf \"added lines: %s, removed lines: %s, total lines: %s\\n\", add, subs, loc }'",
+          "created": 1496646266,
+          "updated": 1520218296
+        },
+        {
+          "text": "",
+          "created": 1520218296,
+          "updated": 1520218296
+        }
+      ]
+    },
+    {
+      "title": "文字列の出現判定",
+      "created": 1496889295,
+      "updated": 1520226553,
+      "lines": [
+        {
+          "text": "文字列の出現判定",
+          "created": 1496889295,
+          "updated": 1520226553
+        },
+        {
+          "text": "$ (#{files})に(#{params})という名前が(出現した|書かれた)のはいつ？",
+          "created": 1496889307,
+          "updated": 1520170999
+        },
+        {
+          "text": "% git blame #{$1} | grep #{$2}",
+          "created": 1496889377,
+          "updated": 1520171003
+        },
+        {
+          "text": "",
+          "created": 1520169497,
+          "updated": 1520169497
+        }
+      ]
+    },
+    {
+      "title": "ブランチ",
+      "created": 1496889490,
+      "updated": 1496890014,
+      "lines": [
+        {
+          "text": "ブランチ",
+          "created": 1496889490,
+          "updated": 1496889490
+        },
+        {
+          "text": "`ブランチを(表示|リスト)する`",
+          "created": 1496889490,
+          "updated": 1496889566
+        },
+        {
+          "text": "`% git branch`",
+          "created": 1496889499,
+          "updated": 1496890008
+        },
+        {
+          "text": "",
+          "created": 1496889574,
+          "updated": 1496889574
+        },
+        {
+          "text": "`#{branch}を作成する`",
+          "created": 1496889574,
+          "updated": 1496889585
+        },
+        {
+          "text": "`% git branch #{branch}`",
+          "created": 1496889586,
+          "updated": 1496890011
+        },
+        {
+          "text": "",
+          "created": 1496889505,
+          "updated": 1496889505
+        },
+        {
+          "text": "`#{branch}を削除する`",
+          "created": 1496889505,
+          "updated": 1496889530
+        },
+        {
+          "text": "`% git branch -d #{branch}`",
+          "created": 1496889531,
+          "updated": 1496890014
+        },
+        {
+          "text": "",
+          "created": 1496889568,
+          "updated": 1496889568
+        },
+        {
+          "text": "",
+          "created": 1496889568,
+          "updated": 1496889568
+        }
+      ]
+    },
+    {
+      "title": "昔のファイル表示",
+      "created": 1496889662,
+      "updated": 1520226475,
+      "lines": [
+        {
+          "text": "昔のファイル表示",
+          "created": 1496889662,
+          "updated": 1519792369
+        },
+        {
+          "text": "$ (#{numbers})分前の「(#{files})」ファイルを(表示する|見る)",
+          "created": 1520226445,
+          "updated": 1520226445
+        },
+        {
+          "text": "% git cat-file -p '@{#{$1} minutes ago}':#{$2}",
+          "created": 1520226445,
+          "updated": 1520226445
+        },
+        {
+          "text": "",
+          "created": 1520226444,
+          "updated": 1520226444
+        },
+        {
+          "text": "$ (#{numbers})時間前の「(#{files})」ファイルを(表示|リスト)する",
+          "created": 1496889701,
+          "updated": 1520165225
+        },
+        {
+          "text": "% git cat-file -p @{#{$1}.hours.ago}:#{$2}",
+          "created": 1496889668,
+          "updated": 1520220099
+        },
+        {
+          "text": "",
+          "created": 1520226475,
+          "updated": 1520226475
+        },
+        {
+          "text": "$ (#{numbers})日前の「(#{files})」ファイルを(表示|リスト)する",
+          "created": 1520226475,
+          "updated": 1520226475
+        },
+        {
+          "text": "% git cat-file -p @{#{$1}.days.ago}:#{$2}",
+          "created": 1520226475,
+          "updated": 1520226475
+        },
+        {
+          "text": "",
+          "created": 1520226475,
+          "updated": 1520226475
+        },
+        {
+          "text": "$ 昨日の「(#{files})」ファイルを(表示する|見る)",
+          "created": 1520226475,
+          "updated": 1520226475
+        },
+        {
+          "text": "% git cat-file -p @{yesterday}:#{$1}",
+          "created": 1520226475,
+          "updated": 1520226475
+        },
+        {
+          "text": "",
+          "created": 1520226475,
+          "updated": 1520226475
+        },
+        {
+          "text": "",
+          "created": 1520169449,
+          "updated": 1520169449
+        }
+      ]
+    },
+    {
+      "title": "文字列の出現を調べる",
+      "created": 1497321083,
+      "updated": 1520171231,
+      "lines": [
+        {
+          "text": "文字列の出現を調べる",
+          "created": 1519558279,
+          "updated": 1519558295
+        },
+        {
+          "text": "$ (#{files})に(#{params})という名前が(出現した|書かれた)のはいつ？",
+          "created": 1497321083,
+          "updated": 1520171219
+        },
+        {
+          "text": "% git blame #{$1} | grep #{$2}",
+          "created": 1497321083,
+          "updated": 1520171231
+        },
+        {
+          "text": "",
+          "created": 1519558402,
+          "updated": 1519558402
+        },
+        {
+          "text": "fileがわからないときはどうするのか?",
+          "created": 1519558402,
+          "updated": 1519558419
+        },
+        {
+          "text": "",
+          "created": 1519558403,
+          "updated": 1519558403
+        }
+      ]
+    },
+    {
+      "title": "ブランチの表示",
+      "created": 1497321104,
+      "updated": 1519558500,
+      "lines": [
+        {
+          "text": "ブランチの表示",
+          "created": 1519558493,
+          "updated": 1519558500
+        },
+        {
+          "text": "",
+          "created": 1519558494,
+          "updated": 1519558494
+        },
+        {
+          "text": "ブランチを(表示|リスト)する",
+          "created": 1497321104,
+          "updated": 1497321110
+        },
+        {
+          "text": "`% git branch`",
+          "created": 1497321104,
+          "updated": 1497321104
+        },
+        {
+          "text": "",
+          "created": 1497321104,
+          "updated": 1497321104
+        },
+        {
+          "text": "`#{branch}を作成する`",
+          "created": 1497321104,
+          "updated": 1497321104
+        },
+        {
+          "text": "`% git branch #{branch}`",
+          "created": 1497321104,
+          "updated": 1497321104
+        },
+        {
+          "text": "",
+          "created": 1497321104,
+          "updated": 1497321104
+        },
+        {
+          "text": "`#{branch}を削除する`",
+          "created": 1497321104,
+          "updated": 1497321104
+        },
+        {
+          "text": "`% git branch -d #{branch}`",
+          "created": 1497321104,
+          "updated": 1497321104
+        }
+      ]
+    },
+    {
+      "title": "やりたいことの例",
+      "created": 1519557995,
+      "updated": 1520227724,
+      "lines": [
+        {
+          "text": "やりたいことの例",
+          "created": 1519557995,
+          "updated": 1519557995
+        },
+        {
+          "text": " \"abc\" という文字列を含むファイルがどこでコミットされたか調べる",
+          "created": 1519557995,
+          "updated": 1519701727
+        },
+        {
+          "text": " そのコミット及びそのファイルを過去コミットから削除する",
+          "created": 1519558023,
+          "updated": 1519558039
+        },
+        {
+          "text": " しばらく変化ないファイルをリストする",
+          "created": 1519809961,
+          "updated": 1519809969
+        },
+        {
+          "text": " ひとつ前との違いを見る",
+          "created": 1520227716,
+          "updated": 1520227724
+        },
+        {
+          "text": "",
+          "created": 1519557996,
+          "updated": 1519557996
+        }
+      ]
+    },
+    {
+      "title": "特定のファイルの履歴を消す",
+      "created": 1519563847,
+      "updated": 1520206705,
+      "lines": [
+        {
+          "text": "特定のファイルの履歴を消す",
+          "created": 1519563847,
+          "updated": 1519563849
+        },
+        {
+          "text": " パスワードを直書きしたファイルを間違ってアップロードしたときなど、どうする?",
+          "created": 1519650900,
+          "updated": 1519651337
+        },
+        {
+          "text": "  パスワードを含むファイルを捜す",
+          "created": 1519650920,
+          "updated": 1519651337
+        },
+        {
+          "text": "   git grep する",
+          "created": 1519693989,
+          "updated": 1519693993
+        },
+        {
+          "text": "   [変数や単語が出現しているファイルを捜す]",
+          "created": 1519691272,
+          "updated": 1519693987
+        },
+        {
+          "text": "  そのファイルを完全に履歴から消去する",
+          "created": 1519650932,
+          "updated": 1519651338
+        },
+        {
+          "text": " という処理が必要だが、かなり難しいはず",
+          "created": 1519650942,
+          "updated": 1519651338
+        },
+        {
+          "text": " こういうのをGitHelpできると嬉しいんじゃないだろうか",
+          "created": 1519651332,
+          "updated": 1519651352
+        },
+        {
+          "text": " そういう解説があった",
+          "created": 1519694115,
+          "updated": 1519694123
+        },
+        {
+          "text": "  [https://help.github.com/articles/removing-sensitive-data-from-a-repository/ Removing sensitive data from a repository - User Documentation]",
+          "created": 1519694109,
+          "updated": 1519694124
+        },
+        {
+          "text": "  https://git-scm.com/book/ja/v1/Git-のさまざまなツール-歴史の書き換え",
+          "created": 1520206549,
+          "updated": 1520206705
+        },
+        {
+          "text": "",
+          "created": 1519693664,
+          "updated": 1519693664
+        },
+        {
+          "text": "xxxxxx.txtの履歴を消す",
+          "created": 1519563872,
+          "updated": 1519694144
+        },
+        {
+          "text": " http://d.hatena.ne.jp/ichhi/20110825/1314300975",
+          "created": 1519563896,
+          "updated": 1519563897
+        },
+        {
+          "text": " % git filter-branch --index-filter 'git rm --cached --ignore-unmatch xxxxxx.txt' HEAD",
+          "created": 1519563850,
+          "updated": 1519694019
+        },
+        {
+          "text": "",
+          "created": 1519563898,
+          "updated": 1519563898
+        },
+        {
+          "text": "GitHub の commit 履歴からパスワードファイル等だけを消す方法",
+          "created": 1519563863,
+          "updated": 1519563930
+        },
+        {
+          "text": " https://qiita.com/MahoTakara/items/3b02bf55767a6372596e",
+          "created": 1519563939,
+          "updated": 1519563939
+        },
+        {
+          "text": " % git filter-branch -f --index-filter 'git rm --ignore-unmatch xxxxxx.txt' HEAD",
+          "created": 1519563940,
+          "updated": 1520195975
+        },
+        {
+          "text": "",
+          "created": 1519564042,
+          "updated": 1519564042
+        },
+        {
+          "text": "どういう意味なのやら?",
+          "created": 1519564035,
+          "updated": 1519564048
+        },
+        {
+          "text": " filter-branch というのは、大量コマンドを一気に実行するものらしい",
+          "created": 1519693031,
+          "updated": 1519693031
+        },
+        {
+          "text": "  全部やるもの",
+          "created": 1519693038,
+          "updated": 1519693083
+        },
+        {
+          "text": "   --tree-filter チェックアウトしてコマンド実行",
+          "created": 1519693083,
+          "updated": 1519693097
+        },
+        {
+          "text": "   --index-filter インデックスに対してコマンド実行",
+          "created": 1519693097,
+          "updated": 1519693116
+        },
+        {
+          "text": " git rm",
+          "created": 1519693141,
+          "updated": 1519693145
+        },
+        {
+          "text": "  --ignore-umatch",
+          "created": 1519693145,
+          "updated": 1519693151
+        },
+        {
+          "text": "   マッチしなくても続行する",
+          "created": 1519693151,
+          "updated": 1519693164
+        },
+        {
+          "text": "",
+          "created": 1519694501,
+          "updated": 1519694501
+        },
+        {
+          "text": "GitHubの方に反映させる",
+          "created": 1519694497,
+          "updated": 1519694509
+        },
+        {
+          "text": "% git push origin --force --all",
+          "created": 1519694497,
+          "updated": 1519694499
+        },
+        {
+          "text": "",
+          "created": 1519564048,
+          "updated": 1519564048
+        }
+      ]
+    },
+    {
+      "title": "変数や単語が出現しているファイルを捜す",
+      "created": 1519691492,
+      "updated": 1520227340,
+      "lines": [
+        {
+          "text": "変数や単語が出現しているファイルを捜す",
+          "created": 1519691492,
+          "updated": 1519691492
+        },
+        {
+          "text": "間違ってパスワードなどをコミットしてないかチェック",
+          "created": 1519694180,
+          "updated": 1519694191
+        },
+        {
+          "text": "",
+          "created": 1519694180,
+          "updated": 1519694180
+        },
+        {
+          "text": " git grep というのがある",
+          "created": 1519691492,
+          "updated": 1519691499
+        },
+        {
+          "text": " [https://qiita.com/zwirky/items/19df2d8d3d584da2790b 個人的によく使うgit grepのまとめ - Qiita]",
+          "created": 1519691516,
+          "updated": 1519691516
+        },
+        {
+          "text": "",
+          "created": 1519693944,
+          "updated": 1519693944
+        },
+        {
+          "text": "$ (#{params})という文字を含むファイルを捜す",
+          "created": 1519691800,
+          "updated": 1520164941
+        },
+        {
+          "text": "% git grep #{$1}",
+          "created": 1519693953,
+          "updated": 1520227340
+        },
+        {
+          "text": "",
+          "created": 1519809561,
+          "updated": 1519809561
+        },
+        {
+          "text": "$ XXXXXXという文字を含むファイルを全履歴から捜す",
+          "created": 1519691757,
+          "updated": 1519809564
+        },
+        {
+          "text": "% git rev-list --all | xargs git grep XXXXXX",
+          "created": 1519691493,
+          "updated": 1519809568
+        },
+        {
+          "text": "",
+          "created": 1519691823,
+          "updated": 1519691823
+        },
+        {
+          "text": "[変数がはじめて出現したバージョンを捜す]ことができるかも",
+          "created": 1519691822,
+          "updated": 1519694226
+        },
+        {
+          "text": "",
+          "created": 1519691757,
+          "updated": 1519691757
+        }
+      ]
+    },
+    {
+      "title": "ツリー状にログを表示する",
+      "created": 1519698152,
+      "updated": 1520226251,
+      "lines": [
+        {
+          "text": "ツリー状にログを表示する",
+          "created": 1519698152,
+          "updated": 1520206201
+        },
+        {
+          "text": "$ ツリー状にログを表示する",
+          "created": 1520212699,
+          "updated": 1520212710
+        },
+        {
+          "text": "% git log --graph --all --format=\"%x09%an%x09%h %d %s\"",
+          "created": 1519698156,
+          "updated": 1520226251
+        },
+        {
+          "text": "",
+          "created": 1519698157,
+          "updated": 1519698157
+        }
+      ]
+    },
+    {
+      "title": "ファイル名変更",
+      "created": 1519809729,
+      "updated": 1520196592,
+      "lines": [
+        {
+          "text": "ファイル名変更",
+          "created": 1519809729,
+          "updated": 1519809729
+        },
+        {
+          "text": "$ 「(#{files})」というファイルを「(#{params})」という名前に(変更|移動|改名|リネーム)する",
+          "created": 1519809730,
+          "updated": 1520196592
+        },
+        {
+          "text": "% git mv #{$1} #{$2}",
+          "created": 1519809729,
+          "updated": 1520196575
+        },
+        {
+          "text": "",
+          "created": 1519809761,
+          "updated": 1519809761
+        }
+      ]
+    },
+    {
+      "title": "追加/削除された行数",
+      "created": 1519809816,
+      "updated": 1519809885,
+      "lines": [
+        {
+          "text": "追加/削除された行数",
+          "created": 1519809858,
+          "updated": 1519809885
+        },
+        {
+          "text": "$ これまで追加/削除された行数を表示する",
+          "created": 1519809817,
+          "updated": 1519809824
+        },
+        {
+          "text": "% git log --numstat --pretty=\"%H\" | awk 'NF==3 {plus+=$1; minus+=$2} END {printf(\"+%d, -%d\\\\\\\\n\", plus, minus)}'",
+          "created": 1519809817,
+          "updated": 1519809845
+        },
+        {
+          "text": "",
+          "created": 1519809816,
+          "updated": 1519809816
+        }
+      ]
+    },
+    {
+      "title": "古いファイルと比較する",
+      "created": 1519817302,
+      "updated": 1520226495,
+      "lines": [
+        {
+          "text": "古いファイルと比較する",
+          "created": 1519817302,
+          "updated": 1519817302
+        },
+        {
+          "text": "$ 「(#{files})」ファイルを(#{numbers})分前の(もの|バージョン)と比較する",
+          "created": 1519817303,
+          "updated": 1519822827
+        },
+        {
+          "text": "$ 「(#{files})」ファイルが(#{numbers})分前から(変化した|変わった)ところを(表示する|見る)",
+          "created": 1519817374,
+          "updated": 1520164756
+        },
+        {
+          "text": "% git diff HEAD @{#{$2}.minutes.ago} #{$1}",
+          "created": 1519817303,
+          "updated": 1520221792
+        },
+        {
+          "text": "",
+          "created": 1519817302,
+          "updated": 1519817302
+        },
+        {
+          "text": "$ (#{numbers})分前の「(#{files})」ファイルと現在の(もの|バージョン)を比較する",
+          "created": 1519823166,
+          "updated": 1520164831
+        },
+        {
+          "text": "% git diff HEAD @{#{$1}.minutes.ago} #{$2}",
+          "created": 1519823166,
+          "updated": 1520221799
+        },
+        {
+          "text": "",
+          "created": 1520226495,
+          "updated": 1520226495
+        },
+        {
+          "text": "$ (#{numbers})日前のファイル「(#{files})」と現在のものを(比較する|比べる)",
+          "created": 1520226495,
+          "updated": 1520226495
+        },
+        {
+          "text": "% git diff HEAD '@{#{$1} days ago}' #{$2}",
+          "created": 1520226495,
+          "updated": 1520226495
+        },
+        {
+          "text": "",
+          "created": 1520226495,
+          "updated": 1520226495
+        },
+        {
+          "text": "$ 現在のファイル「(#{files})」を(#{numbers})日前のものを(比較する|比べる)",
+          "created": 1520226495,
+          "updated": 1520226495
+        },
+        {
+          "text": "% git diff HEAD '@{#{$2} days ago}' #{$1}",
+          "created": 1520226495,
+          "updated": 1520226495
+        },
+        {
+          "text": "",
+          "created": 1519823166,
+          "updated": 1519823189
+        }
+      ]
+    },
+    {
+      "title": "数字パラメタ",
+      "created": 1519905222,
+      "updated": 1520200088,
+      "lines": [
+        {
+          "text": "数字パラメタ",
+          "created": 1519905222,
+          "updated": 1520137713
+        },
+        {
+          "text": "code:numbers.rb",
+          "created": 1519905222,
+          "updated": 1519905227
+        },
+        {
+          "text": " def numbers(argv=ARGV)",
+          "created": 1520200085,
+          "updated": 1520200085
+        },
+        {
+          "text": "   a = []",
+          "created": 1520200085,
+          "updated": 1520200085
+        },
+        {
+          "text": "   argv.each { |arg|",
+          "created": 1520200085,
+          "updated": 1520200085
+        },
+        {
+          "text": "     if arg =~ /^(\\d+)[^\\d]*$/ then",
+          "created": 1520200085,
+          "updated": 1520200085
+        },
+        {
+          "text": "       a << $1",
+          "created": 1520200085,
+          "updated": 1520200085
+        },
+        {
+          "text": "     end",
+          "created": 1520200085,
+          "updated": 1520200085
+        },
+        {
+          "text": "   }",
+          "created": 1520200085,
+          "updated": 1520200085
+        },
+        {
+          "text": "   # a.join(\"|\")                                                                                                                                                                             ",
+          "created": 1520200085,
+          "updated": 1520200085
+        },
+        {
+          "text": "   a.length > 0 ? a.join(\"|\") : '1'",
+          "created": 1520200085,
+          "updated": 1520200085
+        },
+        {
+          "text": " end",
+          "created": 1520200085,
+          "updated": 1520200085
+        },
+        {
+          "text": " ",
+          "created": 1520200085,
+          "updated": 1520200085
+        },
+        {
+          "text": " def numbers_xxx(argv=ARGV)",
+          "created": 1519905227,
+          "updated": 1520200088
+        },
+        {
+          "text": "   a = []",
+          "created": 1519905229,
+          "updated": 1519905233
+        },
+        {
+          "text": "   argv.each { |arg|",
+          "created": 1519905229,
+          "updated": 1519905233
+        },
+        {
+          "text": "     if arg =~ /^(\\d+)[^\\d]*$/ then",
+          "created": 1519905229,
+          "updated": 1519905236
+        },
+        {
+          "text": "       a << $1",
+          "created": 1519905229,
+          "updated": 1519905236
+        },
+        {
+          "text": "     end",
+          "created": 1519905229,
+          "updated": 1519905236
+        },
+        {
+          "text": "   }",
+          "created": 1519905229,
+          "updated": 1519905236
+        },
+        {
+          "text": "   a.join(\"|\")",
+          "created": 1520142673,
+          "updated": 1520164654
+        },
+        {
+          "text": "   # a.length > 0 ? a : ['1']",
+          "created": 1519905229,
+          "updated": 1520142676
+        },
+        {
+          "text": " end",
+          "created": 1519905229,
+          "updated": 1519905236
+        },
+        {
+          "text": "",
+          "created": 1519905223,
+          "updated": 1519905223
+        }
+      ]
+    },
+    {
+      "title": "ファイルリスト",
+      "created": 1520137762,
+      "updated": 1520215308,
+      "lines": [
+        {
+          "text": "ファイルリスト",
+          "created": 1520137762,
+          "updated": 1520137762
+        },
+        {
+          "text": "引数の中にファイル名とマッチするものがあればファイルリストを取得         ",
+          "created": 1520137793,
+          "updated": 1520137802
+        },
+        {
+          "text": "",
+          "created": 1520215285,
+          "updated": 1520215285
+        },
+        {
+          "text": "code:files.rb",
+          "created": 1520137802,
+          "updated": 1520215289
+        },
+        {
+          "text": " def files(argv=ARGV)",
+          "created": 1520215289,
+          "updated": 1520215295
+        },
+        {
+          "text": "   list = begin",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "            `git ls-files`.split(/\\n/)",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "          rescue",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "            []",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "          end",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "   matched = {}",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "   list.each { |file|",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "     if argv.length == 0",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "       matched[file] = true",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "     else",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "       args(argv).each { |arg|",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "         matched[file] = true if file.match arg",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "       }",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "     end",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "   }",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "   files = list",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "   files = matched.keys if matched.keys.length > 0",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "   files.join(\"|\")",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": " end",
+          "created": 1520215295,
+          "updated": 1520215295
+        },
+        {
+          "text": "",
+          "created": 1520215305,
+          "updated": 1520215305
+        },
+        {
+          "text": "[引数パラメタ]",
+          "created": 1520215305,
+          "updated": 1520215305
+        },
+        {
+          "text": "",
+          "created": 1520142581,
+          "updated": 1520142581
+        }
+      ]
+    },
+    {
+      "title": "args",
+      "created": 1520160117,
+      "updated": 1520199968,
+      "lines": [
+        {
+          "text": "args",
+          "created": 1520160117,
+          "updated": 1520160117
+        },
+        {
+          "text": "code:args.rb",
+          "created": 1520160117,
+          "updated": 1520160120
+        },
+        {
+          "text": " def args(argv=ARGV)",
+          "created": 1520199890,
+          "updated": 1520199890
+        },
+        {
+          "text": "   a = []",
+          "created": 1520199890,
+          "updated": 1520199890
+        },
+        {
+          "text": "   argv.each { |arg|",
+          "created": 1520199890,
+          "updated": 1520199890
+        },
+        {
+          "text": "     if arg =~ /^(\\d+)([^\\d]+)?$/ then",
+          "created": 1520199890,
+          "updated": 1520199890
+        },
+        {
+          "text": "       a << $1",
+          "created": 1520199890,
+          "updated": 1520199890
+        },
+        {
+          "text": "       a << $2 if $2.to_s != ''",
+          "created": 1520199890,
+          "updated": 1520199890
+        },
+        {
+          "text": "     else",
+          "created": 1520199890,
+          "updated": 1520199890
+        },
+        {
+          "text": "       a << arg.sub(/^['\"]/,'').sub(/['\"]$/,'').sub('「','').sub('」','')",
+          "created": 1520199890,
+          "updated": 1520199890
+        },
+        {
+          "text": "     end",
+          "created": 1520199890,
+          "updated": 1520199890
+        },
+        {
+          "text": "   }",
+          "created": 1520199890,
+          "updated": 1520199890
+        },
+        {
+          "text": "   a.length > 0 ? a : ['']",
+          "created": 1520199890,
+          "updated": 1520199890
+        },
+        {
+          "text": " end",
+          "created": 1520199890,
+          "updated": 1520199890
+        },
+        {
+          "text": "",
+          "created": 1520160118,
+          "updated": 1520160118
+        }
+      ]
+    },
+    {
+      "title": "追加予定",
+      "created": 1520199668,
+      "updated": 1520199671,
+      "lines": [
+        {
+          "text": "追加予定",
+          "created": 1520199668,
+          "updated": 1520199670
+        },
+        {
+          "text": "git log --since=\"3 days ago\"",
+          "created": 1520199670,
+          "updated": 1520199671
+        },
+        {
+          "text": "",
+          "created": 1520199671,
+          "updated": 1520199671
+        }
+      ]
+    },
+    {
+      "title": "ファイル削除",
+      "created": 1520212560,
+      "updated": 1520212671,
+      "lines": [
+        {
+          "text": "ファイル削除",
+          "created": 1520212560,
+          "updated": 1520212560
+        },
+        {
+          "text": "$ ファイル「(#{files})」を(削除する|消す)",
+          "created": 1520212560,
+          "updated": 1520212609
+        },
+        {
+          "text": "% git rm #{$1}",
+          "created": 1520212584,
+          "updated": 1520212592
+        },
+        {
+          "text": "",
+          "created": 1520212667,
+          "updated": 1520212667
+        },
+        {
+          "text": "#削除",
+          "created": 1520212561,
+          "updated": 1520212671
+        },
+        {
+          "text": "",
+          "created": 1520212667,
+          "updated": 1520212667
+        }
+      ]
+    }
+  ]
+}
