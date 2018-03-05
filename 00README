@@ -1,2 +1,7 @@
-* $(githelp | peco) で実行できる
+* eval `githelp $* | peco` で実行
+  pecoで選択した行を実行する
+  ~/bin/gh あたりに置いておく
+
+* bin/gh => ~/bin/gh
+  .config/peco/config.json => ~/.config/peco/config.json
 
