@@ -1,17 +1,15 @@
 #!/usr/bin/ruby
 
-# require 're_expand'
+require 're_expand'
 
-require '/Users/masui/expand_ruby/lib/re_expand.rb'
-require '/Users/masui/expand_ruby/lib/re_expand/Generator'
-require '/Users/masui/expand_ruby/lib/re_expand/Node'
-require '/Users/masui/expand_ruby/lib/re_expand/Scanner'
+#require '/Users/masui/expand_ruby/lib/re_expand.rb'
+#require '/Users/masui/expand_ruby/lib/re_expand/Generator'
+#require '/Users/masui/expand_ruby/lib/re_expand/Node'
+#require '/Users/masui/expand_ruby/lib/re_expand/Scanner'
 
 require 'json'
 
 DATAFILE = File.expand_path("~/.githelp")
-
-# data = Marshal.load(File.read("githelp.data"))
 
 data = JSON.parse(File.read(DATAFILE))
 
@@ -29,41 +27,20 @@ g = ExpandRuby::Generator.new # re_expandのジェネレータ
 #
 lines = []
 
-#d = [
-#  '$ (#{numbers})分前の「(#{files})」ファイルと現在の(もの|バージョン)を比較する',
-#  # '$ 分前の「(#{files})」ファイルと現在の(もの|バージョン)を比較する',
-#  '% git diff HEAD "@{#{$1} minutes ago}" #{$2}'
-#  ]
-  
 data['defs'].each { |line|
   if line =~ /^\s*\$\s*(.*)$/ # $....
     lines << $1
   elsif line =~ /^\s*\%\s*(.*)$/ # %....
     cmd = $1
-    #puts "cmd = #{cmd}"
     lines.each { |l|
-      # s = "g.add '#{l.force_encoding("utf-8")}', '#{cmd.force_encoding("utf-8")}'"
-      # puts s
-      # eval s
-      # puts "l = #{l}"
       desc = eval('"' + l + '"')
-      #puts "desc = #{desc}"
       g.add desc.force_encoding('utf-8'), cmd.force_encoding('utf-8')
-      # puts "CMD = g.add #{desc}, #{cmd.force_encoding('utf-8')}"
     }
     lines = []
   end
 }
 
-#puts "=========================="
-#puts params
-#puts "--------------------------"
-
-#p args
-# puts "args = ' #{args.join(' ')} '"
-
 res = g.generate " #{args.join(' ')} "
-# puts res
 
 listed = {}
 list = res[0].find_all { |a| # 0 ambig

@@ -86,12 +86,6 @@ class GitHelp
         end
       }
     }
-
-    #puts "-----------------githelp.dataに格納"
-    #File.open("githelp.data","w"){ |f|
-    #  f.puts Marshal.dump(dumpdata)
-    #}
-    # p dumpdata['codes'].to_json
     
     File.open(DATAFILE,"w"){ |f|
       f.puts dumpdata.to_json
@@ -101,5 +95,3 @@ end
 
 githelp = GitHelp.new
 githelp.process
-
-# puts githelp.files(['"change"'])
