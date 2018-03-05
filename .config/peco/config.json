@@ -1,4 +1,8 @@
 {
+    "Keymap": {
+	"C-k": "peco.SelectUp",
+	"C-j": "peco.SelectDown"
+    },
     "Style": {
 	"Selected": ["on_cyan", "black"],
 	"Matched": ["blue", "on_blue"]
