@@ -1,0 +1,3 @@
+getdata:
+	ruby getdata.rb
+
