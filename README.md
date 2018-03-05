@@ -8,4 +8,5 @@
 
 <ul>
   <li><code>% githelp キーワード</code></li>
+  <li><code>gh</code>を使うのがおすすめ (<code>peco</cod>が必要)</li>
 </ul>
