@@ -27,7 +27,7 @@ class GitHelp
   # それぞれのページに対して処理
   def getpage(title)
     puts title
-    uri = URI.parse("https://scrapbox.io/api/pages/GitHelp/#{URI.encode(title)}/text")
+    uri = URI.parse("https://scrapbox.io/api/pages/GitHelp/#{URI.encode(title).gsub(/\//,'%2f')}/text") # a/b みたいなタイトルのとき困る
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -76,8 +76,9 @@ class GitHelp
     }
     puts "-----------------GitHelpデータを検出"
     @pagedata.each { |title,pagedata|
-      # puts title
-      pagedata. each { |line|
+      puts "...#{title}"
+      pagedata.each { |line|
+        puts line
         if line =~ /^\s*[\$\%]/
           puts line
           line.force_encoding("utf-8")
