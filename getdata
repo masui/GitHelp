@@ -1,3 +1,5 @@
+# -*- ruby -*-
+
 require 'net/https'
 require 'json'
 require 'uri'

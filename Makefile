@@ -1,3 +1,2 @@
 getdata:
-	ruby getdata.rb
-
+	ruby getdata
