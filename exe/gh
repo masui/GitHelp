@@ -2,7 +2,7 @@
 result = system "command -v peco > /dev/null"
 
 if result
-  system "eval `githelp $* | peco`"
+  system "eval `githelp #{$*.join(' ')} | peco`"
 else
   puts "pecoをインストールして下さい"
 end
