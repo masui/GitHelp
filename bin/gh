@@ -1,4 +1,2 @@
 #!/bin/bash
-# $(../GitHelp2/githelp $* | peco --selection-prefix '>>>')
-# eval `/Users/masui/GitHelp2/githelp $* | peco --selection-prefix '>>>'`
-eval `/Users/masui/GitHelp/githelp $* | peco`
+eval `githelp $* | peco`

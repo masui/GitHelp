@@ -1,6 +1,10 @@
 data:
 	ruby getdata
 
-copy:
-	cp ~/.config/peco/config.json .config/peco/config.json
-	cp ~/bin/gh bin/gh
+install:
+	bundle install
+	-mkdir ~/.config
+	-mkdir ~/.config/peco
+	cp .config/peco/config.json ~/.config/peco/config.json
+	-mkdir ~/bin
+	cp bin/gh ~/bin/gh
