@@ -1,2 +1,8 @@
 #!/usr/bin/env ruby
-system "eval `githelp $* | peco`"
+result = system "command -v peco > /dev/null"
+
+if result
+  system "eval `githelp $* | peco`"
+else
+  puts "pecoをインストールして下さい"
+end
