@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-include Githelp
+include GitHelp
 
 require 're_expand'
 require 'json'
