@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Toshiyuki Masui"]
   spec.email         = ["masui@pitecan.com"]
 
-  spec.summary       = %q{GitHelp}
-  spec.description   = %q{GitHelp}
+  spec.summary       = %q{GitHelp - lists git commands from user's vague query strings}
+  spec.description   = %q{GitHelp - lists git commands from user's vague query strings}
   spec.homepage      = "http://GitHub.com/masui/GitHelp"
   spec.license       = "MIT"
 
