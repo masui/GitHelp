@@ -1,2 +1,2 @@
-#!/bin/bash
-eval `githelp $* | peco`
+#!/usr/bin/env ruby
+system "eval `githelp $* | peco`"
