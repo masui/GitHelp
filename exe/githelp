@@ -9,6 +9,13 @@ require 'json'
 
 DATAFILE = File.expand_path("~/.githelp")
 
+if !File.exist?(DATAFILE)
+  STDERR.puts "GitHelpデータ「#{DATAFILE}」が存在しません。"
+  STDERR.puts "getghdata コマンドで作成して下さい。"
+  exit
+end
+
+
 data = JSON.parse(File.read(DATAFILE))
 
 #
