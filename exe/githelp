@@ -5,6 +5,11 @@ require 'githelp'
 include GitHelp
 
 require 're_expand'
+#require '/Users/masui/expand_ruby/lib/re_expand.rb'
+#require '/Users/masui/expand_ruby/lib/re_expand/Generator'
+#require '/Users/masui/expand_ruby/lib/re_expand/Node'
+#require '/Users/masui/expand_ruby/lib/re_expand/Scanner'
+
 require 'json'
 
 DATAFILE = File.expand_path("~/.githelp")
