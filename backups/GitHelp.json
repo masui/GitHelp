@@ -1,0 +1,751 @@
+{
+  "name": "GitHelp",
+  "displayName": "GitHelp",
+  "exported": 1520432471,
+  "pages": [
+    {
+      "title": "このサイトについて",
+      "created": 1491961323,
+      "updated": 1520299996,
+      "lines": [
+        "このサイトについて",
+        " [https://scrapbox.io/projects/GitHelp/invitations/72392c14f9584cd15b7eb9c670547ed6 招待リンク]",
+        " [https://github.com/masui/GitHelp GitHelp] のデータをScrapbox上で編集する",
+        " 例えば以下のようなデータをScrapboxページに書いておくとgithelpコマンドができる",
+        "  e.g. `(よく|頻繁に)(編集|修正)されているファイルを(リスト|表示)する`",
+        " [ファイルの編集回数のランキング]のような書き方を使う",
+        "  人間がわかる表現を正規表現で`$ xxx ...` と書く",
+        "  その実行コマンドを`% git ...`と書く",
+        " ユーザが「ランキング」とか入力するとこの説明が[/icons/わかる.icon]",
+        " 関数やマクロもScrapboxで定義する",
+        "  コード記法を利用",
+        " 目標: UIST2018投稿",
+        "",
+        ""
+      ]
+    },
+    {
+      "title": "Gitの様々なundo",
+      "created": 1492827192,
+      "updated": 1492827231,
+      "lines": [
+        "Gitの様々なundo",
+        "https://github.com/blog/2019-how-to-undo-almost-anything-with-git"
+      ]
+    },
+    {
+      "title": "ファイルの編集回数のランキング",
+      "created": 1492827356,
+      "updated": 1520226397,
+      "lines": [
+        "ファイルの編集回数のランキング",
+        "$ ファイルの(編集|修正)のランキングを(リスト|表示)する",
+        "$ (よく|頻繁に)(編集|修正)(されてる|されている)ファイルを(リスト|表示)する",
+        "% git log --name-only --pretty=\"format:\" | grep -ve \"^$\" | sort | uniq -c | sort -r | more",
+        "",
+        "#ランキング #編集 #修正"
+      ]
+    },
+    {
+      "title": "ファイル追加",
+      "created": 1495151660,
+      "updated": 1520206327,
+      "lines": [
+        "ファイル追加",
+        "$ 最初に「(#{params})」という文字列を含むコミットをした時から現在までに追加されたファイルはどれとどれ？",
+        "% git log --oneline --date=iso-strict --format='%cd %s' | grep #{$1} | tail -1 | awk '{print $1}' | xargs githelp-changed",
+        ""
+      ]
+    },
+    {
+      "title": "引数パラメタ",
+      "created": 1495152243,
+      "updated": 1520227476,
+      "lines": [
+        "引数パラメタ",
+        " 引数で与えられたパラメタ",
+        "  githelp 'abc'",
+        " ', \" で囲む?",
+        "",
+        "code:params.rb",
+        " def params(argv=ARGV)",
+        "   a = []",
+        "   argv.each { |arg|",
+        "     if arg =~ /^(\\d+)[^\\d]*$/ then",
+        "       # a << $1                                                                                                                                                                             ",
+        "     elsif arg =~ /^'.*'$/ || arg =~ /^\".*\"$/ || arg =~ /^「.*」$/",
+        "       a << arg.sub(/^['\"]/,'').sub(/['\"]$/,'').sub('「','').sub('」','')",
+        "     else",
+        "       a << arg",
+        "     end",
+        "   }",
+        "   a.length > 0 ? a.join('|') : 'xxxxx'",
+        " end",
+        ""
+      ]
+    },
+    {
+      "title": "増井俊之",
+      "created": 1496475568,
+      "updated": 1496475568,
+      "lines": [
+        "増井俊之",
+        "[https://i.gyazo.com/ce44a0adde8a39df00cfa744d8f42d95.png]"
+      ]
+    },
+    {
+      "title": "ファイル復元",
+      "created": 1496645946,
+      "updated": 1520227687,
+      "lines": [
+        "ファイル復元",
+        "$ (1つ|ひとつ)前のコミットで(削除した|消した)(#{files})を(復元する|元に戻す)",
+        "% git checkout $(git rev-list -n 1 HEAD -- #{$2})^ -- #{$2}",
+        "",
+        " `--` の後にファイル名を書ける (getoptの仕様)",
+        " `$(...)` は `\\`xxx`` と同じ (bashの記法)",
+        ""
+      ]
+    },
+    {
+      "title": "コミッタ(ユーザー)について調べる",
+      "created": 1496646067,
+      "updated": 1520218296,
+      "lines": [
+        "コミッタ(ユーザー)について調べる",
+        "",
+        "$ (コミッタ|ユーザー)のランキングを表示する",
+        "% git shortlog -sn",
+        "",
+        "#$ (#{numbers})週間の(コミッタ|ユーザー)の変更を(リスト|表示)する",
+        "#% git log --author=#{user} --since=#{$1}.week",
+        "",
+        "#$ (コミッタ|ユーザー)のこれまでの変更した行数を(リスト|表示)する",
+        "#% git log --author=#{user} --pretty=tformat: --numstat | awk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf \"added lines: %s, removed lines: %s, total lines: %s\\n\", add, subs, loc }'",
+        ""
+      ]
+    },
+    {
+      "title": "文字列の出現判定",
+      "created": 1496889295,
+      "updated": 1520226553,
+      "lines": [
+        "文字列の出現判定",
+        "$ (#{files})に(#{params})という名前が(出現した|書かれた)のはいつ？",
+        "% git blame #{$1} | grep #{$2}",
+        ""
+      ]
+    },
+    {
+      "title": "ブランチ",
+      "created": 1496889490,
+      "updated": 1520404223,
+      "lines": [
+        "ブランチ",
+        "$ ブランチを(表示|リスト)する",
+        "% git branch",
+        "",
+        "$ 「(#{params})」というブランチを作成する",
+        "% git branch #{$1}",
+        "",
+        "$ 「(#{params})」というブランチを(#{delete})",
+        "% git branch -d #{$1}",
+        "",
+        ""
+      ]
+    },
+    {
+      "title": "古いファイル表示",
+      "created": 1496889662,
+      "updated": 1520425912,
+      "lines": [
+        "古いファイル表示",
+        "$ (#{numbers})分前の「(#{files})」ファイルを(#{display})",
+        "% git show '@{#{$1} minutes ago}':#{$2}",
+        "# % git cat-file -p '@{#{$1} minutes ago}':#{$2}",
+        "",
+        "$ (#{numbers})時間前の「(#{files})」ファイルを(#{display})",
+        "% git show '@{#{$1} hours ago}':#{$2}",
+        "",
+        "$ (#{numbers})日前の「(#{files})」ファイルを(#{display})",
+        "% git show '@{#{$1} days ago}':#{$2}",
+        "",
+        "$ 昨日の「(#{files})」ファイルを(#{display})",
+        "% git show @{yesterday}:#{$1}",
+        "",
+        "# $ 「(#{tags})」というタグがついているファイル「(#{files})」を(#{display})",
+        "# % git show #{$1} #{$2}",
+        "",
+        "#表示",
+        ""
+      ]
+    },
+    {
+      "title": "文字列の出現を調べる",
+      "created": 1497321083,
+      "updated": 1520236308,
+      "lines": [
+        "文字列の出現を調べる",
+        "$ (#{files})に(#{params})という名前が(出現した|書かれた)のはいつ？",
+        "% git blame #{$1} | grep #{$2}",
+        "",
+        "$ (#{params})という名前が(#{files})に(出現した|書かれた)のはいつ？",
+        "% git blame #{$2} | grep #{$1}",
+        "",
+        "fileがわからないときはどうするのか?",
+        ""
+      ]
+    },
+    {
+      "title": "ブランチの表示",
+      "created": 1497321104,
+      "updated": 1520404591,
+      "lines": [
+        "ブランチの表示",
+        "$ ブランチ(のリスト)?を(#{display})",
+        "% git branch",
+        "",
+        "$ (#{params})というブランチを作成する",
+        "% git branch #{$1}",
+        "",
+        "$ (#{branches})というブランチを(#{delete})",
+        "% git branch -d #Untitled",
+        ""
+      ]
+    },
+    {
+      "title": "やりたいことの例",
+      "created": 1519557995,
+      "updated": 1520413175,
+      "lines": [
+        "やりたいことの例",
+        " \"abc\" という文字列を含むファイルがいつどこでコミットされたか調べる",
+        " うっかりパスワードを書いてしまったファイルを過去コミットから削除する",
+        " しばらく変化ないファイルをリストする",
+        " ひとつ前との違いを見る",
+        " コミットメッセージからコミットを捜す",
+        " タグ関連いろいろ",
+        " reset",
+        " revert",
+        ""
+      ]
+    },
+    {
+      "title": "特定のファイルの履歴を消す",
+      "created": 1519563847,
+      "updated": 1520301084,
+      "lines": [
+        "特定のファイルの履歴を消す",
+        " パスワードを直書きしたファイルを間違ってアップロードしたときなど、どうする?",
+        "  パスワードを含むファイルを捜す",
+        "   git grep する",
+        "   [変数や単語が出現しているファイルを捜す]",
+        "  そのファイルを完全に履歴から消去する",
+        " という処理が必要だが、かなり難しいはず",
+        " こういうのをGitHelpできると嬉しいんじゃないだろうか",
+        " そういう解説があった",
+        "  [https://help.github.com/articles/removing-sensitive-data-from-a-repository/ Removing sensitive data from a repository - User Documentation]",
+        "  https://git-scm.com/book/ja/v1/Git-のさまざまなツール-歴史の書き換え",
+        "",
+        "xxxxxx.txtの履歴を消す",
+        " http://d.hatena.ne.jp/ichhi/20110825/1314300975",
+        " $ ファイル「(#{files})」の編集履歴を完全に(#{delete})がワーキングツリーは残す",
+        " % git filter-branch -f --index-filter 'git rm --cached --ignore-unmatch #{$1}' HEAD",
+        "",
+        "GitHub の commit 履歴からパスワードファイル等だけを消す方法",
+        " https://qiita.com/MahoTakara/items/3b02bf55767a6372596e",
+        " $ ファイル「(#{files})」の編集履歴を完全に(#{delete})",
+        " % git filter-branch -f --index-filter 'git rm --ignore-unmatch #{$1}' HEAD",
+        "",
+        "どういう意味なのやら?",
+        " filter-branch というのは、大量コマンドを一気に実行するものらしい",
+        "  全部やるもの",
+        "   --tree-filter チェックアウトしてコマンド実行",
+        "   --index-filter インデックスに対してコマンド実行",
+        " git rm",
+        "  --ignore-umatch",
+        "   マッチしなくても続行する",
+        "",
+        "GitHubの方に反映させる",
+        "$ 編集履歴をGitHubに反映させる",
+        "% git push origin --force --all",
+        ""
+      ]
+    },
+    {
+      "title": "変数や単語が出現しているファイルを捜す",
+      "created": 1519691492,
+      "updated": 1520229686,
+      "lines": [
+        "変数や単語が出現しているファイルを捜す",
+        "間違ってパスワードなどをコミットしてないかチェック",
+        "",
+        " git grep というのがある",
+        " [https://qiita.com/zwirky/items/19df2d8d3d584da2790b 個人的によく使うgit grepのまとめ - Qiita]",
+        "",
+        "$ (#{params})という文字を含むファイルを捜す",
+        "% git grep #{$1}",
+        "",
+        "$ (#{params})という文字を含むファイルを全履歴から捜す",
+        "% git rev-list --all | xargs git grep #{$1}",
+        "",
+        "[変数がはじめて出現したバージョンを捜す]ことができるかも",
+        ""
+      ]
+    },
+    {
+      "title": "ツリー状にログを表示する",
+      "created": 1519698152,
+      "updated": 1520226251,
+      "lines": [
+        "ツリー状にログを表示する",
+        "$ ツリー状にログを表示する",
+        "% git log --graph --all --format=\"%x09%an%x09%h %d %s\"",
+        ""
+      ]
+    },
+    {
+      "title": "ファイル名変更",
+      "created": 1519809729,
+      "updated": 1520404600,
+      "lines": [
+        "ファイル名変更",
+        "$ 「(#{files})」というファイルを「(#{params})」という名前に(変更|移動|改名|リネーム)する",
+        "% git mv #{$1} #{$2}",
+        ""
+      ]
+    },
+    {
+      "title": "追加/削除された行数",
+      "created": 1519809816,
+      "updated": 1520234469,
+      "lines": [
+        "追加/削除された行数",
+        "$ これまで追加/削除された行数を表示する",
+        "% git log --numstat --pretty=\"%H\" | awk 'NF==3 {plus+=$1; minus+=$2} END {printf(\"+%d, -%d\\\\n\", plus, minus)}'",
+        ""
+      ]
+    },
+    {
+      "title": "古いファイルとの比較",
+      "created": 1519817302,
+      "updated": 1520425289,
+      "lines": [
+        "古いファイルとの比較",
+        "$ 「(#{files})」ファイルを(#{numbers})分前の(もの|バージョン)と比較する",
+        "$ 「(#{files})」ファイルが(#{numbers})分前から(変化した|変わった)ところを(#{display})",
+        "% git diff HEAD '@{#{$2} minutes ago}' #{$1}",
+        "",
+        "$ (#{numbers})分前の「(#{files})」ファイルと現在の(もの|バージョン)を比較する",
+        "% git diff HEAD @{#{$1}.minutes.ago} #{$2}",
+        "",
+        "$ (#{numbers})日前の「(#{files})」ファイルと現在のものを(比較する|比べる)",
+        "% git diff HEAD '@{#{$1} days ago}' #{$2}",
+        "",
+        "$ 現在の「(#{files})」ファイルを(#{numbers})日前のものを(比較する|比べる)",
+        "% git diff HEAD '@{#{$2} days ago}' #{$1}",
+        "",
+        "$ (1つ|ひとつ)前のバージョンの(#{files})と比較",
+        "$ (1つ|ひとつ)前のバージョンの(#{files})からの変更点",
+        "% git diff $(git rev-list -n 1 HEAD -- #{$2})^ -- #{$2}",
+        "",
+        "$ (#{files})の最新変更点",
+        "$ (#{files})の最新版の変更点",
+        "% git diff $(git rev-list -n 1 HEAD -- #{$1})^ -- #{$1}",
+        "",
+        "$ (2つ|ふたつ)前のバージョンの(#{files})と比較",
+        "$ (2つ|ふたつ)前のバージョンの(#{files})からの変更点",
+        "% git diff $(git rev-list -n 1 HEAD^^ -- #{$2}) -- #{$2}",
+        ""
+      ]
+    },
+    {
+      "title": "数字パラメタ",
+      "created": 1519905222,
+      "updated": 1520230812,
+      "lines": [
+        "数字パラメタ",
+        "code:numbers.rb",
+        " def numbers(argv=ARGV)",
+        "   a = []",
+        "   argv.each { |arg|",
+        "     if arg =~ /^(\\d+)[^\\d]*$/ then",
+        "       a << $1",
+        "     end",
+        "   }",
+        "   # a.join(\"|\")                                                                                                                                                                             ",
+        "   a.length > 0 ? a.join(\"|\") : '1'",
+        " end",
+        " "
+      ]
+    },
+    {
+      "title": "ファイルリスト",
+      "created": 1520137762,
+      "updated": 1520215308,
+      "lines": [
+        "ファイルリスト",
+        "引数の中にファイル名とマッチするものがあればファイルリストを取得         ",
+        "",
+        "code:files.rb",
+        " def files(argv=ARGV)",
+        "   list = begin",
+        "            `git ls-files`.split(/\\n/)",
+        "          rescue",
+        "            []",
+        "          end",
+        "   matched = {}",
+        "   list.each { |file|",
+        "     if argv.length == 0",
+        "       matched[file] = true",
+        "     else",
+        "       args(argv).each { |arg|",
+        "         matched[file] = true if file.match arg",
+        "       }",
+        "     end",
+        "   }",
+        "   files = list",
+        "   files = matched.keys if matched.keys.length > 0",
+        "   files.join(\"|\")",
+        " end",
+        "",
+        "[引数パラメタ]",
+        ""
+      ]
+    },
+    {
+      "title": "args",
+      "created": 1520160117,
+      "updated": 1520199968,
+      "lines": [
+        "args",
+        "code:args.rb",
+        " def args(argv=ARGV)",
+        "   a = []",
+        "   argv.each { |arg|",
+        "     if arg =~ /^(\\d+)([^\\d]+)?$/ then",
+        "       a << $1",
+        "       a << $2 if $2.to_s != ''",
+        "     else",
+        "       a << arg.sub(/^['\"]/,'').sub(/['\"]$/,'').sub('「','').sub('」','')",
+        "     end",
+        "   }",
+        "   a.length > 0 ? a : ['']",
+        " end",
+        ""
+      ]
+    },
+    {
+      "title": "ファイル削除",
+      "created": 1520212560,
+      "updated": 1520404321,
+      "lines": [
+        "ファイル削除",
+        "$ ファイル「(#{files})」を(#{delete})",
+        "% git rm #{$1}",
+        "",
+        "#削除",
+        ""
+      ]
+    },
+    {
+      "title": "コメント修正",
+      "created": 1520231491,
+      "updated": 1520287693,
+      "lines": [
+        "コメント修正",
+        "$ 直前のコミットのコメントを修正する",
+        "% git commit --amend",
+        ""
+      ]
+    },
+    {
+      "title": "Git情報源",
+      "created": 1520232064,
+      "updated": 1520299424,
+      "lines": [
+        "Git情報源",
+        " [https://backlog.com/ja/git-tutorial/reference/ 逆引きGit]",
+        " [Gitでやらかした時に使える19個の奥義 https://qiita.com/muran001/items/dea2bbbaea1260098051]",
+        ""
+      ]
+    },
+    {
+      "title": "新しい順にファイルを表示",
+      "created": 1520241167,
+      "updated": 1520241214,
+      "lines": [
+        "新しい順にファイルを表示",
+        "$ ファイルを新しい順に(リスト|表示)する",
+        "% git ls-files | xargs ls -1 -t",
+        ""
+      ]
+    },
+    {
+      "title": "タグ",
+      "created": 1520242919,
+      "updated": 1520431713,
+      "lines": [
+        "タグ",
+        "$ 現在使われているタグを(リスト|表示)する",
+        "% git tag",
+        "",
+        "$ 現在のコミットに「(#{params})」というタグを関連付けする",
+        "$ 「(#{params})」というタグを現在のコミットIDに関連付けする",
+        "% git tag #{$1}",
+        "",
+        "$ 「(#{tags})」というタグを(#{delete})",
+        "% git tag -d #{$1}",
+        "",
+        "$ 「(#{tags})」というタグのファイル「(#{files})」を(#{display})",
+        "% git show #{$1} #{$2}",
+        "",
+        "$ ファイル「(#{files})」で「(#{tags})」というタグがついてるものを(#{display})",
+        "% git show #{$2} #{$1}",
+        ""
+      ]
+    },
+    {
+      "title": "ブランチ名",
+      "created": 1520288193,
+      "updated": 1520288239,
+      "lines": [
+        "ブランチ名",
+        "% ブランチ名を(#{params})に変える",
+        "$ git branch -m #{$1}",
+        "",
+        "#ブランチ",
+        ""
+      ]
+    },
+    {
+      "title": "コミットをまとめる",
+      "created": 1520289005,
+      "updated": 1520300588,
+      "lines": [
+        "コミットをまとめる",
+        "$ (#{numbers})個前までのコミットをまとめる",
+        "% git rebase -i HEAD~#{$1}",
+        ""
+      ]
+    },
+    {
+      "title": "意義",
+      "created": 1520289678,
+      "updated": 1520298670,
+      "lines": [
+        "意義",
+        " 人間が本当にやりたいこととその実行手段の乖離をなんとかする",
+        " gitのコマンドは激しく複雑なのでなんとかしたい",
+        " という話を論文にしたいということ",
+        "",
+        "[* Contribution]",
+        " 現在のコンテクストに依存してヘルプを出せること",
+        "  そういうヘルプシステムは沢山あるだろうけど",
+        " パラメタを指定してすぐ実行できること",
+        "  `2` のような具体的な数字や `file`のようなファイル名などを直接指定",
+        " 曖昧検索できること",
+        "  できたっけ?",
+        "  できるようにしよう",
+        " 正規表現を展開するので誰でも情報を追加していける",
+        "  素人でも対応できるだろう",
+        " Wikiなので普通のデータベースとして便利なはず",
+        "  [* 解説ページがそのままヘルプデータベースになってるみたいな]",
+        "  ここを主張するといいかも",
+        "   普通に逆引きドキュメントを書いてるとヘルプシステムになってしまう",
+        "   [* 普通はヘルプシステムと解説ドキュメントは別なので]",
+        "   これができる関連文献は無いだろう",
+        "",
+        ""
+      ]
+    },
+    {
+      "title": "関連文献",
+      "created": 1520295677,
+      "updated": 1520299408,
+      "lines": [
+        "関連文献",
+        " [/UIPedia/Greg Little: Translating keyword commands into executable code]",
+        "  Rob Miller, 2008",
+        "  「[[left margin 4 inches]]」と言うと「[[ActiveDocument.PageSetup.LeftMargin=InchesToPoints(2) ]]」を実行できる",
+        "  ほとんど同じかもしれない?",
+        " [/UIPedia/Tihomir Gvero: Synthesizing Java expressions from free-form queries]",
+        "",
+        ""
+      ]
+    },
+    {
+      "title": "Glossary",
+      "created": 1520300002,
+      "updated": 1520393761,
+      "lines": [
+        "Glossary",
+        "code:glossary.rb",
+        " def delete; \"消す|消去する|削除する\"; end",
+        " def display; \"表示する|見る\"; end",
+        " def change; \"変更|修正\"; end",
+        "",
+        ""
+      ]
+    },
+    {
+      "title": "一時的に仕事を退避",
+      "created": 1520321191,
+      "updated": 1520393126,
+      "lines": [
+        "一時的に仕事を退避",
+        "> まだcommitしていない状態の変更ファイル（addしてる or add していない)が存在する状況で、次のコマンドを実行すると変更ファイルを退避することができる。",
+        "",
+        " $ (仕事|変更)を一時的に退避",
+        " % git stash save",
+        ""
+      ]
+    },
+    {
+      "title": "最近の変更を知る",
+      "created": 1520389238,
+      "updated": 1520415196,
+      "lines": [
+        "最近の変更を知る",
+        " $ ファイル「(#{files})」の(#{numbers})分前からの(#{change})履歴を(#{display})",
+        " % git log --since \"#{$2} minutes ago\" #{$1}",
+        " $ (#{numbers})分前からのファイル「(#{files})」の(#{change})履歴を(#{display})",
+        " % git log --since \"#{$1} minutes ago\" #{$2}",
+        " $ ファイル「(#{files})」の(#{numbers})分前からの(#{change})を(#{display})",
+        " % git diff HEAD \"#{$2} minutes ago\" #{$1}",
+        " $ (#{numbers})分前からのファイル「(#{files})」の(#{change})を(#{display})",
+        " % git diff HEAD \"#{$1} minutes ago\" #{$2}",
+        "",
+        " $ ファイル「(#{files})」の(#{numbers})時間前からの(#{change})履歴を(#{display})",
+        " % git log --since \"#{$2} hours ago\" #{$1}",
+        " $ (#{numbers})時間前からのファイル「(#{files})」の(#{change})履歴を(#{display})",
+        " % git log --since \"#{$1} hours ago\" #{$2}",
+        " $ ファイル「(#{files})」の(#{numbers})時間前からの(#{change})を(#{display})",
+        " % git diff HEAD \"#{$2} hours ago\" #{$1}",
+        " $ (#{numbers})時間前からのファイル「(#{files})」の(#{change})を(#{display})",
+        " % git diff HEAD \"#{$1} hours ago\" #{$2}",
+        "",
+        " $ ファイル「(#{files})」の(#{numbers})日前からの(#{change})履歴を(#{display})",
+        " % git log --since \"#{$2} days ago\" #{$1}",
+        " $ (#{numbers})日前からのファイル「(#{files})」の(#{change})履歴を(#{display})",
+        " % git log --since \"#{$1} days ago\" #{$2}",
+        " $ ファイル「(#{files})」の(#{numbers})日前からの(#{change})を(#{display})",
+        " % git diff HEAD \"#{$2} days ago\" #{$1}",
+        " $ (#{numbers})日前からのファイル「(#{files})」の(#{change})を(#{display})",
+        " % git diff HEAD \"#{$1} days ago\" #{$2}",
+        ""
+      ]
+    },
+    {
+      "title": "テンプレート",
+      "created": 1520393146,
+      "updated": 1520393200,
+      "lines": [
+        "テンプレート",
+        "> `$ やりたいこと`",
+        "> `% 実際のコマンド`",
+        ""
+      ]
+    },
+    {
+      "title": "現在の状況",
+      "created": 1520393428,
+      "updated": 1520404411,
+      "lines": [
+        "現在の状況",
+        "$ 現在の状況を(#{display})",
+        "% git status",
+        ""
+      ]
+    },
+    {
+      "title": "branches",
+      "created": 1520394269,
+      "updated": 1520404608,
+      "lines": [
+        "branches",
+        "code:branches.rb",
+        " def branches",
+        "   list = begin",
+        "            `git branch`.split(/\\n/)",
+        "          rescue",
+        "            []",
+        "          end",
+        "   list.collect { |entry|",
+        "     entry.sub(/^\\s*/,'').sub(/^\\*\\s*/,'')",
+        "   }.join(\"|\")",
+        " end",
+        "",
+        ""
+      ]
+    },
+    {
+      "title": "Reset関連",
+      "created": 1520413256,
+      "updated": 1520425254,
+      "lines": [
+        " Reset関連",
+        "$ 直前のコミットを取り消す",
+        "% git reset --soft HEAD^",
+        "# ファイルは変化しない",
+        "",
+        "$ ひとつ前のコミットの状態に完全に戻す",
+        "% git reset --hard HEAD^",
+        "# ファイルも変化する",
+        "",
+        "$ コミット後の変更を全部消す",
+        "% git reset --hard HEAD",
+        "",
+        "$ すごい昔の状態で動作を確認したい",
+        "% git reset --hard 昔のコミットのハッシュ値",
+        "",
+        "$ 直前のリセットをなかったことにする",
+        "% git reset --hard ORIG_HEAD",
+        "",
+        "$ 過去のあらゆる操作履歴を見る",
+        "% git reflog",
+        "",
+        "$ 過去のコミット履歴を見る",
+        "% git log",
+        ""
+      ]
+    },
+    {
+      "title": "古いバージョンに一時的に戻す",
+      "created": 1520414345,
+      "updated": 1520414508,
+      "lines": [
+        "古いバージョンに一時的に戻す",
+        "$ (#{numbers})日前の状態に一時的に戻す",
+        "% git checkout \"@{#{$1} days ago}\" ",
+        "",
+        "$ (#{numbers})時間前の状態に一時的に戻す",
+        "% git checkout \"@{#{$1} hours ago}\" ",
+        "",
+        "$ (#{numbers})分前の状態に一時的に戻す",
+        "% git checkout \"@{#{$1} mins ago}\" ",
+        ""
+      ]
+    },
+    {
+      "title": "タグリスト",
+      "created": 1520429556,
+      "updated": 1520430675,
+      "lines": [
+        "タグリスト",
+        "code:tags.rb",
+        " def tags",
+        "   tags = begin",
+        "     `git tag`.split(/\\n/)",
+        "   rescue",
+        "     []",
+        "   end",
+        "   tags.join(\"|\")",
+        " end",
+        "",
+        "#タグ",
+        ""
+      ]
+    }
+  ]
+}
