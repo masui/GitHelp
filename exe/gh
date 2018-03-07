@@ -1,8 +1,11 @@
 #!/usr/bin/env ruby
-result = system "command -v peco > /dev/null"
+have_peco = system "command -v peco > /dev/null"
 
-if result
-  system "eval `githelp #{$*.join(' ')} | peco`"
+if have_peco
+  # system "eval `githelp #{$*.join(' ')} | peco`"
+  cmd = `githelp #{$*.join(' ')} | peco`.gsub(/^\s*/,'')
+  puts cmd
+  system cmd
 else
   puts "pecoをインストールして下さい"
 end
