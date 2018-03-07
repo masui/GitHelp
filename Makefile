@@ -1,5 +1,5 @@
 data:
-	ruby getdata
+	getghdata
 
 install:
 	bundle install
