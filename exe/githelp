@@ -135,9 +135,11 @@ class GitHelp
         io.close_write
         io.gets
       }
-      cmd = res.sub(/^\s*/,'')
-      puts cmd
-      system cmd
+      if res
+        cmd = res.sub(/^\s*/,'')
+        puts cmd
+        system cmd
+      end
     else
       res = IO.popen(pager, "w") {|io|
         list.each_with_index { |entry,ind|
