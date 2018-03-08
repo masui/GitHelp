@@ -1,5 +1,5 @@
 data:
-	getghdata
+	githelp -u
 
 install:
 	bundle install

@@ -115,7 +115,8 @@ class GitHelp
       end
     }
 
-    res = g.generate " #{ARGV.join(' ')} "
+    # puts "GENERATE #{params.split('|').join(' ')} "
+    res = g.generate " #{ARGV.join(' ').sub(/\[/,'').sub(/\]/,'')} "
     
     listed = {}
     list = res[0].find_all { |a| # 0 ambig
