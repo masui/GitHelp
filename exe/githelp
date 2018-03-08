@@ -1,68 +1,171 @@
 #!/usr/bin/env ruby
+# -*- ruby -*-
 
-require 'githelp'
-
-include GitHelp
-
-require 're_expand'
-#require '/Users/masui/expand_ruby/lib/re_expand.rb'
-#require '/Users/masui/expand_ruby/lib/re_expand/Generator'
-#require '/Users/masui/expand_ruby/lib/re_expand/Node'
-#require '/Users/masui/expand_ruby/lib/re_expand/Scanner'
-
+require 'net/https'
 require 'json'
+require 'uri'
+require 'cgi'
+require 'optparse'
+require 're_expand'
 
-DATAFILE = File.expand_path("~/.githelp")
+class GitHelp
+  def datafile
+    File.expand_path("~/.githelp")
+  end
+  
+  def initialize
+    @pagedata = {}
+  end
 
-if !File.exist?(DATAFILE)
-  STDERR.puts "GitHelpデータ「#{DATAFILE}」が存在しません。"
-  STDERR.puts "getghdata コマンドで作成して下さい。"
-  exit
+  def getsbdata(api)
+    uri = URI.parse("https://scrapbox.io/api#{api}")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    req = Net::HTTP::Get.new(uri.path)
+    res = http.request(req)
+    res.body.force_encoding("utf-8")
+  end
+  
+  # ページタイトルのリストを取得
+  def gettitles
+    data = getsbdata("/pages/GitHelp")
+    JSON.parse(data)['pages'].collect { |page|
+      page['title']
+    }
+  end
+
+  # それぞれのページに対して処理
+  def getpage(title)
+    text = getsbdata("/pages/GitHelp/#{URI.encode(title).gsub(/\//,'%2f')}/text")
+    @pagedata[title] = text.split(/\n/)
+  end
+
+  def getdata
+    #
+    # ページデータ取得
+    #
+    puts "-----------------ページデータを取得"
+    gettitles.each { |title|
+      puts "...#{title}"
+      getpage title
+    }
+
+    dumpdata = {}
+    dumpdata['codes'] = []
+    dumpdata['defs'] = []
+    
+    #
+    # 関数/定数を評価"
+    #
+    puts "-----------------関数/定数を取得"
+    @pagedata.each { |title,pagedata|
+      puts "...#{title}"
+      pagedata. each { |line|
+        if line =~ /code:(.*)\.rb$/ then
+          puts "=========== #{$1}.rb"
+          text = getsbdata("/code/GitHelp/#{URI.encode(title)}/#{$1}.rb")
+          dumpdata['codes'] << text
+        end
+      }
+    }
+    puts "-----------------GitHelpデータを検出"
+    @pagedata.each { |title,pagedata|
+      puts "...#{title}"
+      pagedata.each { |line|
+        if line =~ /^\s*[\$\%]/
+          puts line
+          # line.force_encoding("utf-8")
+          dumpdata['defs'] << line
+        end
+      }
+    }
+    
+    File.open(datafile,"w"){ |f|
+      f.puts dumpdata.to_json
+    }
+  end
+
+  def githelp(pager)
+    data = JSON.parse(File.read(datafile))
+
+    #
+    # 関数定義などをeval
+    #
+    data['codes'].each { |code|
+      eval code
+    }
+
+    g = ExpandRuby::Generator.new # re_expandのジェネレータ
+
+    #
+    # GitHelpエントリ
+    #
+    lines = []
+    data['defs'].each { |line|
+      if line =~ /^\s*\$\s*(.*)$/ # $....
+        lines << $1
+      elsif line =~ /^\s*\%\s*(.*)$/ # %....
+        cmd = $1
+        lines.each { |l|
+          desc = eval('"' + l + '"')
+          g.add desc.force_encoding('utf-8'), cmd.force_encoding('utf-8')
+        }
+        lines = []
+      end
+    }
+
+    res = g.generate " #{ARGV.join(' ')} "
+    
+    listed = {}
+    list = res[0].find_all { |a| # 0 ambig
+      if listed[a[1]]
+        false
+      else
+        listed[a[1]] = true
+      end
+    }
+
+    if pager == 'peco' then
+      res = IO.popen(pager, "r+") {|io|
+        list.each_with_index { |entry,ind|
+          io.puts "#[#{ind}] #{entry[0]}"
+          io.puts "   #{entry[1]}"
+        }
+        io.close_write
+        io.gets
+      }
+      cmd = res.sub(/^\s*/,'')
+      puts cmd
+      system cmd
+    else
+      res = IO.popen(pager, "w") {|io|
+        list.each_with_index { |entry,ind|
+          io.puts "#[#{ind}] #{entry[0]}"
+          io.puts "   #{entry[1]}"
+        }
+      }
+    end
+  end
+
 end
 
+options = ARGV.getopts('ut')
 
-data = JSON.parse(File.read(DATAFILE))
+githelp = GitHelp.new
 
-#
-# 関数定義などをeval
-#
-data['codes'].each { |code|
-  eval code
-}
-
-g = ExpandRuby::Generator.new # re_expandのジェネレータ
-
-#
-# GitHelpエントリ
-#
-lines = []
-
-data['defs'].each { |line|
-  if line =~ /^\s*\$\s*(.*)$/ # $....
-    lines << $1
-  elsif line =~ /^\s*\%\s*(.*)$/ # %....
-    cmd = $1
-    lines.each { |l|
-      desc = eval('"' + l + '"')
-      g.add desc.force_encoding('utf-8'), cmd.force_encoding('utf-8')
-    }
-    lines = []
+if !File.exist?(githelp.datafile) && !options['u']
+  puts "#{githelp.datafile}を作成します..."
+  githelp.getdata
+end
+  
+if options['u'] then
+  githelp.getdata
+else  
+  pager = 'peco'
+  peco_installed = system "command -v peco > /dev/null"
+  if options['t'] || !peco_installed
+    pager = 'more'
   end
-}
-
-res = g.generate " #{args.join(' ')} "
-
-listed = {}
-list = res[0].find_all { |a| # 0 ambig
-  if listed[a[1]]
-    false
-  else
-    listed[a[1]] = true
-  end
-}
-
-list.each_with_index { |entry,ind|
-  puts "#[#{ind}] #{entry[0]}"
-  puts "   #{entry[1]}"
-}
-
+  githelp.githelp pager
+end
