@@ -7,11 +7,8 @@ require 'uri'
 require 'cgi'
 require 'optparse'
 
+require 'scrapbox'
 require 're_expand'
-#require '/Users/masui/expand_ruby/lib/re_expand.rb'
-#require '/Users/masui/expand_ruby/lib/re_expand/Generator'
-#require '/Users/masui/expand_ruby/lib/re_expand/Node'
-#require '/Users/masui/expand_ruby/lib/re_expand/Scanner'
 
 class GitHelp
   def datafile
@@ -20,30 +17,7 @@ class GitHelp
   
   def initialize
     @pagedata = {}
-  end
-
-  def getsbdata(api)
-    uri = URI.parse("https://scrapbox.io/api#{api}")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    req = Net::HTTP::Get.new(uri.path)
-    res = http.request(req)
-    res.body.force_encoding("utf-8")
-  end
-  
-  # ページタイトルのリストを取得
-  def gettitles
-    data = getsbdata("/pages/GitHelp")
-    JSON.parse(data)['pages'].collect { |page|
-      page['title']
-    }
-  end
-
-  # それぞれのページに対して処理
-  def getpage(title)
-    text = getsbdata("/pages/GitHelp/#{URI.encode(title).gsub(/\//,'%2f')}/text")
-    @pagedata[title] = text.split(/\n/)
+    @project = Scrapbox::Project.new("GitHelp")
   end
 
   def getdata
@@ -51,9 +25,9 @@ class GitHelp
     # ページデータ取得
     #
     puts "-----------------ページデータを取得"
-    gettitles.each { |title|
+    @project.pages.each { |title,page|
       puts "...#{title}"
-      getpage title
+      @pagedata[title] = page.text.split(/\n/)
     }
 
     dumpdata = {}
@@ -67,10 +41,11 @@ class GitHelp
     @pagedata.each { |title,pagedata|
       puts "...#{title}"
       pagedata. each { |line|
-        if line =~ /code:(.*)\.rb$/ then
-          puts "=========== #{$1}.rb"
-          text = getsbdata("/code/GitHelp/#{URI.encode(title)}/#{$1}.rb")
-          dumpdata['codes'] << text
+        if line =~ /code:(.*\.rb)$/ then
+          src = $1
+          puts "=========== #{src}"
+          page = Scrapbox::Page.new(@project,title)
+          dumpdata['codes'] << page.code(src)
         end
       }
     }

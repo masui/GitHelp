@@ -1,3 +1,3 @@
 module GitHelp
-  VERSION = "0.2.16"
+  VERSION = "0.3.1"
 end
