@@ -6,7 +6,12 @@ require 'json'
 require 'uri'
 require 'cgi'
 require 'optparse'
+
 require 're_expand'
+#require '/Users/masui/expand_ruby/lib/re_expand.rb'
+#require '/Users/masui/expand_ruby/lib/re_expand/Generator'
+#require '/Users/masui/expand_ruby/lib/re_expand/Node'
+#require '/Users/masui/expand_ruby/lib/re_expand/Scanner'
 
 class GitHelp
   def datafile

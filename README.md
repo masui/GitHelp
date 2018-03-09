@@ -8,5 +8,6 @@
 
 <ul>
   <li><code>% githelp キーワード</code></li>
-  <li><code>gh</code>を使うのがおすすめ (<code>peco</code>が必要)</li>
+  <li>ファイル名やタグ名と関係ないキーワードは<code>[keyword]</code>のように指定
+  <li><code>peco</code>があると便利
 </ul>
