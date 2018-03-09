@@ -77,11 +77,18 @@ class GitHelp
     puts "-----------------GitHelpデータを検出"
     @pagedata.each { |title,pagedata|
       puts "...#{title}"
+      processing_defs = false
       pagedata.each { |line|
         if line =~ /^\s*[\$\%]/
           puts line
-          # line.force_encoding("utf-8")
+          if line =~ /^\%/ && !processing_defs
+            puts "'$'で始まる用例定義なしでコマンドを定義しようとしています"
+            exit
+          end
           dumpdata['defs'] << line
+          processing_defs = true
+        else
+          processing_defs = false
         end
       }
     }
