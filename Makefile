@@ -1,3 +1,4 @@
+.PHONY: test
 data:
 	githelp -u
 
@@ -9,3 +10,6 @@ install:
 
 release:
 	rake release
+
+test:
+	rake test
