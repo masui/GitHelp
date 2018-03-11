@@ -1,19 +1,11 @@
 <h2>GitHelp</h2>
 
-Gitのコマンドの使いこなしを支援
+<ul>
+  <li>Gitのコマンドの使いこなしを支援</li>
+  <li>詳細は<a href="https://masui.github.io/GitHelp/">こちら</a>
+</li>
 
 <!--
-Flexible and expandable support document system
-
-
-<h2>使いかた</h2>
-
-<ul>
-  <li><code>% githelp キーワード</code></li>
-  <li>ファイル名やタグ名と関係ないキーワードは<code>[keyword]</code>のように指定
-  <li><code>peco</code>があると便利
-</ul>
--->
 
 <h3>概要</h3>
 
@@ -151,3 +143,5 @@ Gitに関連するタスクのキーワードやパラメタを指定して
 
 自然言語キーワードからJavaスニペットを検索する
 <code>copy fileA fileB</code> みたいなキーワードから <code>FileUtil.copyFile(new File(fileA), new File(fileB))</code> みたいなコード候補を生成する
+
+-->
