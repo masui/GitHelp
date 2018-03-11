@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css">
+    <!--
     <style type="text/css">
       a:link { color: #0000f0 ; }
       a:visited { color: #0000f0 ; }
@@ -13,44 +14,171 @@
       text-decoration: none;
       }
     </style>
+    -->
   </head>
   <body>
     <section class="page-header">
       <h1 class="project-name">GitHelp</h1>
-      <h2 class="project-tagline">Gitのコマンドの使いこなしを支援</h2>
+      <h2 class="project-tagline">Gitコマンドの使いこなしを支援</h2>
     </section>
 
     <section class="main-content">
-  
-      <h3>概要</h3>
-      
-      Gitのような複雑なシステムは使い方がわからなくて難しい。
-      ある程度使い方を知っている場合でも
-      あまり標準的でない操作は難しい。
-      たとえば以下のような場合は
-      どういうコマンドを使えばいいだろうか?
+
+      <div style="text-align:center;">
+	<img src="https://gyazo.com/440af25b05da4ccd2ceb23ff78fcfbaa.gif" style="text-align:center;">
+      </div>
+
+      <p>
+      　Gitのような複雑なシステムは使い方がとても難しい。
+      ある程度使い方を知っている場合でも、あまり一般的でない操作は難しい。
+      たとえば以下のような場合はどういうコマンドを使えばいいだろうか?
+      </p>
       
       <ul>
-	<li><code>README.md</code>は3日前からどう変わった?</li>
-	<li>2バージョン前の<code>README.md</code>を見たい</li>
-	<li><code>package.json</code>に<code>coffee</code>という名前が入ったのはいつ?</li>
-	<li>ここ1週間ぐらい変更されてないファイルは?</li>
-	<li>最近最も大量に修正したファイルはどれだっけ?</li>
+	<li><i>ひとつ前のバージョンの<code>README.md</code>からの変更を見たい</i></li>
+	<li><i><code>README.md</code>は3日前からどう変わった?</i></li>
+	<li><i><code>package.json</code>に<code>coffee</code>という名前が入ったのはいつ?</i></li>
+	<li><i>ここ1週間ぐらい変更されてないファイルは?</i></li>
+	<li><i>最近大量に修正したファイルはどれだっけ?</i></li>
       </ul>
+
+      <p>
+	最初の例について考えてみる。
+      </p>
+      <p>
+	Gitでは「<code>HEAD^</code>」「<code>HEAD^^</code>」のような表現で昔のコミットを参照できるので
+	
+	<blockquote>
+	  <code>$ git diff HEAD^ README.md</code>
+	</blockquote>
+	
+	のようにすればひとつ前のコミットの<code>README.md</code>との比較ができるが、
+	最近のコミットで<code>README.md</code>を編集していなかった場合は
+	このコマンドを起動しても何も出力されない。
+	
+	<blockquote>
+	  <code>$ git log README.md</code>
+	</blockquote>
+	
+	とすれば<code>REDME.md</code>の編集履歴を調べられるので、
+	ひとつ前のバージョンのコミットIDを使えば
+	
+	<blockquote>
+	  <code>$ git diff (ひとつ前のバージョンのコミットID) README.md</code>
+	</blockquote>
+	
+	のようにして
+	ひとつ前のバージョンの<code>README.md</code>からの変更を見ることができる。
+      </p>
+
+      <hr style="border-top: 3px solid #e0e0e0; width:50%;">
+
+      <p>
+	　しかしこれはなかなか面倒な話である。
+
+	<b>手動でコミットIDを手打ちかコピペしなければならない</b>
+
+	し、当然ながら
+
+	<b><code>git log</code>や<code>git diff</code>といったコマンドの存在と動作を知っていなければならない</b>。
+
+	<code>git log</code>や<code>git diff</code>はよく使うコマンドなので
+	Gitユーザなら誰でも知っているだろうが、
+	このような簡単な仕事でもコピペのような面倒な操作が必要なのは嫌である。
+
+	<br>
+	　実はGitには<code>rev-list</code>というコマンドがあり、
+	編集があったコミットIDをリストすることができる。
+	これを利用すると、ひとつ前の編集のコミットIDは
+
+	<blockquote>
+	  <code>$ git rev-list HEAD -- README.md | head -2 | tail -1</code>
+	</blockquote>
+
+	で取得できる。
+	この結果を利用すると、
+	「ひとつ前のバージョンの<code>README.md</code>からの変更を見たい」
+	という要求は
+
+	<blockquote>
+	  <code>git diff $(git rev-list HEAD -- README.md | head -2 | tail -1) -- README.md</code>
+	</blockquote>
+
+	のようなコマンドで実行できることになる。
+	
+	<code>rev-list</code>の<code>-n</code>オプションを利用すると
+	
+	<blockquote>
+	  <code>git diff $(git rev-list -n 1 HEAD -- README.md)^ -- README.md</code>
+	</blockquote>
+	
+	のように書くこともできる。
+      </p>
+
+      <hr style="border-top: 3px solid #e0e0e0; width:50%;">
+
+      <p>
+	　それにしても、このように
+	<b>無駄知識が大量に必要</b>
+	だったり
+	<b>単純な要求の実行が大変</b>
+	だったりするのは嫌である。
+
+	上のような工夫によって、
+	ひとつ前のバージョンの<code>README.md</code>からの変更は調べられるようになったわけだが、
+	こういった要求は無限にあるわけで、
+	そのたびに数々のGit機能を調べたり思い出したりするのは大変な苦労である。
+
+	「<code>README.md</code>は最後にどこ変えたっけ?」
+	のような自然な質問を簡単に
+	Gitコマンドに翻訳する方法が欲しいところである。
+
+	<br>
+	　こういった仕事は最近は<b>人工知能</b>的に解決しようとするアプローチが人気かもしれない。
+	しかしそのためには自然言語処理が必要で、
+	ちょっと違った表現を許したり内容を変えたりすることは簡単ではない。
+
+	また、<code>longfilename</code>のようなものを指定したいときは
+	<code>logfile</code>のように間違って入力した場合でも
+	単純な予測/補完/誤り修正機能などを使った方がうまくいくだろう。
+
+	<br>
+	　逆引き辞典などでは
+	「ひとつ前のバージョンのファイルとの違いを知る」
+	のようなエントリはあるかもしれないが、
+	それを調べた後で「<code>README.md</code>」のような名前を指定してコマンドを起動する必要がある。
+	こういった二度手間も減らしたいものである。
+      </p>
+
+      <h2>GitHelpのアプローチ</h2>
+
+      <p>
+	　GitHelpは、以下のような方針で上のような問題をすべて解決しようというものである。
+
+	<ul>
+	  <li>正規表現でヘルプ文字列を表現し、ユーザの曖昧な指定をGitコマンドに変換する</li>
+	  - EpisoPass(<a href="https://github.com/masui/expand-ruby">ソース</a> /
+	  <a href="http://www.interaction-ipsj.org/archives/paper2012/data/Interaction2012/oral/data/pdf/12INT012.pdf">論文</a>)を利用
+	  <li>指定されたパラメタはそのまま利用できるようにする</li>
+	  <li>複数の候補から選んで実行する</li>
+	  <li>多少の誤入力を許す</li>
+	  <li>データをすべてクラウド上に置いて編集可能にすることにより、誰でもデータを追加したり修正したりできるようにする</li>
+	  - <a href="https://Scrapbox.io/GitHelp">Scrapbox</a>を利用
+	</ul>
+
+	この結果、「やりたいことの一部を漠然と言えばすぐ実行できる」ようになるのが理想である。
+      </p>
       
-      複雑なシステムにはヘルプやマニュアルが用意されているものだし、
+      <p>
+      　複雑なシステムにはヘルプやマニュアルが用意されていることが多いし、
       FAQや逆引き辞典が用意されていることもあるし、
       答がWebでみつかることもあるが、
       うまく検索できないことも多いし、
       やり方がわかった場合でも
       キーワードやパラメタを指定して実行しなおす必要があるので手間がかかる。
-      作成者側から見ると
-      ヘルプ/マニュアル/逆引きなどは別々に作成しなければならないのが普通である。
-      <b>このような問題を
-	Scrapbox
-	と
-	<a href="http://www.interaction-ipsj.org/archives/paper2012/data/Interaction2012/oral/data/pdf/12INT012.pdf">ExpandHelp</a>
-	で解決する。</b>
+      また、作成者側から見ると
+      ヘルプ/マニュアル/逆引きなどは別々に作成しなければならないのが負担である。
+      <b>このような問題を全部解決するのが目標である。</b>
       
       <h3>利用例</h3>
       
@@ -143,6 +271,11 @@
 	  予測入力に近いといえるかもしれない。</li>
 	<li><b>Gitは単なる適用例であり、広い範囲で使いたいと思っている。</b></li>
       </ul>
+      
+      <h3>考察</h3>
+
+      (生活の中ではこういった言い換えをいつも行なっているのだから
+      かまわないという話もあるかもしれないが、)
       
       <h3> 注意</h3>
       
