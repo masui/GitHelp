@@ -137,8 +137,8 @@
 	Gitコマンドに翻訳する方法が欲しい。
 
 	<br>
-	　こういった仕事は最近は<b>人工知能</b>的に解決しようとするアプローチが人気かもしれない。
-	しかしそのためには自然言語処理が必要で、
+	　といった要望に対して最近は<b>人工知能</b>的に解決しようとするアプローチが人気かもしれない。
+	しかしそのためには高度な自然言語処理が必要で、
 	ちょっと違った表現を許したり内容を変えたりすることは簡単ではない。
 	大阪弁で質問できる日が来るとは思えない。
 
@@ -152,41 +152,31 @@
 	のようなエントリはあるかもしれないが、
 	それを調べた後で「<code>README.md</code>」のような名前を指定してコマンドを起動する必要がある。
 	こういった二度手間も減らしたいものである。
-
-	<br>
-	　また、ドキュメントとヘルプシステムを同じところに書きたい
-	
       </p>
 
-      <h2>GitHelpのアプローチ</h2>
+      <p>
+	　マニュアルやヘルプを書くのは面倒なものである。
+	システムのドキュメントやマニュアルやヘルプシステムを独立に開発するのは
+	面倒すぎるし齟齬も起きやすいだろう。
+	ユーザをサポートするシステムはひとつにまとめられると嬉しい。
+      </p>
+
+      <h3>GitHelpのアプローチ</h3>
 
       <p>
 	　GitHelpは、以下のような方針で上のような問題をすべて解決しようというものである。
 
 	<ul>
-	  <li>正規表現でヘルプ文字列を表現し、ユーザの曖昧な指定をGitコマンドに変換する</li>
-	  - EpisoPass(<a href="https://github.com/masui/expand-ruby">ソース</a> /
-	  <a href="http://www.interaction-ipsj.org/archives/paper2012/data/Interaction2012/oral/data/pdf/12INT012.pdf">論文</a>)を利用
-	  <li>指定されたパラメタはそのまま利用できるようにする</li>
-	  <li>複数の候補から選んで実行する</li>
-	  <li>多少の誤入力を許す</li>
 	  <li>データをすべてクラウド上に置いて編集可能にすることにより、誰でもデータを追加したり修正したりできるようにする</li>
 	  - <a href="https://Scrapbox.io/GitHelp">Scrapbox</a>を利用
+	  <li>ヘルプ文字列を正規表現で表現し、ユーザの曖昧な指定をGitコマンドに変換する</li>
+	  - EpisoPass(<a href="https://github.com/masui/expand-ruby">ソース</a> /
+	  <a href="http://www.interaction-ipsj.org/archives/paper2012/data/Interaction2012/oral/data/pdf/12INT012.pdf">論文</a>)を利用
+	  <li>ユーザが指定したパラメタはそのまま利用して実行に使えるようにする</li>
+	  <li>多少の誤入力を許す</li>
 	</ul>
 
 	この結果、「やりたいことの一部を漠然と言えばすぐ実行できる」ようになるのが理想である。
-      </p>
-      
-      <p>
-	　複雑なシステムにはヘルプやマニュアルが用意されていることが多いし、
-	FAQや逆引き辞典が用意されていることもあるし、
-	答がWebでみつかることもあるが、
-	うまく検索できないことも多いし、
-	やり方がわかった場合でも
-	キーワードやパラメタを指定して実行しなおす必要があるので手間がかかる。
-	また、作成者側から見ると
-	ヘルプ/マニュアル/逆引きなどは別々に作成しなければならないのが負担である。
-	<b>このような問題を全部解決するのが目標である。</b>
       </p>
       
       <h3>利用例</h3>
@@ -280,11 +270,15 @@
       </ul>
       
       <h3>関連システム</h3>
-      
-      <a href="http://dl.acm.org/citation.cfm?id=2814295">AnyCode</a>
+
       <ul>
-	<li>自然言語キーワードからJavaスニペットを検索する</li>
-	<li><code>copy fileA fileB</code> みたいなキーワードから <code>FileUtil.copyFile(new File(fileA), new File(fileB))</code> みたいなコード候補を生成する</li>
+	<li><a href="http://dl.acm.org/citation.cfm?id=2814295">AnyCode</a></li>
+	<ul>
+	  <li>自然言語キーワードからJavaスニペットを検索する</li>
+	  <li><code>copy fileA fileB</code> みたいなキーワードから <code>FileUtil.copyFile(new File(fileA), new File(fileB))</code> みたいなコード候補を生成する</li>
+	</ul>
+
+	<li>文芸的プログラミング</li>
       </ul>
 
     </section>
