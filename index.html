@@ -44,8 +44,7 @@
 
       <p>
 	最初の例について考えてみる。
-      </p>
-      <p>
+
 	Gitでは「<code>HEAD^</code>」「<code>HEAD^^</code>」のような表現で昔のコミットを参照できるので
 	
 	<blockquote>
@@ -190,42 +189,19 @@
       <ul>
 	<li><code>README</code> <code>8</code> <code>比較</code> のような引数を指定して
 	  <code>githelp</code>コマンドを起動すると以下のような候補リストが提示される</li>
-	
-	<pre>
-	  $ githelp README 8 比較
-	  [0] 「README.md」ファイルを8分前のものと比較する
-	  % git diff HEAD "@{8 minutes ago}" README.md
-	  [1] 「README.md」ファイルを8時間前のものと比較する
-	  % git diff HEAD "@{8 hours ago}" README.md
-	  [2] 「README.md」ファイルを8日前のものと比較する
-	  % git diff HEAD "@{8 days ago}" README.md
-	  $
-	</pre>
-	
-	<li> <code>-x</code> オプションで<code>2</code>のような数字を指定すると実行できる</li>
-	
-	<pre>
-	  $ githelp README 8 比較 -x2
-	  diff --git a/README.md b/README.md
-	  index 862f185..34c8907 100644
-	  --- a/README.md
-	  +++ b/README.md
-	  @@ -1,90 +1,3 @@
-	  # GitHelp
-	  
-	  -**Gitのコマンドの使いこなしを支援する**
-	  -
-	  -### 解決したい問題
-	  ...</pre>
-	
-	<li><code>-i</code> オプションを指定すると対話的に選択できる</li>
+
+	<img src="https://gyazo.com/6cc87cef5f28185199074b61716454de.png" width=500>
+
+	<p></p>
+	<li>カーソルで選択してリターンを押すと実行される</li>
+
+	<img src="https://gyazo.com/75c14885944c33f2671474b008120262.png" width=500>
       </ul>
       
       <h3>インストール</h3>
       
       <pre>
-	% gem install githelp
-      </pre>
+	% gem install githelp   </pre>
       
       <h3>実装</h3>
       
