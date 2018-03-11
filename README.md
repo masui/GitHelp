@@ -5,9 +5,6 @@ Gitのコマンドの使いこなしを支援
 <!--
 Flexible and expandable support document system
 
-<ul>
-  <li>古いバージョンは<a href="https://github.com/masui/GitHelp_old">こちら</a></li>
-</ul>
 
 <h2>使いかた</h2>
 
