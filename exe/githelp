@@ -144,7 +144,7 @@ class GitHelp
           cmd = res.sub(/^\s*/,'')
         end
         print "「#{cmd.chomp}」 を実行しますか? "
-        ans = gets
+        ans = STDIN.gets
         if ans =~ /^y/i || ans == "\n"
           system cmd
         end
