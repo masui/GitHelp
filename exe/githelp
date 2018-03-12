@@ -143,8 +143,11 @@ class GitHelp
         else
           cmd = res.sub(/^\s*/,'')
         end
-        puts cmd
-        system cmd
+        print "「#{cmd.chomp}」 を実行しますか? "
+        ans = gets
+        if ans =~ /^y/i || ans == "\n"
+          system cmd
+        end
       end
     else
       res = IO.popen(pager, "w") {|io|
