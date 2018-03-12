@@ -158,6 +158,12 @@ class GitHelp
 
 end
 
+is_repository = system 'git rev-parse --git-dir > /dev/null >& /dev/null'
+unless is_repository
+  STDERR.puts "Gitレポジトリで実行して下さい"
+  exit
+end
+
 options = ARGV.getopts('ut')
 
 githelp = GitHelp.new
