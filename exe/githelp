@@ -33,6 +33,7 @@ class GitHelp
     dumpdata = {}
     dumpdata['codes'] = []
     dumpdata['defs'] = []
+    dumpdata['pages'] = []
     
     #
     # 関数/定数を評価"
@@ -52,6 +53,7 @@ class GitHelp
     puts "-----------------GitHelpデータを検出"
     @pagedata.each { |title,pagedata|
       puts "...#{title}"
+      dumpdata['pages'] << title
       processing_defs = false
       codeindent = nil
       pagedata.each { |line|
@@ -74,7 +76,7 @@ class GitHelp
             puts "'$'で始まる用例定義なしでコマンドを定義しようとしています"
             exit
           end
-          dumpdata['defs'] << line
+          dumpdata['defs'] << "#{line} {#{dumpdata['pages'].length-1}}"
           processing_defs = true
         else
           processing_defs = false
@@ -89,6 +91,10 @@ class GitHelp
 
   def githelp(pager)
     data = JSON.parse(File.read(datafile))
+    unless data['pages'] # データ型式変換があったので
+      getdata
+      data = JSON.parse(File.read(datafile))
+    end
 
     #
     # 関数定義などをeval
@@ -129,21 +135,34 @@ class GitHelp
     }
 
     if pager == 'peco' then
+      no = {}
       res = IO.popen(pager, "r+") {|io|
         list.each_with_index { |entry,ind|
-          io.puts "#[#{ind}] #{entry[0]}"
+          entry[0].sub!(/\s*{(\d*)}$/,'')
+          entry[1].sub!(/\s*{(\d*)}$/,'')
+          no[entry[0]] = $1.to_i
+          io.puts "[#{ind}] #{entry[0]}"
           io.puts "   #{entry[1]}"
         }
         io.close_write
         io.gets
       }
       if res
-        if res =~ /^\#\[(\d+)\]/
+        if res =~ /^\[(\d+)\]/
+          desc = list[$1.to_i][0]
           cmd = list[$1.to_i][1]
         else
+          desc = ''
+          list.each { |entry|
+            desc = entry[0] if entry[1].sub(/^\s*/,'') == res.chomp.sub(/^\s*/,'')
+          }
           cmd = res.sub(/^\s*/,'')
         end
-        print "「#{cmd.chomp}」 を実行しますか? "
+
+        puts "データ: http://scrapbox.io/GitHelp/#{data['pages'][no[desc]]}"
+        puts
+        puts "#{desc} ために"
+        print "コマンド「#{cmd.chomp}」 を実行しますか? (Y) "
         ans = STDIN.gets
         if ans =~ /^y/i || ans == "\n"
           system cmd
@@ -152,7 +171,7 @@ class GitHelp
     else
       res = IO.popen(pager, "w") {|io|
         list.each_with_index { |entry,ind|
-          io.puts "#[#{ind}] #{entry[0]}"
+          io.puts "[#{ind}] #{entry[0]}"
           io.puts "   #{entry[1]}"
         }
       }
