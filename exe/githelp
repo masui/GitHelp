@@ -138,7 +138,11 @@ class GitHelp
         io.gets
       }
       if res
-        cmd = res.sub(/^\s*/,'')
+        if res =~ /^\#\[(\d+)\]/
+          cmd = list[$1.to_i][1]
+        else
+          cmd = res.sub(/^\s*/,'')
+        end
         puts cmd
         system cmd
       end
