@@ -171,8 +171,8 @@ class GitHelp
     else
       res = IO.popen(pager, "w") {|io|
         list.each_with_index { |entry,ind|
-          io.puts "[#{ind}] #{entry[0]}"
-          io.puts "   #{entry[1]}"
+          io.puts "[#{ind}] #{entry[0].sub!(/\s*{(\d*)}$/,'')}"
+          io.puts "   #{entry[1].sub!(/\s*{(\d*)}$/,'')}"
         }
       }
     end
