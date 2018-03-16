@@ -1,22 +1,7 @@
 const electron = window.require('electron');
-//const remote = window.require('electron').remote;
-//const shell = window.require('electron').shell;
 const remote = electron.remote;
 const shell = electron.shell;
-const clipboard = electron.clipboard;
-
-//alert(remote);
-//
-//setTimeout(function(){
-//    let w = remote.getCurrentWindow();
-//    alert(w);
-//    w.close();
-//
-//    //window.open('about:blank','_self').close();
-//},2000);
-//
-//process.exit()
-
+const clipboard = electron.clipboard; // clipboard.writeText(...) でクリップボードに文字列が入る
 
 data = require("./data");
 Generator = require('re_expand');
@@ -29,8 +14,6 @@ const params = 'param1|param2';
 const del = '消す';
 const branches = 'branch1';
 const modified = '変わった';
-
-var out = '';
 
 function init(){
     g = new Generator();
@@ -53,45 +36,49 @@ function init(){
 	}
     }
 
+    function finish(){
+	let w = remote.getCurrentWindow();
+	w.close();
+    }
+    
     $(window).on('keyup',function(e){
-	if(e.keyCode == 13){
-	    let w = remote.getCurrentWindow();
-	    w.close();
+	if(e.keyCode == 13){ // 終了処理
+	    // 変換確定キーで終了してしまふ...
+	    finish();
 	}
-	// カーソルキーなどの処理
+	// カーソルキーなどの処理をここでやるべきなのだろう
     });
 
     $('#query').on('keyup', function(event){
 	$('#result').empty();
-
 	g.filter(' ' + $('#query').val() + ' ', f, 0);
-
     });
+    
+    g.filter(' ', f, 0);
 
-    function f(a, cmd){
-	var num = cmd.match(/\s*{(\d+)}$/,"$1")[1];
+    function f(a, cmd){ // 候補を整形してリストに追加
+	var num = cmd.match(/\s*{(\d+)}$/,"$1")[1]; // 説明ページの番号を取得
 	cmd = cmd.replace(/\s*{(\d+)}$/,"");
-	var li = $('<li>');
-	$('#result').append(li);
-	var span = $('<span>');
-	span.attr('class','title');
-	span.text(a);
-	li.append(span);
-	var icon = $('<img>');
-	icon.attr('src',"https://www.iconsdb.com/icons/preview/orange/info-xxl.png");
-	icon.attr('class','icon');
-	icon.attr('id',num);
+	var li = $('<li>')
+		.appendTo($('#result'));
+	var span = $('<span>')
+		.attr('class','title')
+		.text(a)
+		.appendTo(li);
+	var icon = $('<img>')
+		.attr('src',"https://www.iconsdb.com/icons/preview/orange/info-xxl.png")
+		.attr('class','icon')
+		.attr('id',num)
+		.appendTo(li);
 	icon.on('click',function(e){
 	    // とてもよくわからないがこれで外部ブラウザを開ける
 	    var t = data.pages[$(e.target).attr('id')];
 	    var url = `https://scrapbox.io/GitHelp/${t}`;
-	    //shell.openExternal(url);
-	    clipboard.writeText(url);
+	    shell.openExternal(url);
 	});
-	li.append(icon);
-	var code = $('<code>');
-	code.text(cmd);
-	$('#result').append(code);
+	var code = $('<code>')
+		.text(cmd)
+		.appendTo($('#result'));
     }
 }
 
