@@ -1,5 +1,9 @@
-const remote = window.require('electron').remote;
-const shell = window.require('electron').shell;
+const electron = window.require('electron');
+//const remote = window.require('electron').remote;
+//const shell = window.require('electron').shell;
+const remote = electron.remote;
+const shell = electron.shell;
+const clipboard = electron.clipboard;
 
 //alert(remote);
 //
@@ -49,6 +53,14 @@ function init(){
 	}
     }
 
+    $(window).on('keyup',function(e){
+	if(e.keyCode == 13){
+	    let w = remote.getCurrentWindow();
+	    w.close();
+	}
+	// カーソルキーなどの処理
+    });
+
     $('#query').on('keyup', function(event){
 	$('#result').empty();
 
@@ -59,8 +71,6 @@ function init(){
     function f(a, cmd){
 	var num = cmd.match(/\s*{(\d+)}$/,"$1")[1];
 	cmd = cmd.replace(/\s*{(\d+)}$/,"");
-	// console.log(`${num}: ${a} => ${cmd}`);
-	//out += `${num}: ${a} => ${cmd}`;
 	var li = $('<li>');
 	$('#result').append(li);
 	var span = $('<span>');
@@ -75,14 +85,13 @@ function init(){
 	    // とてもよくわからないがこれで外部ブラウザを開ける
 	    var t = data.pages[$(e.target).attr('id')];
 	    var url = `https://scrapbox.io/GitHelp/${t}`;
-	    shell.openExternal(url);
+	    //shell.openExternal(url);
+	    clipboard.writeText(url);
 	});
 	li.append(icon);
 	var code = $('<code>');
 	code.text(cmd);
 	$('#result').append(code);
-	
-	// span.text(`${num}: ${a} => ${cmd}`);
     }
 }
 

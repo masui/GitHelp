@@ -37,7 +37,7 @@ function createWindow () {
     win.on('closed', () => {
 	// windowがクローズされたら null にして削除
 
-	clipboard.writeText("xxxxxxxxxxxxyyy");
+	// clipboard.writeText("xxxxxxxxxxxxyyy");
 	
 	//var ks = require('node-key-sender');
 	////ks.sendKeys(['a', 'k', 'j']);
