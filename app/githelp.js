@@ -1,3 +1,19 @@
+const remote = window.require('electron').remote;
+const shell = window.require('electron').shell;
+
+//alert(remote);
+//
+//setTimeout(function(){
+//    let w = remote.getCurrentWindow();
+//    alert(w);
+//    w.close();
+//
+//    //window.open('about:blank','_self').close();
+//},2000);
+//
+//process.exit()
+
+
 data = require("./data");
 Generator = require('re_expand');
 
@@ -47,7 +63,26 @@ function init(){
 	//out += `${num}: ${a} => ${cmd}`;
 	var li = $('<li>');
 	$('#result').append(li);
-	li.text(`${num}: ${a} => ${cmd}`);
+	var span = $('<span>');
+	span.attr('class','title');
+	span.text(a);
+	li.append(span);
+	var icon = $('<img>');
+	icon.attr('src',"https://www.iconsdb.com/icons/preview/orange/info-xxl.png");
+	icon.attr('class','icon');
+	icon.attr('id',num);
+	icon.on('click',function(e){
+	    // とてもよくわからないがこれで外部ブラウザを開ける
+	    var t = data.pages[$(e.target).attr('id')];
+	    var url = `https://scrapbox.io/GitHelp/${t}`;
+	    shell.openExternal(url);
+	});
+	li.append(icon);
+	var code = $('<code>');
+	code.text(cmd);
+	$('#result').append(code);
+	
+	// span.text(`${num}: ${a} => ${cmd}`);
     }
 }
 
