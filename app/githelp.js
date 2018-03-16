@@ -50,7 +50,7 @@ function init(){
     });
 
     $('#query').on('keyup', function(event){
-	$('#result').empty();
+	$('#candidates').empty();
 	g.filter(' ' + $('#query').val() + ' ', f, 0);
     });
     
@@ -59,17 +59,19 @@ function init(){
     function f(a, cmd){ // 候補を整形してリストに追加
 	var num = cmd.match(/\s*{(\d+)}$/,"$1")[1]; // 説明ページの番号を取得
 	cmd = cmd.replace(/\s*{(\d+)}$/,"");
-	var li = $('<li>')
-		.appendTo($('#result'));
+	var div = $('<div>')
+		.attr('class','entry')
+		.appendTo($('#candidates'));
 	var span = $('<span>')
 		.attr('class','title')
 		.text(a)
-		.appendTo(li);
+		.appendTo(div);
 	var icon = $('<img>')
 		.attr('src',"https://www.iconsdb.com/icons/preview/orange/info-xxl.png")
 		.attr('class','icon')
 		.attr('id',num)
-		.appendTo(li);
+		.appendTo(div);
+	$('<br>').appendTo(div);
 	icon.on('click',function(e){
 	    // とてもよくわからないがこれで外部ブラウザを開ける
 	    var t = data.pages[$(e.target).attr('id')];
@@ -78,7 +80,7 @@ function init(){
 	});
 	var code = $('<code>')
 		.text(cmd)
-		.appendTo($('#result'));
+		.appendTo(div);
     }
 }
 
