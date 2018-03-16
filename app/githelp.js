@@ -15,6 +15,10 @@ const del = '消す';
 const branches = 'branch1';
 const modified = '変わった';
 
+var commands = [];
+var commandind = 0;
+
+
 function init(){
     g = new Generator();
     
@@ -42,10 +46,10 @@ function init(){
     }
     
     $(window).on('keyup',function(e){
-	if(e.keyCode == 13){ // 終了処理
-	    // 変換確定キーで終了してしまふ...
-	    finish();
-	}
+	//if(e.keyCode == 13){ // 終了処理
+	//    // 変換確定キーで終了してしまふ...
+	//    finish();
+	//}
 	// カーソルキーなどの処理をここでやるべきなのだろう
     });
 
@@ -56,13 +60,25 @@ function init(){
     
     g.filter(' ', f, 0);
 
+    function sel(e){
+	clipboard.writeText(commands[$(e.target).attr('ind')]);
+	finish();
+    }
+    
+    commandind = 0;
+
     function f(a, cmd){ // 候補を整形してリストに追加
 	var num = cmd.match(/\s*{(\d+)}$/,"$1")[1]; // 説明ページの番号を取得
 	cmd = cmd.replace(/\s*{(\d+)}$/,"");
+	commands[commandind] = cmd;
 	var div = $('<div>')
+		.on('click',sel)
+		.attr('ind',commandind)
 		.attr('class','entry')
 		.appendTo($('#candidates'));
 	var span = $('<span>')
+		.on('click',sel)
+		.attr('ind',commandind)
 		.attr('class','title')
 		.text(a)
 		.appendTo(div);
@@ -79,8 +95,12 @@ function init(){
 	    shell.openExternal(url);
 	});
 	var code = $('<code>')
+		.on('click',sel)
+		.attr('ind',commandind)
 		.text(cmd)
 		.appendTo(div);
+
+	commandind += 1;
     }
 }
 
