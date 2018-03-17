@@ -14,7 +14,7 @@ let win;
 
 // パタンにマッチするファイルのリストを計算
 function files(patterns){
-    var command = 'git ls-files';
+    const command = 'git ls-files';
     var list = execSync(command).toString().split(/\n/);
     var files = new Set;
     for(var file of list){

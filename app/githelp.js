@@ -6,18 +6,23 @@ const remote = electron.remote;
 const shell = electron.shell;
 const clipboard = electron.clipboard; // clipboard.writeText() でクリップボードに文字列が入る
 
-data = require("./data");
+const data = require("./data");
 Generator = require('re_expand');
 
-var files = 'README.md|index.html|Makefile|main.js|githelp.js';
+var files = '___';
+var branches = 'master';
 const params = 'param1|param2';
 const numbers = '1|2|3';
 
-const change = '変更';
-const display = '表示する';
-const del = '消す';
-const branches = 'branch1';
-const modified = '変わった';
+//const change = '変更';
+//const display = '表示する';
+//const del = '消す';
+//const modified = '変わった';
+const glossary = require("./glossary"); // 各種定義をいれておく
+for(var e in glossary){
+    s = `${e} = '${glossary[e]}'`;
+    eval(s);
+}
 
 var commands = [];
 var commandind = 0;
