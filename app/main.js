@@ -1,13 +1,18 @@
+//
+//
+//
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;
 const app = electron.app;
 
-const exec = require('child_process').exec;
-const execSync = require('child_process').execSync;
+const child_process = require('child_process');
+const exec = child_process.exec;
+const execSync = child_process.execSync;
 
 // window objectがGCされないようにするために、globalに定義する
 let win;
 
+// パタンにマッチするファイルのリストを計算
 function files(patterns){
     var command = 'git ls-files';
     var list = execSync(command).toString().split(/\n/);
@@ -27,7 +32,6 @@ function files(patterns){
     if(a.length == 0) a = ["xxxxx"];
     return a.join("|");
 }
-
 // レンダリングプロセスから呼べるようにする
 app.files = files;
 
@@ -37,21 +41,16 @@ function createWindow () {
 	height: 600
 	// frame: false
     });
-    
     win.loadURL(`file://${__dirname}/index.html`);
     
     win.on('closed', () => {
-	// windowがクローズされたら null にして削除
-	// nullにする必要は??
-
+	// windowがクローズされたら null にして削除 (nullにする必要は?)
 	var command = 'osascript -l JavaScript -e \'Application("System Events").keystroke("v", {using:"command down"});\'';
 	exec(command, (error, stdout, stderr) => {
     	    //console.log(stdout);
 	});
-	
         win = null;
 	app.quit();
-	
     });
 }
 

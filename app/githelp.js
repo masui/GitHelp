@@ -1,7 +1,10 @@
+//
+//  GitHelp
+//
 const electron = window.require('electron');
 const remote = electron.remote;
 const shell = electron.shell;
-const clipboard = electron.clipboard; // clipboard.writeText(...) でクリップボードに文字列が入る
+const clipboard = electron.clipboard; // clipboard.writeText() でクリップボードに文字列が入る
 
 data = require("./data");
 Generator = require('re_expand');
@@ -21,10 +24,10 @@ var commandind = 0;
 
 var g; // ExpandHelp generator
 
-function generator(arg){
+function generator(patterns){
     var g = new Generator();
 
-    files = remote.app.files(arg);
+    files = remote.app.files(patterns); // レンダラプロセスではコマンド起動できないようなのでメインプロセスを利用してファイルリストを取得
     
     var lines = [];
     for(var def of data.defs){
