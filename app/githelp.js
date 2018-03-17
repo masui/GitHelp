@@ -6,7 +6,7 @@ const clipboard = electron.clipboard; // clipboard.writeText(...) でクリッ�
 data = require("./data");
 Generator = require('re_expand');
 
-const files = 'files';
+var files = 'README.md|index.html|Makefile|main.js|githelp.js';
 const change = '変更';
 const numbers = '1|2|3';
 const display = '表示する';
@@ -18,10 +18,38 @@ const modified = '変わった';
 var commands = [];
 var commandind = 0;
 
+const execSync = require('child_process').execSync;
+
+//function _files(){
+//    var command = '/usr/bin/git ls-files';
+////    alert(execSync);
+//    var list = execSync(command).toString().split(/\n/);
+////    alert(list);
+//    var argv = process.argv;
+//    var files = new Set;
+//    for(var file of list){
+//	for(var i=2;i<argv.length;i++){
+//	    var re = new RegExp(argv[i],'i');
+//	    if(file.match(re)){
+//		files.add(file);
+//	    }
+//	}
+//    }
+//    var a = Array.from(files);
+//    if(a.length == 0) a = ["xxxxx"];
+//    return a.join("|");
+//}
+
+files = remote.app.files();
+
+//files = _files();
+//alert(files);
 
 function init(){
     g = new Generator();
     
+    clipboard.writeText('');
+
     var lines = [];
     for(var def of data.defs){
 	m = def.match(/^\s*\$\s*(.*)\s*$/);
@@ -102,6 +130,8 @@ function init(){
 
 	commandind += 1;
     }
+
+    $('#query').focus();
 }
 
 $(function() {
