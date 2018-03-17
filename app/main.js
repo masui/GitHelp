@@ -28,8 +28,7 @@ function files(patterns){
     return a.join("|");
 }
 
-//console.log(files());
-
+// レンダリングプロセスから呼べるようにする
 app.files = files;
 
 function createWindow () {
