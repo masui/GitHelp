@@ -8,16 +8,18 @@ const execSync = require('child_process').execSync;
 // window objectがGCされないようにするために、globalに定義する
 let win;
 
-function files(){
+function files(patterns){
     var command = 'git ls-files';
     var list = execSync(command).toString().split(/\n/);
-    var argv = process.argv;
     var files = new Set;
     for(var file of list){
-	for(var i=2;i<argv.length;i++){
-	    var re = new RegExp(argv[i],'i');
-	    if(file.match(re)){
-		files.add(file);
+	for(var i=0;i<patterns.length;i++){
+	    var pattern = patterns[i];
+	    if(pattern.length > 0){
+		var re = new RegExp(pattern,'i');
+		if(file.match(re)){
+		    files.add(file);
+		}
 	    }
 	}
     }

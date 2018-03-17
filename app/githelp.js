@@ -18,38 +18,15 @@ const modified = '変わった';
 var commands = [];
 var commandind = 0;
 
+var g; // ExpandHelp generator
+
 const execSync = require('child_process').execSync;
 
-//function _files(){
-//    var command = '/usr/bin/git ls-files';
-////    alert(execSync);
-//    var list = execSync(command).toString().split(/\n/);
-////    alert(list);
-//    var argv = process.argv;
-//    var files = new Set;
-//    for(var file of list){
-//	for(var i=2;i<argv.length;i++){
-//	    var re = new RegExp(argv[i],'i');
-//	    if(file.match(re)){
-//		files.add(file);
-//	    }
-//	}
-//    }
-//    var a = Array.from(files);
-//    if(a.length == 0) a = ["xxxxx"];
-//    return a.join("|");
-//}
+function generator(arg){
+    var g = new Generator();
 
-files = remote.app.files();
-
-//files = _files();
-//alert(files);
-
-function init(){
-    g = new Generator();
+    files = remote.app.files(arg);
     
-    clipboard.writeText('');
-
     var lines = [];
     for(var def of data.defs){
 	m = def.match(/^\s*\$\s*(.*)\s*$/);
@@ -67,6 +44,14 @@ function init(){
 	    }
 	}
     }
+    return g;
+}
+
+
+function init(){
+    clipboard.writeText('');
+
+    g = generator(["the"]);
 
     function finish(){
 	let w = remote.getCurrentWindow();
@@ -83,7 +68,11 @@ function init(){
 
     $('#query').on('keyup', function(event){
 	$('#candidates').empty();
-	g.filter(' ' + $('#query').val() + ' ', f, 0);
+	
+	// インクリメンタルにファイル名やパラメタも計算してマッチング
+	var qstr = $('#query').val();
+	g = generator(qstr.split(/\s+/));
+	g.filter(` ${qstr} `, f, 0);
     });
     
     g.filter(' ', f, 0);
