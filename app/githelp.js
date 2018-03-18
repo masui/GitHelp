@@ -12,7 +12,7 @@ Generator = require('re_expand');
 var files = '___';
 var branches = 'master';
 var params = 'param1|param2';
-const numbers = '1|2|3';
+var numbers = '1|2|3';
 
 //const change = '変更';
 //const display = '表示する';
@@ -33,7 +33,8 @@ function generator(patterns){
     var g = new Generator();
 
     files = remote.app.files(patterns); // レンダラプロセスではコマンド起動できないようなのでメインプロセスを利用してファイルリストを取得
-    params = calc_params(patterns);
+    params = get_params(patterns);
+    numbers = get_numbers(patterns);
     
     var lines = [];
     for(var def of data.defs){
@@ -56,8 +57,7 @@ function generator(patterns){
 }
 
 function finish(){
-    let w = remote.getCurrentWindow();
-    w.close();
+    remote.getCurrentWindow().close();
 }
 
 function sel(e){
@@ -65,7 +65,7 @@ function sel(e){
     finish();
 }
     
-function calc_params(patterns){
+function get_params(patterns){
     var a = new Set;
     for(var pattern of patterns){
 	var m;
@@ -82,6 +82,20 @@ function calc_params(patterns){
     a = Array.from(a);
     if(a.length == 0){
 	a = ['param'];
+    }
+    return a.join('|');
+}
+
+function get_numbers(patterns){
+    var a = new Set;
+    for(var pattern of patterns){
+	if(pattern.match(/^\d+$/)){
+	    a.add(pattern);
+	}
+    }
+    a = Array.from(a);
+    if(a.length == 0){
+	a = ['1'];
     }
     return a.join('|');
 }
@@ -151,7 +165,7 @@ function init(){
     g = generator([]);
     g.filter(' ', addentry, 0);
 
-    clipboard.writeText('');
+    // clipboard.writeText('');
     $('#query').focus();
 }
 
