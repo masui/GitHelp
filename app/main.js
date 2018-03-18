@@ -13,6 +13,14 @@ var execSync = child_process.execSync;
 var win;
 
 var pwd = process.cwd();
+//console.log(pwd);
+
+//console.log(process.cwd());
+//console.log(__dirname);
+
+//function pwd(){
+//    return process.cwd();
+//}
 
 // パタンにマッチするファイルのリストを計算 (レンダラプロセスから呼ばれる)
 function files(patterns){
@@ -52,6 +60,9 @@ function branches(){
 // レンダリングプロセスから呼べるようにする
 app.files = files;
 app.branches = branches;
+//app.pwd = pwd;
+//app.pwd = process.env['PWD'];
+//app.pwd = app.getAppPath();
 
 function createWindow () {
     win = new BrowserWindow({

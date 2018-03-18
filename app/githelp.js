@@ -227,5 +227,6 @@ function init(){
 
 $(function() {
     init();
-});
 
+//    $('#query').val(remote.app.pwd);
+});
