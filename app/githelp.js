@@ -33,6 +33,7 @@ function generator(patterns){
     var g = new Generator();
 
     files = remote.app.files(patterns); // レンダラプロセスではコマンド起動できないようなのでメインプロセスを利用してファイルリストを取得
+    branches = remote.app.branches();
     params = get_params(patterns);
     numbers = get_numbers(patterns);
     

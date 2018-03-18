@@ -32,15 +32,29 @@ function files(patterns){
     if(a.length == 0) a = ["xxxxx"];
     return a.join("|");
 }
+// ブランチリスト
+function branches(){
+    const command = 'git branch';
+    var list = execSync(command).toString().split(/\n/);
+    var branches = [];
+    for(var branch of list){
+	if(branch != ''){
+	    branches.push(branch.replace(/^\s*/,'').replace(/^\*\s*/,''));
+	}
+    }
+    if(branches.length == 0) branches = ["xxxxx"];
+    return branches.join("|");
+}
 
 // レンダリングプロセスから呼べるようにする
 app.files = files;
+app.branches = branches;
 
 function createWindow () {
     win = new BrowserWindow({
 	width: 800,
 	height: 600
-	// frame: false
+	//rame: false
     });
     win.loadURL(`file://${__dirname}/index.html`);
     
