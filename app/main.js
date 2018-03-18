@@ -1,5 +1,5 @@
 //
-//
+// Node版GitHelp メイン
 //
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;
@@ -12,7 +12,7 @@ const execSync = child_process.execSync;
 // window objectがGCされないようにするために、globalに定義する
 let win;
 
-// パタンにマッチするファイルのリストを計算
+// パタンにマッチするファイルのリストを計算 (レンダラプロセスから呼ばれる)
 function files(patterns){
     const command = 'git ls-files';
     var list = execSync(command).toString().split(/\n/);
@@ -32,7 +32,8 @@ function files(patterns){
     if(a.length == 0) a = ["xxxxx"];
     return a.join("|");
 }
-// ブランチリスト
+
+// ブランチリスト (レンダラプロセスから呼ばれる)
 function branches(){
     const command = 'git branch';
     var list = execSync(command).toString().split(/\n/);
@@ -59,7 +60,7 @@ function createWindow () {
     win.loadURL(`file://${__dirname}/index.html`);
     
     win.on('closed', () => {
-	// windowがクローズされたら null にして削除 (nullにする必要は?)
+	// windowがクローズされたら null にして削除 (nullにする必要性は不明...)
 	var command = 'osascript -l JavaScript -e \'Application("System Events").keystroke("v", {using:"command down"});\'';
 	exec(command, (error, stdout, stderr) => {
     	    //console.log(stdout);

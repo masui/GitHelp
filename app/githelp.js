@@ -1,5 +1,5 @@
 //
-//  GitHelp
+//  Node版GitHelp レンダラ
 //
 const electron = window.require('electron');
 const remote = electron.remote;
@@ -9,15 +9,12 @@ const clipboard = electron.clipboard; // clipboard.writeText() でクリップ�
 const data = require("./data");
 Generator = require('re_expand');
 
+// 実行時に取得する各種環境値
 var files = '___';
-var branches = 'master';
+var branches = remote.app.branches();
 var params = 'param1|param2';
 var numbers = '1|2|3';
 
-//const change = '変更';
-//const display = '表示する';
-//const del = '消す';
-//const modified = '変わった';
 const glossary = require("./glossary"); // 各種定義をいれておく
 for(var e in glossary){
     s = `${e} = '${glossary[e]}'`;
@@ -33,7 +30,6 @@ function generator(patterns){
     var g = new Generator();
 
     files = remote.app.files(patterns); // レンダラプロセスではコマンド起動できないようなのでメインプロセスを利用してファイルリストを取得
-    branches = remote.app.branches();
     params = get_params(patterns);
     numbers = get_numbers(patterns);
     
@@ -148,9 +144,16 @@ function init(){
 	// カーソルキーなどの処理をここでやるべきなのだろう
     });
 
+    $('#query').on('keypress', function(e){
+	if(e.keyCode == 13){
+	    finish();
+	}
+    });
+		   
     $('#query').on('keyup', function(e){
 	$('#candidates').empty();
 	commandind = 0;
+	commands = [];
 	
 	// インクリメンタルにファイル名やパラメタも計算してマッチング
 	// したいところだがそれだとすごく遅い
