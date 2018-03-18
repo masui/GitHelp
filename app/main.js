@@ -1,20 +1,22 @@
 //
 // Node版GitHelp メイン
 //
-const electron = require('electron');
-const BrowserWindow = electron.BrowserWindow;
-const app = electron.app;
+var electron = require('electron');
+var BrowserWindow = electron.BrowserWindow;
+var app = electron.app;
 
-const child_process = require('child_process');
-const exec = child_process.exec;
-const execSync = child_process.execSync;
+var child_process = require('child_process');
+var exec = child_process.exec;
+var execSync = child_process.execSync;
 
 // window objectがGCされないようにするために、globalに定義する
-let win;
+var win;
+
+var pwd = process.cwd();
 
 // パタンにマッチするファイルのリストを計算 (レンダラプロセスから呼ばれる)
 function files(patterns){
-    const command = 'git ls-files';
+    const command = `cd ${pwd}; git ls-files`;
     var list = execSync(command).toString().split(/\n/);
     var files = new Set;
     for(var file of list){
@@ -35,7 +37,7 @@ function files(patterns){
 
 // ブランチリスト (レンダラプロセスから呼ばれる)
 function branches(){
-    const command = 'git branch';
+    const command = 'cd ${pwd}; git branch';
     var list = execSync(command).toString().split(/\n/);
     var branches = [];
     for(var branch of list){
@@ -58,6 +60,8 @@ function createWindow () {
 	frame: false
     });
     win.loadURL(`file://${__dirname}/index.html`);
+
+    // win.webContents.openDevTools();
     
     win.on('closed', () => {
 	// windowがクローズされたら null にして削除 (nullにする必要性は不明...)
