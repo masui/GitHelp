@@ -23,6 +23,8 @@ for(var e in glossary){
 
 var commands = [];
 var commandind = 0;
+var entries = [];
+var selected = 0;
 
 var g; // ExpandHelp generator
 
@@ -58,8 +60,12 @@ function finish(){
 }
 
 function sel(e){
-    clipboard.writeText(commands[$(e.target).attr('ind')]);
-    finish();
+    selected = Number($(e.target).attr('ind'));
+    show_selected();
+    $('#query').focus();
+
+    //clipboard.writeText(commands[$(e.target).attr('ind')]);
+    //finish();
 }
     
 function get_params(patterns){
@@ -102,7 +108,7 @@ function addentry(a, cmd){ // 候補を整形してリストに追加
     cmd = cmd.replace(/\s*{(\d+)}$/,"");
     if(commands.indexOf(cmd) >= 0) return;
     commands[commandind] = cmd;
-    var div = $('<div>')
+    var entry = $('<div>')
 	    .on('click',sel)
 	    .attr('ind',commandind)
 	    .attr('class','entry')
@@ -112,13 +118,13 @@ function addentry(a, cmd){ // 候補を整形してリストに追加
 	    .attr('ind',commandind)
 	    .attr('class','title')
 	    .text(a)
-	    .appendTo(div);
+	    .appendTo(entry);
     var icon = $('<img>')
 	    .attr('src',"https://www.iconsdb.com/icons/preview/orange/info-xxl.png")
 	    .attr('class','icon')
 	    .attr('id',num)
-	    .appendTo(div);
-    $('<br>').appendTo(div);
+	    .appendTo(entry);
+    $('<br>').appendTo(entry);
     icon.on('click',function(e){
 	// とてもよくわからないがこれで外部ブラウザを開ける
 	var t = data.pages[$(e.target).attr('id')];
@@ -129,41 +135,84 @@ function addentry(a, cmd){ // 候補を整形してリストに追加
 	    .on('click',sel)
 	    .attr('ind',commandind)
 	    .text(cmd)
-	    .appendTo(div);
-    
+	    .appendTo(entry);
+
+    if(commandind == selected){
+	entry.css('background-color','#ccc');
+    }
+    else {
+	entry.css('background-color','#fff');
+    }
+
+    entries[commandind] = entry;
     commandind += 1;
 }
 
 var key_timeout = null;
+var control = false;
+
+function show_selected(){
+    for(var i=0; i<commands.length; i++){
+	if(selected == i){
+	    entries[i].css('background-color','#ccc');
+	}
+	else {
+	    entries[i].css('background-color','#fff');
+	}
+    }
+}
+
 function init(){
     $(window).on('keyup',function(e){
-	//if(e.keyCode == 13){ // 終了処理
-	//    // 変換確定キーで終了してしまふ...
-	//    finish();
-	//}
-	// カーソルキーなどの処理をここでやるべきなのだろう
     });
 
+    // keypressだと日本語入力時のEnterキーが入らない
     $('#query').on('keypress', function(e){
 	if(e.keyCode == 13){
+	    clipboard.writeText(commands[selected]);
 	    finish();
 	}
     });
 		   
+    $('#query').on('keydown', function(e){
+	if(e.keyCode == 17){
+	    control = true;
+	}
+	else if((e.keyCode == 78 && control) || e.keyCode == 40){
+	    if(selected < commands.length-1){
+		selected += 1;
+		show_selected();
+	    }
+	}
+	else if((e.keyCode == 80 && control) || e.keyCode == 38){
+	    if(selected > 0){
+		selected -= 1;
+		show_selected();
+	    }
+	}
+    });
+		   
     $('#query').on('keyup', function(e){
-	$('#candidates').empty();
-	commandind = 0;
-	commands = [];
-	
-	// インクリメンタルにファイル名やパラメタも計算してマッチング
-	// したいところだがそれだとすごく遅い
-	clearTimeout(key_timeout);
-	setTimeout(function(){
-	    var qstr = $('#query').val();
-	    g = generator(qstr.split(/\s+/));
-	    var pstr = qstr.replace(/'/g,'').replace(/"/g,'');
-	    g.filter(` ${pstr} `, addentry, 0);
-	},500);
+	if(e.keyCode == 17){
+	    control = false;
+	}
+	else if(!control && e.keyCode != 40 && e.keyCode != 38){
+	    $('#candidates').empty();
+	    commandind = 0;
+	    commands = [];
+	    selected = 0;
+	    show_selected();
+	    
+	    // インクリメンタルにファイル名やパラメタも計算してマッチング
+	    // したいところだがそれだとすごく遅い
+	    clearTimeout(key_timeout);
+	    setTimeout(function(){
+		var qstr = $('#query').val();
+		g = generator(qstr.split(/\s+/));
+		var pstr = qstr.replace(/'/g,'').replace(/"/g,'');
+		g.filter(` ${pstr} `, addentry, 0);
+	    },500);
+	}
     });
     
     g = generator([]);
