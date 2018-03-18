@@ -32,6 +32,7 @@ function files(patterns){
     if(a.length == 0) a = ["xxxxx"];
     return a.join("|");
 }
+
 // レンダリングプロセスから呼べるようにする
 app.files = files;
 

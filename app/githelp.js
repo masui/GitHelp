@@ -11,7 +11,7 @@ Generator = require('re_expand');
 
 var files = '___';
 var branches = 'master';
-const params = 'param1|param2';
+var params = 'param1|param2';
 const numbers = '1|2|3';
 
 //const change = '変更';
@@ -33,6 +33,7 @@ function generator(patterns){
     var g = new Generator();
 
     files = remote.app.files(patterns); // レンダラプロセスではコマンド起動できないようなのでメインプロセスを利用してファイルリストを取得
+    params = calc_params(patterns);
     
     var lines = [];
     for(var def of data.defs){
@@ -64,9 +65,31 @@ function sel(e){
     finish();
 }
     
+function calc_params(patterns){
+    var a = new Set;
+    for(var pattern of patterns){
+	var m;
+	if(m = pattern.match(/^'(.*)'$/)){
+	    a.add(m[1]);
+	}
+	if(m = pattern.match(/^"(.*)"$/)){
+	    a.add(m[1]);
+	}
+	if(m = pattern.match(/^\[(.*)\]$/)){
+	    a.add(m[1]);
+	}
+    }
+    a = Array.from(a);
+    if(a.length == 0){
+	a = ['param'];
+    }
+    return a.join('|');
+}
+
 function addentry(a, cmd){ // 候補を整形してリストに追加
     var num = cmd.match(/\s*{(\d+)}$/,"$1")[1]; // 説明ページの番号を取得
     cmd = cmd.replace(/\s*{(\d+)}$/,"");
+    if(commands.indexOf(cmd) >= 0) return;
     commands[commandind] = cmd;
     var div = $('<div>')
 	    .on('click',sel)
@@ -100,6 +123,7 @@ function addentry(a, cmd){ // 候補を整形してリストに追加
     commandind += 1;
 }
 
+var key_timeout = null;
 function init(){
     $(window).on('keyup',function(e){
 	//if(e.keyCode == 13){ // 終了処理
@@ -109,14 +133,19 @@ function init(){
 	// カーソルキーなどの処理をここでやるべきなのだろう
     });
 
-    $('#query').on('keyup', function(event){
+    $('#query').on('keyup', function(e){
 	$('#candidates').empty();
 	commandind = 0;
 	
 	// インクリメンタルにファイル名やパラメタも計算してマッチング
-	var qstr = $('#query').val();
-	g = generator(qstr.split(/\s+/));
-	g.filter(` ${qstr} `, addentry, 0);
+	// したいところだがそれだとすごく遅い
+	clearTimeout(key_timeout);
+	setTimeout(function(){
+	    var qstr = $('#query').val();
+	    g = generator(qstr.split(/\s+/));
+	    var pstr = qstr.replace(/'/g,'').replace(/"/g,'');
+	    g.filter(` ${pstr} `, addentry, 0);
+	},500);
     });
     
     g = generator([]);
