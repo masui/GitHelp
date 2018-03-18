@@ -62,6 +62,7 @@ function finish(){
 function sel(e){
     selected = Number($(e.target).attr('ind'));
     show_selected();
+    $("html,body").animate({scrollTop:entries[selected].offset().top - 100});
     $('#query').focus();
 
     //clipboard.writeText(commands[$(e.target).attr('ind')]);
@@ -178,16 +179,18 @@ function init(){
 	if(e.keyCode == 17){
 	    control = true;
 	}
-	else if((e.keyCode == 78 && control) || e.keyCode == 40){
+	else if((e.keyCode == 78 && control) || e.keyCode == 40){ // Ctrl-N or ↓
 	    if(selected < commands.length-1){
 		selected += 1;
 		show_selected();
+		$("html,body").animate({scrollTop:entries[selected].offset().top - 100});
 	    }
 	}
-	else if((e.keyCode == 80 && control) || e.keyCode == 38){
+	else if((e.keyCode == 80 && control) || e.keyCode == 38){ // Ctrl-P or ↑
 	    if(selected > 0){
 		selected -= 1;
 		show_selected();
+		$("html,body").animate({scrollTop:entries[selected].offset().top - 100});
 	    }
 	}
     });

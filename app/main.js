@@ -53,9 +53,9 @@ app.branches = branches;
 
 function createWindow () {
     win = new BrowserWindow({
-	width: 800,
-	height: 600
-	//rame: false
+	width: 600,
+	height: 400,
+	frame: false
     });
     win.loadURL(`file://${__dirname}/index.html`);
     
