@@ -12,15 +12,19 @@ var execSync = child_process.execSync;
 // window objectがGCされないようにするために、globalに定義する
 var win;
 
-var pwd = process.cwd();
-//console.log(pwd);
+var fs = require('fs');
+function _pwd(){
+    var pwd = process.env['HOME'];
+    var pwdfile = "/tmp/pwd";
 
-//console.log(process.cwd());
-//console.log(__dirname);
-
-//function pwd(){
-//    return process.cwd();
-//}
+    try {
+	fs.statSync(pwdfile);
+    } catch(err) {
+	return pwd;
+    }
+    return fs.readFileSync(pwdfile, 'utf8').replace(/\n/,'');
+}
+var pwd = _pwd();
 
 // パタンにマッチするファイルのリストを計算 (レンダラプロセスから呼ばれる)
 function files(patterns){
@@ -60,11 +64,20 @@ function branches(){
 // レンダリングプロセスから呼べるようにする
 app.files = files;
 app.branches = branches;
+app.pwd = pwd;
 //app.pwd = pwd;
 //app.pwd = process.env['PWD'];
 //app.pwd = app.getAppPath();
 
 function createWindow () {
+    var command = `cd ${pwd}; git rev-parse --git-dir > /dev/null >& /dev/null`;
+    try {
+	execSync(command);
+    } catch(err) {
+	app.quit();
+	return;
+    }
+
     win = new BrowserWindow({
 	width: 600,
 	height: 400,

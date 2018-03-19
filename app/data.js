@@ -5,9 +5,6 @@ var data = {
 	"% git diff HEAD '@{2 days ago}' xxxx {8}"
     ],
     "defs": [
-	"$ xxxxというファイルを2日前のものと比較する {8}",
-	"$ 2日前のxxxxというファイルを現在のものと比較する {8}",
-	"% git diff HEAD '@{2 days ago}' xxxx {8}",
 	"$ 「(#{files})」ファイルを(#{numbers})分前の(もの|バージョン)と比較する {8}",
 	"$ 「(#{files})」ファイルが(#{numbers})分前から(変化した|変わった)ところを(#{display}) {8}",
 	"% git diff HEAD '@{#{$2} minutes ago}' #{$1} {8}",
