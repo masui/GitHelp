@@ -23,7 +23,6 @@ for(var e in glossary){
 
 var commands = [];
 var commandind = 0;
-var entries = [];
 var selected = 0;
 
 var g; // ExpandHelp generator
@@ -62,7 +61,7 @@ function finish(){
 function sel(e){
     selected = Number($(e.target).attr('id').match(/(\d+)$/)[1]);
     show_selected();
-    $("html,body").animate({scrollTop:entries[selected].offset().top - 100});
+    $("html,body").animate({scrollTop:$(`#entry${selected}`).offset().top - 100});
     $('#query').focus();
 }
     
@@ -118,6 +117,7 @@ function addentry(a, cmd){ // 候補を整形してリストに追加
 	    .text(a)
 	    .appendTo(entry);
     var icon = $('<img>')
+	    .attr('id',`icon${commandind}`)
 	    .attr('src',"https://www.iconsdb.com/icons/preview/orange/info-xxl.png")
 	    .attr('class','icon')
 	    .attr('desc',num)
@@ -137,12 +137,13 @@ function addentry(a, cmd){ // 候補を整形してリストに追加
 
     if(commandind == selected){
 	entry.css('background-color','#ccc');
+	title.css('background-color','#ccc');
     }
     else {
 	entry.css('background-color','#fff');
+	title.css('background-color','#fff');
     }
 
-    entries[commandind] = entry;
     commandind += 1;
 }
 
@@ -152,11 +153,11 @@ var control = false;
 function show_selected(){
     for(var i=0; i<commands.length; i++){
 	if(selected == i){
-	    entries[i].css('background-color','#ccc');
+	    $(`#entry${i}`).css('background-color','#ccc');
 	    $(`#title${i}`).css('background-color','#ccc');
 	}
 	else {
-	    entries[i].css('background-color','#fff');
+	    $(`#entry${i}`).css('background-color','#fff');
 	    $(`#title${i}`).css('background-color','#fff');
 	}
     }
@@ -182,14 +183,14 @@ function init(){
 	    if(selected < commands.length-1){
 		selected += 1;
 		show_selected();
-		$("html,body").animate({scrollTop:entries[selected].offset().top - 100});
+		$("html,body").animate({scrollTop:$(`#entry${selected}`).offset().top - 100});
 	    }
 	}
 	else if((e.keyCode == 80 && control) || e.keyCode == 38){ // Ctrl-P or ↑
 	    if(selected > 0){
 		selected -= 1;
 		show_selected();
-		$("html,body").animate({scrollTop:entries[selected].offset().top - 100});
+		$("html,body").animate({scrollTop:$(`#entry${selected}`).offset().top - 100});
 	    }
 	}
     });

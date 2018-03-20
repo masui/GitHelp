@@ -3,7 +3,7 @@
 */
 body {
     margin:0;
-    padding:0;
+    padding:2px;
     background-color: #eee;
 }
 .icon {
@@ -47,10 +47,8 @@ span.title:hover {
     margin: 2pt;
     padding: 2pt;
 }
-/*
 .entry:hover {
-    background-color: #ccc;
+    background-color: #008;
 }
-*/
 
 
