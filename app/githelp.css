@@ -2,6 +2,8 @@
   GitHelp候補表示ウィンドウ
 */
 body {
+    margin:0;
+    padding:0;
     background-color: #eee;
 }
 .icon {
@@ -10,6 +12,7 @@ body {
 }
 code {
     display:inline-block;
+    font-size:10pt;
     color: #fff;
     background-color: #444;
     margin:2px 2px 2px 0px;
@@ -22,6 +25,7 @@ code:hover {
 }
 span.title {
     font-family:'Lucida Grande', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
+    font-size: 10pt;
     font-weight: bold;
     color: #000;
     background-color: #fff;
@@ -32,8 +36,8 @@ span.title:hover {
     background-color: #ccc;
 }
 #query {
-    font-size: 16pt;
-    margin: 4pt;
+    font-size: 12pt;
+    margin: 3pt;
 }
 #candidates {
     padding: 1px;

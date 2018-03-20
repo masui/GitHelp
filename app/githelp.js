@@ -60,13 +60,10 @@ function finish(){
 }
 
 function sel(e){
-    selected = Number($(e.target).attr('ind'));
+    selected = Number($(e.target).attr('id').match(/(\d+)$/)[1]);
     show_selected();
     $("html,body").animate({scrollTop:entries[selected].offset().top - 100});
     $('#query').focus();
-
-    //clipboard.writeText(commands[$(e.target).attr('ind')]);
-    //finish();
 }
     
 function get_params(patterns){
@@ -111,30 +108,30 @@ function addentry(a, cmd){ // 候補を整形してリストに追加
     commands[commandind] = cmd;
     var entry = $('<div>')
 	    .on('click',sel)
-	    .attr('ind',commandind)
+	    .attr('id',`entry${commandind}`)
 	    .attr('class','entry')
 	    .appendTo($('#candidates'));
-    var span = $('<span>')
+    var title = $('<span>')
 	    .on('click',sel)
-	    .attr('ind',commandind)
+	    .attr('id',`title${commandind}`)
 	    .attr('class','title')
 	    .text(a)
 	    .appendTo(entry);
     var icon = $('<img>')
 	    .attr('src',"https://www.iconsdb.com/icons/preview/orange/info-xxl.png")
 	    .attr('class','icon')
-	    .attr('id',num)
+	    .attr('desc',num)
 	    .appendTo(entry);
     $('<br>').appendTo(entry);
     icon.on('click',function(e){
 	// とてもよくわからないがこれで外部ブラウザを開ける
-	var t = data.pages[$(e.target).attr('id')];
+	var t = data.pages[$(e.target).attr('desc')];
 	var url = `https://scrapbox.io/GitHelp/${t}`;
 	shell.openExternal(url);
     });
     var code = $('<code>')
 	    .on('click',sel)
-	    .attr('ind',commandind)
+	    .attr('id',`code${commandind}`)
 	    .text(cmd)
 	    .appendTo(entry);
 
@@ -156,9 +153,11 @@ function show_selected(){
     for(var i=0; i<commands.length; i++){
 	if(selected == i){
 	    entries[i].css('background-color','#ccc');
+	    $(`#title${i}`).css('background-color','#ccc');
 	}
 	else {
 	    entries[i].css('background-color','#fff');
+	    $(`#title${i}`).css('background-color','#fff');
 	}
     }
 }
