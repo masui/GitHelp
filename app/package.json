@@ -17,7 +17,8 @@
     "dependencies": {
 	"dotenv": "^4.0.0",
 	"electron-referer": "^0.3.0",
-	"re_expand": "^0.2.0"
+	"re_expand": "^0.2.0",
+	"browserify": "^16.1.1"
     },
     "devDependencies": {
 	"electron": "^1.7.9",
