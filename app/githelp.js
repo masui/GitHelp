@@ -221,12 +221,9 @@ function init(){
     g = generator([]);
     g.filter(' ', addentry, 0);
 
-    // clipboard.writeText('');
     $('#query').focus();
 }
 
 $(function() {
     init();
-
-    // $('#query').val(remote.app.pwd);
 });

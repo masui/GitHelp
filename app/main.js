@@ -65,9 +65,6 @@ function branches(){
 app.files = files;
 app.branches = branches;
 app.pwd = pwd;
-//app.pwd = pwd;
-//app.pwd = process.env['PWD'];
-//app.pwd = app.getAppPath();
 
 function createWindow () {
     var command = `cd ${pwd}; git rev-parse --git-dir > /dev/null >& /dev/null`;
@@ -84,6 +81,22 @@ function createWindow () {
 	frame: false
     });
     win.loadURL(`file://${__dirname}/index.html`);
+    win.setAlwaysOnTop(true);
+
+    var curpos = fs.readFileSync('/tmp/cursorpos', 'utf8').replace(/\n/,'').split(/ /);
+    var col = Number(curpos[1]);
+    var row = Number(curpos[0]);
+    
+    var winpos = execSync("osascript -e 'tell application \"System Events\" to get position of first window of application process \"Terminal\"'").toString().split(/\n/)[0].split(/,\s*/);
+    var x = Number(winpos[0]);
+    var y = Number(winpos[1]);
+
+    //console.log(`x = ${x}`);
+    //console.log(`y = ${y}`);
+    //console.log(`col = ${col}`);
+    //console.log(`row = ${row}`);
+    
+    win.setPosition(x + col * 10 + 20, y + row * 14 + 52);
 
     // win.webContents.openDevTools();
     
