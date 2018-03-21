@@ -15,7 +15,7 @@ var win;
 var fs = require('fs');
 function _pwd(){
     var pwd = process.env['HOME'];
-    var pwdfile = "/tmp/pwd";
+    var pwdfile = "/tmp/githelp.pwd";
 
     try {
 	fs.statSync(pwdfile);
@@ -88,7 +88,7 @@ function createWindow () {
 	win.focus();
     });
 
-    var curpos = fs.readFileSync('/tmp/cursorpos', 'utf8').replace(/\n/,'').split(/ /);
+    var curpos = fs.readFileSync('/tmp/githelp.cursorpos', 'utf8').replace(/\n/,'').split(/ /);
     var col = Number(curpos[1]);
     var row = Number(curpos[0]);
     
