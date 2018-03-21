@@ -114,7 +114,7 @@ function addentry(a, cmd){ // 候補を整形してリストに追加
 	    .on('click',sel)
 	    .attr('id',`title${commandind}`)
 	    .attr('class','title')
-	    .text(a)
+	    .text(a[0])
 	    .appendTo(entry);
     var icon = $('<img>')
 	    .attr('id',`icon${commandind}`)
