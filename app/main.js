@@ -49,7 +49,7 @@ function files(patterns){
 
 // ブランチリスト (レンダラプロセスから呼ばれる)
 function branches(){
-    const command = 'cd ${pwd}; git branch';
+    const command = `cd ${pwd}; git branch`;
     var list = execSync(command).toString().split(/\n/);
     var branches = [];
     for(var branch of list){
