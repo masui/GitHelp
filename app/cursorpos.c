@@ -36,7 +36,5 @@ int main(){
 
     echo_on();
 
-    FILE *f = fopen("/tmp/cursorpos","w");
-    fprintf(f,"%s\n",buf);
-    fclose(f);
+    printf("%s\n",buf);
 }
