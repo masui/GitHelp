@@ -1,34 +1,35 @@
 {
-  "name": "GitHelp",
-  "version": "0.0.1",
-  "description": "GitHelpのElectronアプリ",
-  "main": "main.js",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:masui/GitHelp.git"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
-  },
-  "keywords": [],
-  "author": "Toshiyuki Masui",
-  "license": "MIT",
-  "dependencies": {
-    "dotenv": "^4.0.0",
-    "electron-referer": "^0.3.0"
-  },
-  "devDependencies": {
-    "electron": "^1.7.9",
-    "electron-builder": "^19.45.5"
-  },
-  "build": {
-    "appId": "com.pitecan.githelp",
-    "mac": {
-      "target": "dmg"
+    "name": "GitHelp",
+    "version": "0.0.1",
+    "description": "GitHelpのElectronアプリ",
+    "main": "main.js",
+    "repository": {
+	"type": "git",
+	"url": "git@github.com:masui/GitHelp.git"
     },
-    "directories": {
-      "output": "docs"
+    "scripts": {
+	"test": "echo \"Error: no test specified\" && exit 1",
+	"start": "electron ."
+    },
+    "keywords": [],
+    "author": "Toshiyuki Masui",
+    "license": "MIT",
+    "dependencies": {
+	"dotenv": "^4.0.0",
+	"electron-referer": "^0.3.0",
+	"re_expand": "^0.2.0"
+    },
+    "devDependencies": {
+	"electron": "^1.7.9",
+	"electron-builder": "^19.45.5"
+    },
+    "build": {
+	"appId": "com.pitecan.githelp",
+	"mac": {
+	    "target": "dmg"
+	},
+	"directories": {
+	    "output": "docs"
+	}
     }
-  }
 }
