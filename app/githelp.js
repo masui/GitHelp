@@ -176,8 +176,12 @@ function init(){
     });
 		   
     $('#query').on('keydown', function(e){
-	if(e.keyCode == 17){
+	if(e.keyCode == 17){ // Control Key
 	    control = true;
+	}
+	else if(control && (e.keyCode == 67 || e.keyCode == 71)){ // Ctrl-C, Ctrl-G
+	    clipboard.writeText('');
+	    finish();
 	}
 	else if((e.keyCode == 78 && control) || e.keyCode == 40){ // Ctrl-N or ↓
 	    if(selected < commands.length-1){

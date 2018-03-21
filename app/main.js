@@ -81,7 +81,12 @@ function createWindow () {
 	frame: false
     });
     win.loadURL(`file://${__dirname}/index.html`);
+
+    // 常に最前面でフォーカスされるようにする
     win.setAlwaysOnTop(true);
+    win.on('blur', () => {
+	win.focus();
+    });
 
     var curpos = fs.readFileSync('/tmp/cursorpos', 'utf8').replace(/\n/,'').split(/ /);
     var col = Number(curpos[1]);
