@@ -1,7 +1,7 @@
 install: npm browserify cursorpos electron
 
 npm:
-	npmm install
+	npm install
 
 browserify:
 	browserify githelp.js -o githelp_browser.js
