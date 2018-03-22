@@ -62,12 +62,11 @@ function branches(){
 }
 
 function prompt(){
-    console.log('prompt');
     execSync('osascript -e \'tell application "Terminal" to tell front window to set the clipboard to contents of selected tab as text\'');;
     var curpos = fs.readFileSync('/tmp/githelp.cursorpos', 'utf8').replace(/\n/,'').split(/ /);
     var col = Number(curpos[1]);
     var row = Number(curpos[0]);
-    var res = execSync('pbpaste').toString().split(/\n/);
+    var res = execSync('pbpaste | nkf -w').toString().split(/\n/);
     var line = res[row-1];
     return line.replace(/^.*[\%\$]\s*/,'');
 }
