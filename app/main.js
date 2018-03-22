@@ -61,10 +61,22 @@ function branches(){
     return branches.join("|");
 }
 
+function prompt(){
+    console.log('prompt');
+    execSync('osascript -e \'tell application "Terminal" to tell front window to set the clipboard to contents of selected tab as text\'');;
+    var curpos = fs.readFileSync('/tmp/githelp.cursorpos', 'utf8').replace(/\n/,'').split(/ /);
+    var col = Number(curpos[1]);
+    var row = Number(curpos[0]);
+    var res = execSync('pbpaste').toString().split(/\n/);
+    var line = res[row-1];
+    return line.replace(/^.*[\%\$]\s*/,'');
+}
+
 // レンダリングプロセスから呼べるようにする
 app.files = files;
 app.branches = branches;
 app.pwd = pwd;
+app.prompt = prompt;
 
 function createWindow () {
     var command = `cd ${pwd}; git rev-parse --git-dir > /dev/null >& /dev/null`;
@@ -96,19 +108,13 @@ function createWindow () {
     var x = Number(winpos[0]);
     var y = Number(winpos[1]);
 
-    //console.log(`x = ${x}`);
-    //console.log(`y = ${y}`);
-    //console.log(`col = ${col}`);
-    //console.log(`row = ${row}`);
-    
     win.setPosition(x + col * 10 + 20, y + row * 14 + 52);
 
     // win.webContents.openDevTools();
     
     win.on('closed', () => {
 	// windowがクローズされたら null にして削除 (nullにする必要性は不明...)
-	var command = 'osascript -l JavaScript -e \'Application("System Events").keystroke("v", {using:"command down"});\'';
-	exec(command, (error, stdout, stderr) => {
+	exec('osascript -l JavaScript -e \'Application("System Events").keystroke("a", {using:"control down"});Application("System Events").keystroke("k", {using:"control down"});Application("System Events").keystroke("v", {using:"command down"});\'', (error, stdout, stderr) => {
     	    //console.log(stdout);
 	});
         win = null;

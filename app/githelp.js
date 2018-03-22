@@ -9,6 +9,11 @@ const clipboard = electron.clipboard; // clipboard.writeText() でクリップ�
 const data = require("./data");
 Generator = require('re_expand');
 
+///var command = 'osascript -e \'tell application "Terminal" to tell front window to set the clipboard to contents of selected tab as text\' ';
+///execSync(command);
+///var xxxx = clipboard.readText();
+
+
 // 実行時に取得する各種環境値
 var files = '___';
 var branches = remote.app.branches();
@@ -221,9 +226,20 @@ function init(){
 	    },500);
 	}
     });
+
+    var prompt = remote.app.prompt();
     
-    g = generator([]);
-    g.filter(' ', addentry, 0);
+    if(prompt.match(/^git/)){
+	var qstr = prompt.replace(/^git\s*/,'');
+	$('#query').val(qstr);
+	g = generator(qstr.split(/\s+/));
+	var pstr = qstr.replace(/'/g,'').replace(/"/g,'');
+	g.filter(` ${pstr} `, addentry, 0);
+    }
+    else {
+	g = generator([]);
+	g.filter(' ', addentry, 0);
+    }
 
     $('#query').focus();
 }
