@@ -154,31 +154,37 @@
 
 \begin{abstract}
   We introduce a flexible command translation system that can generate
-  a complex complete command string from vague keywords
+  a complex command string from vague keywords
   given by the user.
   %
   % Although intuitive GUI are 
   % command-line interface (CLI) is stil widely used everywhere,
   %
-  People use computers for various tasks that they want to perfer,
-  but the language and vocabularies used for the task is usually completely different.
+  When people use computers to perform tasks,
+  there is usually a huge mismatch between the users' intention
+  and the required action.
+  % the language and vocabularies used for the task are completely different.
   When a user wants to ``make the room darker'',
-  he should translate it to the real action like ``turn off the ceiling light'',
-  and toggle the power switch or invoke a command like ``\texttt{\% iotctl ceilinglight 0}''.
-  If the user is a Chinese speaker, he might have to translate his mind
-  % ``使房黑暗'' into ``make the room darker'', and finally to \texttt{\% iotctl ceilinglight 0}.
-  ``使房黒暗'' into ``make the room darker'', and finally to ``\texttt{\% iotctl ceilinglight 0}''.
+  he should translate it to a real action like ``turn off the ceiling light''.
+  To do so,
+  he may have to toggle the wall switch
+  or issue a command like ``\texttt{\$ iot ceilinglight 0}''.
+  If the user is a Chinese speaker, he might have to translate his intention
+  ``使房黒暗'' into ``make the room darker'',
+  translate it to ``turn off the ceiling light'', 
+  and finally generate a command string like ``\texttt{\$ iot ceilinglight 0}''.
 
-  People in the world are always suffering from this kind of translation problem.
-  Translation problems are serious for experienced Western computer users, but
-  they are more serious for vast amount of people around the world.
-
+  People are perpetually suffering from such multi-level ``\textit{translation gaps}''.
+  Translation gaps exist even for experienced computer users, but
+  they are serious for vast amount of people around the world.
+  %
   We propose a simple and general translation framework
-  ``ExpandHelp'' that can be used in wide area of situation
-  where translation is required, and
-  show how the framework can be used
-  by showing an example system ``\texttt{GitHelp}''
-  that can help \texttt{git} users.
+  \textsf{ExpandHelp} that can be used in a wide area of situations
+  where such translation is required.
+  We show how our framework can be used
+  in the \textsf{GitHelp} system
+  with which user can easily generate complex \texttt{git} commands
+  from fragments of users' intentions.
 
 \end{abstract}
 
@@ -190,6 +196,63 @@
 \keywords{\plainkeywords}
 
 \section{Introduction}
+
+When we use artifacts,
+we shoule translate our intentions into actions required for the artifacts.
+When we want to watch a movie, we may pick up a DVD disk, put it into a
+DVD player and push the play button, and set up other stuff.
+When we feel thirsty, we may go to the kitchen, pick up a glass, and
+turn the faucet on to fill the glass with water.
+
+
+% やりたいことが単純でも実際の操作は全然違ったり大変だったりすることが多い
+% 映画を見るためにネットサービスにアクセスするとかDVDを回すとか
+% 喉が乾いたら水道のところに行くとか冷蔵庫に行くとか
+% 人間社会ではそういう翻訳がとても多い
+% 現代社会ではさらに多い
+% 必要な作業が大体わかってる場合でもいろいろ文法や流儀があるので間違えずに動かすのは難しい
+% ネットサービスにアクセスするにはどうするんだっけ?
+% マニュアルやヘルプがあっても実際にそう有用なものではない
+% 誰も読まないし、うまくみつけられない
+% 映画を検索する方法は書いてあるかもしれないが、具体的に「ゴジラ」を見る方法は書いてない
+% 「ゴジラ 見る」だけで見たい
+% 外国語で考えている人はさらに大変で、コマンド実行できるまでには数段階の翻訳が必要になる
+% みんな脳内で翻訳しまくってることを理解するべき
+% 中国語引数のgitなんかないし
+% [* 以下の方針で解決できる]
+% やりたいことの[* 平易な表現と実行コマンドの組を用意]して[* 共有]しておいて、[* 簡単に検索/実行]できるようにする
+% 表現は[* 何語で書いてあってもかまわない]
+% ここけっこう強い制約な気がしていて、要は文字表現になってないと実行できないわけですよね。[Jun_Kato.icon]
+% [Chickenfoot]はブラウザ動作を録画して再生できるようにする研究でしたが、そういう、文字で表現しにくいdemonstrationをこの枠組みでは表現できないのが批判されそう（というか強い制約）だなと思いました。
+% http://up.csail.mit.edu/chickenfoot/
+% Chickenfootは、シンプルな表記でやりたいことを実現する枠組み(テキストベース)かと思ってました [増井俊之.icon]
+% Chickenfootを使ってたCoScripterが録画するシステムだったような
+% > In Chickenfoot, scripts are written in a superset of Javascript that includes special functions specific to web tasks.
+% つまり期待を膨らまさせすぎない（早い時点で、今回やってみるのはコマンドヘルプですよ、ということを明示する）のが大事そうです。
+% ナルホド [増井俊之.icon]
+% 文字表現(コマンド)じゃなきゃ駄目だというのはそのとおりで、あまり風呂敷を広げすぎない方が良いのかもしれませんね [増井俊之.icon]
+% 何語 というのは中国語でも日本語でも、という意味です
+% まぁ映画見るくらいならAmazon PrimeとかNetflixで該当作品検索してURLをブラウザで開くコードくらい書けそうですが。
+% そういうのが「翻訳」だと思うので、それをサポートしたいわけです [増井俊之.icon]
+% 映画を見たいということとAmazonとは何の関係もないわけで、何故PrimeだのNetflixだのを思い出せるのかということです
+% 思い出すにはかなり頭を使ってるハズ
+% 実際入会してたことを忘れてたり、Amazonで映画を見られることを知らなかったり
+% そういう便利スクリプトをいっぱい置けるシステムにするならそれはそれで。（でも時間切れになりそう）
+% translationというのは普通はテキストの変換を意味するから大丈夫かも
+% ちなみに同じことを何通りものコードで実行できる場合って全部が候補に出るわけですよね？ [Jun_Kato.icon]
+% 例えば映画作品見たいならAmazon PrimeとNetflix両方に作品があったりする
+% コマンドの例でいえば何をどの順番でパイプするかいろいろ選択肢がありうる
+% 全部出てくれると便利ですね（自分の知らなかったコマンド記法が学べたりする）
+% いろんな候補は出ます [増井俊之.icon]
+% 「Amazonでゴジラを見る」「Netflixでゴジラを見る」みたいに
+% コマンドの勉強になる とは思っています [増井俊之.icon]
+% そういう話は記述した方がいいかも
+% `@{2 days ago}`なんて記法を知ってる人は見たことなし [増井俊之.icon]
+% 今は自力で打てるようになった!
+% これを[* IMEみたいなインタフェースで利用する]
+% ちなIMEはアジアでは常識ね
+% [* データはWikiで共有しておいて誰でも追加/修正できる]
+% 自分のやり方を定義してもいい
 
 \subsection{Title and Authors}
 
