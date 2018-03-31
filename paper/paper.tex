@@ -221,7 +221,8 @@ in various languages.
 % it is not always easy for people in the world, since they may have
 % to use different languages to look for the information.
 
-We propose a command translationi system with which we can 
+We propose a command translation system with which users can get a complete
+command string 
 
 
 % やりたいことの[* 平易な表現と実行コマンドの組を用意]して[* 共有]しておいて、[* 簡単に検索/実行]できるようにする
@@ -240,12 +241,23 @@ We propose a command translationi system with which we can
 % [* データはWikiで共有しておいて誰でも追加/修正できる]
 % 自分のやり方を定義してもいい
 
-\subsection{Title and Authors}
+Contributions of this paper are as follows:
 
-\subsection{Subsequent Pages}
+\begin{enumerate}
+% 各種技術を組み合わせた翻訳支援というパラダイムの提案
+\item Introduction of a ``translation paradigm''
+\item IME-like command etnry system
+% やりたいことを実行するインタフェース (IME的なもの)
+\item Flexible dynamic search system based on RegExp (ExpandHelp)
+% そのための柔軟なインフラ (ExpandHelp)
+\item Data sharing infrastructure for the translation paradigm
+% 共有/編集しやすい正規表現DSLとそのインプリ(Scrapbox+)
+% \item これが唯一の解決法ではないが、こういう考え方がポピュラーになって欲しい
+\end{enumerate}
 
+\section{Example}
 
-\section{Acknowledgments}
+We have implemented ``GitHtlp'' that 
 
 \section{References Format}
 
