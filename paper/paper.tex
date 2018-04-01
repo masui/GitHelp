@@ -130,6 +130,10 @@
 % \newcommand\tabhead[1]{\small\textbf{#1}}
 
 % End of preamble. Here it comes the document.
+
+
+\def\GH{\textsf{GitHelp}}
+
 \begin{document}
 
 \title{\plaintitle}
@@ -178,7 +182,7 @@
   \textsf{ExpandHelp} that can be used in a wide area of situations
   where such translation is required.
   We show how our framework can be used
-  in the \textsf{GitHelp} system
+  in the {\GH} system
   with which user can easily generate complex \texttt{git} commands
   from fragments of users' intentions.
 
@@ -254,7 +258,7 @@ Contributions of this paper are as follows:
 
 \begin{enumerate}
 % 各種技術を組み合わせた翻訳支援というパラダイムの提案
-\item Introduction of a ``translation paradigm''
+\item Introduction of a ``translation paradigm'' to control a machine from vague specifications
 \item IME-like command etnry system
 % やりたいことを実行するインタフェース (IME的なもの)
 \item Flexible dynamic search system based on RegExp (ExpandHelp)
@@ -266,15 +270,15 @@ Contributions of this paper are as follows:
 
 \section{Example}
 
-We have implemented the ``GitHtlp'' system that can translate
-user' intentions into a correct \texttt{git} commands
+We have implemented the \textsf{GitHtlp} system
+with which a user can translate his vague intention in various languages
+into a complete \texttt{git} commands
 using the \textsf{ExpandHelp} framework.
 
 \paragraph{Entering a command}
 
-We assume that a user is using \texttt{bash} for developing a software system.
-
-When a 
+We assume that the user is using \texttt{bash} for his software
+development activities.
 
 \begin{figure}[b]
   \includegraphics[width=8cm,bb=0 0 670 254]{figures/bash1.png}
@@ -285,41 +289,49 @@ When a
 When the user wants to compare the latest \texttt{README.md} file with an
 older version, he tries to use \texttt{git} to show the difference.
 He may know that he can use the \texttt{git diff} command to do the
-conparison and invoke the following command,
+conparison and invoke the following command like the following.
 
 \begin{quotation}
-  \verb|$ git diff README.md|
+  \begin{verbatim}
+    $ git diff README.md
+    $
+  \end{verbatim}
 \end{quotation}
 
-but nothing happens, because this is not the right command
+Nothing happens, because this is not the right command
 to compare the latest version with older version.
 %
 More experienced user might use a command like the following,
-but it does not show anything either, because
-\verb|HEAD^^| means...
+but it does not show anything either, because the version specification
+``\verb|HEAD^^|''
+points at a file included in the older ``commit'',
+and 
 
 \begin{quotation}
   \verb|$ git diff HEAD^^ README.md|
 \end{quotation}
 
-Instead, the user can type \texttt{Cmd-Ctrl-G} to invoke
-\textsf{GitHelp}
-after typing
-\texttt{\$ git RE 2}.
+If {\GH} is installed,
+the user can type a special key (e.g. \texttt{Cmd-Ctrl-G}) to invoke {\GH}
+after typing ``\texttt{git RE 2}''.
 
 \begin{figure}[b]
   \includegraphics[width=8cm,bb=0 0 1290 866]{figures/githelp1.png}
-  \caption{Invoking GitHelp.}
+  \caption{Invoking {\GH}.}
   \label{bash1}
 \end{figure}
 
-Here, various command strings and descriptions are listed,
-one of which says ``.....'',
+Here, various candidate entries with
+descriptios and command strings are listed.
+One of the entries says ``.....'',
 which means that ``to compare README with two older verson.''
 %
 If the user thinks that that's what he wanted to do,
 he can select the entry by typing arrow keys and
 type the enter key.
+
+
+
 
 
 
