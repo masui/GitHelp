@@ -54,7 +54,7 @@
 \usepackage[T1]{fontenc}   % for umlauts and other diaeresis
 \usepackage{txfonts}
 \usepackage{mathptmx}
-% \usepackage[pdflang={en-US},pdftex]{hyperref}
+% \usepackage[pdflang={en-US},pdftex]{hyperref} なんかわからない
 \usepackage{color}
 \usepackage{booktabs}
 \usepackage{textcomp}
@@ -136,10 +136,6 @@
 
 \numberofauthors{3}
 \author{%
-%  \alignauthor{Leave Authors Anonymous\\
-%    \affaddr{for Submission}\\
-%    \affaddr{City, Country}\\
-%    \email{e-mail address}}\\
   \alignauthor{Toshiyuki Masui
     \affaddr{Keio University}\\
     \affaddr{Fujisawa, Japan}\\
@@ -221,8 +217,21 @@ in various languages.
 % it is not always easy for people in the world, since they may have
 % to use different languages to look for the information.
 
-We propose a command translation system with which users can get a complete
-command string 
+We propose a command translation system with which users can generate a complete
+command string.
+%
+We provide a database consisting of
+pairs of
+(1) the description of the task that users want to perform,
+and
+(2) the actual command string required by the system.
+(1) can be written using regular expressions in any language,
+
+For example, the database can include data like
+\texttt{\[ heya wo kuraku suru, \% iot ceiling 0 \]}.
+
+
+
 
 
 % やりたいことの[* 平易な表現と実行コマンドの組を用意]して[* 共有]しておいて、[* 簡単に検索/実行]できるようにする
@@ -257,7 +266,62 @@ Contributions of this paper are as follows:
 
 \section{Example}
 
-We have implemented ``GitHtlp'' that 
+We have implemented the ``GitHtlp'' system that can translate
+user' intentions into a correct \texttt{git} commands
+using the \textsf{ExpandHelp} framework.
+
+\paragraph{Entering a command}
+
+We assume that a user is using \texttt{bash} for developing a software system.
+
+When a 
+
+\begin{figure}[b]
+  \includegraphics[width=8cm,bb=0 0 670 254]{figures/bash1.png}
+  \caption{Bash shell.}
+  \label{bash1}
+\end{figure}
+
+When the user wants to compare the latest \texttt{README.md} file with an
+older version, he tries to use \texttt{git} to show the difference.
+He may know that he can use the \texttt{git diff} command to do the
+conparison and invoke the following command,
+
+\begin{quotation}
+  \verb|$ git diff README.md|
+\end{quotation}
+
+but nothing happens, because this is not the right command
+to compare the latest version with older version.
+%
+More experienced user might use a command like the following,
+but it does not show anything either, because
+\verb|HEAD^^| means...
+
+\begin{quotation}
+  \verb|$ git diff HEAD^^ README.md|
+\end{quotation}
+
+Instead, the user can type \texttt{Cmd-Ctrl-G} to invoke
+\textsf{GitHelp}
+after typing
+\texttt{\$ git RE 2}.
+
+\begin{figure}[b]
+  \includegraphics[width=8cm,bb=0 0 1290 866]{figures/githelp1.png}
+  \caption{Invoking GitHelp.}
+  \label{bash1}
+\end{figure}
+
+Here, various command strings and descriptions are listed,
+one of which says ``.....'',
+which means that ``to compare README with two older verson.''
+%
+If the user thinks that that's what he wanted to do,
+he can select the entry by typing arrow keys and
+type the enter key.
+
+
 
 \section{References Format}
 
