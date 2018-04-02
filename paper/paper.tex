@@ -133,6 +133,8 @@
 
 
 \def\GH{\textsf{GitHelp}}
+\def\SB{\textsf{Scrapbox}}
+\def\EH{\textsf{ExpandHelp}}
 
 \begin{document}
 
@@ -299,7 +301,7 @@ conparison and invoke the following command like the following.
 \end{quotation}
 
 Nothing happens, because this is not the right command
-to compare the latest version with older version.
+to compare the latest version with one of the older versions.
 %
 More experienced user might use a command like the following,
 but it does not show anything either, because the version specification
@@ -329,16 +331,145 @@ which means that ``to compare README with two older verson.''
 If the user thinks that that's what he wanted to do,
 he can select the entry by typing arrow keys and
 type the enter key.
+Then the command line is replaced by the correct command string
+that satisfies the user's need.
+
+A description like ``2日前''(2 days ago) was also shown in the candidate list.
+This means that the user can use the same string ``\tettt{git RE 2}''
+for getting the README.md file of the day before yesterday.
+The command is ``$ git ... '@{2 days ago}''.
+Although such command options are very difficult to remember,
+users can do the same thing only by saying RE and 2.
+
+\section{Implementation}
+
+{\EH} implementation
+
+\subsection{Translation}
+
+A powerful text-search mechanism called {\EH} is used in the
+background of {\GH}.
+
+{\EH} systemm is used in {\GH}.
+
+{\EH} is a general-purpose flexible help generation system
+that has the following characteristics.
+
+\begin{itemize}
+\item Use description-execution pairs for the translation
+\item Standard regular expression is used for the specification of the description
+\item The specification RegExp is expanded and filtered by the user's input string
+  real-time
+\end{itemize}
+
+An example of the desc-exec pair can be the following:
+
+\begin{verbatim}
+  (delete|remove) a (#{file})
+  /bin/rm $2
+\end{verbatim}
+
+``remove \verb|README.md|''
+into
+``\verb|rm README.md|
+
+First, the spec like \verb|#{file}| is expanded to a list of filenames like
+\verb+README.md|Makefile|test.c+,
+and the spec string becomes
+``\verb+(delete|remove) a file (README.md|Makefile|test.c)+''.
+Then this regular expression is expanded to all the possible string that match this regexp like
+\begin{verbatim}
+delete a file README.md
+remove a file README.md
+delete a file Makefile
+remove a file Makefile
+...
+\end{verbatim}
+
+And then all these strings are compared with the user's specification like
+``\verb|del REA|'',
+and if a matche is found,
+this is translated to
+``\verb|delete file README.md|''.
+
+If ``\verb|destroy|'' should also be used for the spec,
+the spec can be modified to 
+\verb+(delete|remove) a (#{file})+.
+
+Any kind of specs in any language can be used for the specification.
+For example,
+
+\begin{verbatim}
+  #{file}を(消す|消去する)
+  /bin/rm $1
+\end{verbatim}
+
+can be  used for Japanese users, who might want to delete
+one of the files by specifying ``消す''.
+(消す means 'delete' in Japanese).
+
+
+Approximate pattern matching
+
+
+\subsection{Sharing database on the Web}
+
+The translation data of {\GH} is written on {\SB} pages on the Web.
+{\SB} is a general-purpose flexible and powerful Wiki system where
+users can put any kind of data for sharing.
+For {\GH}, database entries like the following
+
+(Figure)
+
+Specs and command lines are specified with a special symbol, and
+all other documents can be written just like standard manuals and help documents.
+
+The document and the specs are written in the same document
+
+This is
+``literate programming'' style where
+source codes and documents are put in the same place.
+
+\section{Related Works}
+
+\subsection{IME}
+
+Text input systems for various languages are used widely in the world.
+They are called ``????''
+
+There are many 
+
+\subsection{Command line completion}
+
+% コマンドライン補完
+% Emacs的な古いやつ、PBEのやつ、学習するやつ
+
+
+% Gitのcompletion
+
+\subsection{Smart IDEs}
+
+% 補完系IDEいろいろ
+% Miller方面いろいろ
+
+\subsection{Use cloud data for development}
+
+% 他人の情報利用する系
+% コード共有、コンパイルエラー共有
+
+\subsection{Using user forums}
+
+% Qiita, StackOverflow
+
+\subsection{Literate Programming}
+
+% 文芸的プログラミング
+% JavaDoc, Jupyter, Eve
+
+\section{Evaluation}
 
 
 
-
-
-
-\section{References Format}
-
-% BALANCE COLUMNS
-\balance{}
 
 % REFERENCES FORMAT
 % References must be the same font size as other body text.
