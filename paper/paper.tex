@@ -135,6 +135,7 @@
 \def\GH{\textsf{GitHelp}}
 \def\SB{\textsf{Scrapbox}}
 \def\EH{\textsf{ExpandHelp}}
+\long\def\tt#1{``\texttt{#1}''}
 
 \begin{document}
 
@@ -181,7 +182,7 @@
   they are serious for vast amount of people around the world.
   %
   We propose a simple and general translation framework
-  \textsf{ExpandHelp} that can be used in a wide area of situations
+  {\EH} that can be used in a wide area of situations
   where such translation is required.
   We show how our framework can be used
   in the {\GH} system
@@ -198,6 +199,12 @@
 \keywords{\plainkeywords}
 
 \section{Introduction}
+
+Online help systems are usually hard to use because of the
+vocabulary problem \cite{Furnas:1987:VPH:32206.32212}.
+
+People don't use online help
+\cite{Novick:2006:WDP:1166324.1166329}.
 
 When we use modern artifacts,
 we shoule translate our intentions into actions required for the artifacts.
@@ -270,23 +277,23 @@ Contributions of this paper are as follows:
 % \item これが唯一の解決法ではないが、こういう考え方がポピュラーになって欲しい
 \end{enumerate}
 
-\section{Example}
+\section{Example: GitHelp}
 
-We have implemented the \textsf{GitHtlp} system
+We implemented the {\GH} system
 with which a user can translate his vague intention in various languages
-into a complete \texttt{git} commands
-using the \textsf{ExpandHelp} framework.
+into a complete \texttt{git} command
+using the {\EH} framework.
 
-\paragraph{Entering a command}
+\subsection{Entering a command}
 
 We assume that the user is using \texttt{bash} for his software
 development activities.
 
-\begin{figure}[b]
-  \includegraphics[width=8cm,bb=0 0 670 254]{figures/bash1.png}
-  \caption{Bash shell.}
-  \label{bash1}
-\end{figure}
+% \begin{figure}[h]
+%   \includegraphics[width=8cm,bb=0 0 670 254]{figures/bash1.png}
+%   \caption{Bash shell.}
+%   \label{bash1}
+% \end{figure}
 
 When the user wants to compare the latest \texttt{README.md} file with an
 older version, he tries to use \texttt{git} to show the difference.
@@ -296,18 +303,21 @@ conparison and invoke the following command like the following.
 \begin{quotation}
   \begin{verbatim}
     $ git diff README.md
-    $
+    $ xxx
   \end{verbatim}
 \end{quotation}
 
-Nothing happens, because this is not the right command
-to compare the latest version with one of the older versions.
+Nothing happens, because this is not the approriate command
+to compare the latest version of \texttt{README.md}
+with older versions.
 %
 More experienced user might use a command like the following,
 but it does not show anything either, because the version specification
 ``\verb|HEAD^^|''
-points at a file included in the older ``commit'',
-and 
+specifies a file included in the older ``commit'',
+and the following command only compares the \texttt{README.md}
+with the with the file included in the last commit, where
+\texttt{README.md} might be the same as the latest version.
 
 \begin{quotation}
   \verb|$ git diff HEAD^^ README.md|
@@ -315,31 +325,33 @@ and
 
 If {\GH} is installed,
 the user can type a special key (e.g. \texttt{Cmd-Ctrl-G}) to invoke {\GH}
-after typing ``\texttt{git RE 2}''.
+after typing ``\verb|git RE |'' to see how he can do the job.
 
-\begin{figure}[b]
-  \includegraphics[width=8cm,bb=0 0 1290 866]{figures/githelp1.png}
+\begin{figure}[h]
+  % \includegraphics[width=10cm,bb=0 0 1290 866]{figures/githelp1.png}
+  \includegraphics[width=10cm,bb=-100 -100 1190 766]{figures/githelp1.png}
   \caption{Invoking {\GH}.}
   \label{bash1}
 \end{figure}
 
 Here, various candidate entries with
 descriptios and command strings are listed.
-One of the entries says ``.....'',
-which means that ``to compare README with two older verson.''
+One of the entries says ``README.mdをひとつ前のバージョンと比較する'',
+which means that ``to compare README with the last verson.''
 %
 If the user thinks that that's what he wanted to do,
-he can select the entry by typing arrow keys and
-type the enter key.
+he can select the entry by moving the selection by typing arrow keys
+and type the enter key.
 Then the command line is replaced by the correct command string
 that satisfies the user's need.
 
-A description like ``2日前''(2 days ago) was also shown in the candidate list.
-This means that the user can use the same string ``\tettt{git RE 2}''
+A description like ``1日前''(1 day ago) was also shown in the candidate list.
+This means that the user can use the same string ``\texttt{git RE 1}''
 for getting the README.md file of the day before yesterday.
-The command is ``$ git ... '@{2 days ago}''.
+The command is ``\verb|$ git ... '@{1 days ago}|''.
 Although such command options are very difficult to remember,
-users can do the same thing only by saying RE and 2.
+users can do the same thing only by saying \texttt{RE} and \texttt{1}.
+
 
 \section{Implementation}
 
@@ -432,27 +444,130 @@ source codes and documents are put in the same place.
 
 \section{Related Works}
 
-\subsection{IME}
+\subsection{Input Methods}
 
-Text input systems for various languages are used widely in the world.
-They are called ``????''
+Text input systems for non-English languages are used widely in the world, and
+they are called as ``input methods'' (IMs).
 
-There are many 
+\begin{figure}[b]
+  \includegraphics[width=8cm,bb=0 0 976 670]{figures/nyuuryoku-ime.png}
+  \caption{Example IM for Japanese text input.}
+  \label{bash1}
+\end{figure}
 
-\subsection{Command line completion}
+Many research and development on IMs have been performed for years, and
+people are using them all the time for entering text in their mother language.
 
-% コマンドライン補完
-% Emacs的な古いやつ、PBEのやつ、学習するやつ
+IMs are a kind of translation system that convert one
+expression (pronunciation, etc.) into a textual form of a language.
+In the above example, ``kanji'' will be translated to ``漢字''.
 
+IMs are very popular especially in South-East Asian countries, and
+it is very common for people there to 
+use translation systems for using computers.
 
-% Gitのcompletion
+\subsection{Text and code completion}
+
+On text editors an│shells,
+``text completion'' has been available for a long time.
+%
+When a user types the TAB key after typing \tt{la} on the Unix shell,
+\tt{latex}, \tt{latex}, and other commands are shown as candidates.
+When a user types \tt{ls RE} and types the TAB key,
+Unix shell checks the directory, find the \texttt{README.md} file, and
+replace the user's input with \tt{ls README.md}.
+This behavior is called ``text completion'', and many variations of
+this idea have been adopted in text editors and command line editors.
+
+User's history data can be used for 
+The Reactive Keyboard system\cite{ReactiveKeyboard}
+accumlates the user's command history and use the data
+for predicting the user's next command.
+Programing-by-Example (PBE) systems\cite{Cypher}\cite{Lieberman}.
+
+Gitsome(https://github.com/donnemartin/gitsome)
+helps \texttt{git} users by
+showing possible arguments and manuals on the Unix shell,
+just like {\GH}.
+The direction is alomost the same as {\GH}, but
+Gitsome does not support .....
 
 \subsection{Smart IDEs}
+
+Many smart IDEs for suggesting codes are proposed.
+
+賢い補完
+\cite{Little:2006:TKC:1166253.1166275}
+% キーワードの羅列からコマンドを作成するという考えはとても正しいと思うが、実装がいかがなものか?
+% キーワードぐらいは思い出せるプログラマが対象になっている
+% 「margin」とか「left」とかいう単語は思い出す必要がある
+% 「ちょっと字下げ」とか言っても駄目
+% キーワードが違ってると駄目?
+% いろいろズルをしてるようだ
+% [[ActiveDocument]]はよく出てくるので特別扱いしているとか
+% ステミングをしている
+% ``the'' ``to'' などは捨ててるのだろう
+% そもそもリカーシブな検索アルゴリズムにかなり無理がありそう
+% テンプレートを作るのは大変ではないのか?
+
+AnyCode\cite{Gvero:2015:SJE:2814270.2814295}
+% [anyCode]というシステム。自然言語キーワードを入力するとコードスニペットが表示される。
+% [[copy fileA fileB]]みたいなキーワードから[[FileUtil.copyFile(new File(fileA), new File(fileB))]]みたいなコード候補を生成する
+% [自然言語処理]を行なっている
+% [https://github.com/tihomirg/nlpcoder/tree/noola GitHub]
+% 曖昧検索はできない
+% 真面目に自然言語を入れる必要がある
+% `123`みたいなパラメタは使えるか?
+% 使えると思うが例には出てこない
+% コードの説明文は出ない?
+% FileUtil.copyFile(new File(fileA), new File(fileB)) と言われても、どちらが新しいファイルなのかわからない
+
+Active Code Completion\cite{Omar:2012:ACC:2337223.2337324}
+% [/ palette] と呼ばれるテンプレートを用意して[IDE]でのコード補完をサポートする
+% `getDefaultColor()` を定義したいとき`purple`と入力すると、それに対応した候補が提示されるとか
+% 普段使ってる環境で有益な候補が表示されると嬉しいだろうと言っている
+% [[コメント]]
+% [Jun Kato.icon]
+% > Active code completionも思い出しました。型ごとに適した入力インタフェースを出すコード補完インタフェースのnn提案です。確か。
+% [増井俊之.icon]
+% IDEでどういう機能が欲しいかサーベイして設計したことになっている
+% 色選択と正規表現のためのコード生成をサポートした例が紹介されている
+% 一般的な補完コマンド起動によって呼び出されるようだ
+% サポートウィンドウはHTML5で生成する
+% しかし両者とも[/palette]の作成はかなり大変である
+% 普通のユーザが作れるようなものではない
+% [* 作成がすごく大変]で、[* 特定のIDEでしか使えない]という問題があると思う
+
+Code Completion from Abbreviated\cite{Han:2009:CCA:1747491.1747530}
+% [HMM]を使って正しいコードを予測して提示する
+% `ch opn`みたいなテキトーな入力から`chooser.showOpenDialog()`みたいな正しいコードが候補に出る
+% コードデータベースを解析
+% [[コメント]]
+% [増井俊之.icon] 2018/3/23 18:53
+% コードのほんの一部を指定すると正しく予測されるというのは面白い
+% HMMってそういうのに使えるのね
+% しかし[* 関数名とか全然覚えていないときは使えないだろう]
+% [語彙問題]が解決できてない
+% だとすると高速入力の役にはたつが、何もかもわからない人をサポートはできない
+% 用例データが存在しない場合も使えない
+% [IDE]でしか使えない
+% [Cyrus Omar: Active code completion]で参照されている
+
+
 
 % 補完系IDEいろいろ
 % Miller方面いろいろ
 
+\subsection{Context-based help}
+
 \subsection{Use cloud data for development}
+
+BluePrint \cite{Brandt:2010:EPI:1753326.1753402}
+%   サンプルコードをすぐ参照して利用できる[IDE]
+
+Bjorn\cite{Hartmann:2010:OPS:1753326.1753478}
+% 他人のヒストリを使ってコンパイルエラー対処法をサジェスト
+
 
 % 他人の情報利用する系
 % コード共有、コンパイルエラー共有
@@ -462,6 +577,12 @@ There are many
 % Qiita, StackOverflow
 
 \subsection{Literate Programming}
+
+参考文献にすることはないか
+
+Jupyter
+Eve
+
 
 % 文芸的プログラミング
 % JavaDoc, Jupyter, Eve
@@ -474,6 +595,6 @@ There are many
 % REFERENCES FORMAT
 % References must be the same font size as other body text.
 \bibliographystyle{SIGCHI-Reference-Format}
-\bibliography{sample}
+\bibliography{paper}
 
 \end{document}
