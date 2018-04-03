@@ -50,7 +50,8 @@
 
 % Load basic packages
 \usepackage{balance}       % to better equalize the last page
-\usepackage{graphics}      % for EPS, load graphicx instead 
+% \usepackage{graphics}      % for EPS, load graphicx instead 
+\usepackage{graphicx}      % for EPS, load graphicx instead 
 \usepackage[T1]{fontenc}   % for umlauts and other diaeresis
 \usepackage{txfonts}
 \usepackage{mathptmx}
@@ -136,6 +137,7 @@
 \def\SB{\textsf{Scrapbox}}
 \def\EH{\textsf{ExpandHelp}}
 \long\def\tt#1{``\texttt{#1}''}
+\long\def\sf#1{``\textsf{#1}''}
 
 \begin{document}
 
@@ -370,6 +372,59 @@ background of {\GH}.
 
 {\EH} systemm is used in {\GH}.
 
+Help documents used in ExpandHelp are provided as a set of data entries
+consisting of a regular expression which represents the help entry description
+and a corresponding command pattern.
+A description string is used to produce natural language texts
+which are easily understandable to users,
+while command patterns are used for invoking commands or calling library functions
+corresponding to the description.
+%
+For example, a help entry for finding a restaurant on the Web consists of
+the following data:
+
+\begin{quote}
+  description: \\
+  \texttt{Find a (Chinese|Korean|Vietnamese) restaurant \\  in (San Francisco|Chicago|New York) \\  on Yelp.com} \\
+  command: \\
+  \texttt{open 'http://www.yelp.com/search?\\  find\_loc=\$2\&find\_desc=\$1'}
+\end{quote}
+
+The first regular expression, the description part,
+is for generating texts like
+\sf{Find a Chinese restaurant in San Francisco}, 
+\sf{Find a Chinese restaurant in Chicago}, etc.,
+and the second part, command part,
+is used to generate a command for accessing \texttt{Yelp.com}.
+% Here, $1 and $2 corresponds to the matched pattern in the regular expression.
+In the first example, \sf{Chinese} and \sf{San Francisco}
+match the first and second parentheses of the regular expression, and
+these values are assigned to \texttt{\$1} and \texttt{\$2}
+for the command part, generating a URL
+\texttt{http://www.yelp. com/search?find\_loc=San\%20Francisco\&find\_desc= Chinese}.
+
+When the matched pattern like \sf{San Francisco}
+cannot be directly used in the command,
+parameters for the command can be put after the description string,
+separated by a TAB character.
+For example, when a number like ``\texttt{29247}'' should be used
+for checking the
+weather of San Francisco, we can describe the help entry like this:
+
+\begin{quote}\small
+ description: \\
+ \texttt{Check the weather of (San Francisco{\textbackslash}t29247| New York{\textbackslash}t23164)} \\
+ command: \\
+ \texttt{open 'http://local.msn.com/ten-day.aspx?\\eid=\$1'}
+\end{quote}
+
+Here, selecting a menu entry \sf{Check the weather of San Francisco}
+will produce a command
+\texttt{open 'http:{\slash}{\slash}local. msn.com{\slash}ten-day.aspx?eid=29247'}.
+
+
+-----------------------------------
+
 {\EH} is a general-purpose flexible help generation system
 that has the following characteristics.
 
@@ -425,6 +480,138 @@ For example,
 can be  used for Japanese users, who might want to delete
 one of the files by specifying ``消す''.
 (消す means 'delete' in Japanese).
+
+\subsection*{Generating help menu entries}
+
+Finding appropriate entries from the huge help document space is performed in two steps.
+First, we parse the regular expression to
+generate a state transition diagram which represents all the strings represented
+in the regular expression.
+Second, we generate all the description strings by expanding the regular expression
+into a tree, and filter the generated strings by the pattern specified by the user.
+Efficient pattern matching is performed every time a new description text is generated,
+and only the best-matched descriptions are shown to the user as menu entries.
+We call this the ``\textit{generate-and-filter}'' technique,
+and we will describe the details later.
+% and we will describe the details of the algorithm later in this section.
+
+\subsection*{Phase 1: Generating a state transition diagram from a regular expression}
+
+Regular expressions are widely used for finding a pattern in a text string
+in modern programming languages and in the Unix environment.
+In ExpandHelp, we use a regular expression for
+generating various patterns of descriptions in a short form.
+For example, we use a short regular expression
+\tt{(remove|delete|erase) (data|file)}
+for representing expressions like
+\sf{remove data},
+\sf{erase file},
+etc.
+
+Converting a regular expression to a state transition machine is a straightforward task.
+When we have a regular expression
+\tt{Find a (Chinese|Korean|Vietnamese) restaurant in (San Francisco|Chicago|New York) on Yelp.com}, 
+we can parse the string and convert it into a state transition diagram
+shown in Figure \ref{statemachine1}.
+
+\begin{figure}[htb]
+\includegraphics[width=90mm,bb=0 0 573 124]{figures/statemachine.pdf}
+\caption{State transition diagram for finding a restaurant.}
+\label{statemachine1}
+\end{figure}
+
+% \includegraphics[height=12pt]{figures/startnode.pdf}
+% depicts the start node.
+
+By traversing the nodes and links in this state machine,
+we can generate the following description texts.
+
+\begin{quote}
+\small
+\textsf{Find a Chinese restaurant in San Francisco} \\
+\textsf{Find a Chinese restaurant in Chicago} \\
+...\\
+\textsf{Find a Vietnamese restaurant in New York}\\
+\end{quote}
+
+\subsection*{Phase 2: Generating texts from a state transition diagram}
+
+Using the state transition diagram shown in Figure \ref{statemachine1},
+ExpandHelp generates all the strings represented in the regular expressions,
+and filter them by the pattern provided by the user.
+
+We can generate texts from a state transition diagram by traversing nodes one by one.
+Starting at the start node (\raisebox{-2pt}{\includegraphics[height=10pt,bb=0 0 40 40]{figures/startnode.pdf}})
+in Figure \ref{statemachine1},
+we can visit other nodes via edges and generate a tree of generated texts
+shown in Figure \ref{gentree1}.
+After visiting the initial node \raisebox{-2pt}{\includegraphics[height=10pt,bb=0 0 40 40]{figures/startnode.pdf}},
+the system generates a string \sf{Find a} and proceeds to the next node.
+In the second generation,
+the system can add \sf{Chinese}, \sf{Korean}, and \sf{Vietnamese}
+to \sf{Find a}, generating
+\sf{Find a Chinese},
+\sf{Find a Korean}, etc.
+The system can repeat finding edges from previously visited nodes,
+and eventually generates all the strings described above.
+Of course, it is impossible to generate all the strings
+from a regular expression like ``\texttt{(0|1)+}'' which represents infinite length of
+strings consisting of \texttt{0}s and \texttt{1}s, so the generation should be
+terminated at certain generation.
+
+\begin{figure}[htb]
+\includegraphics[width=85mm,bb=0 0 643 398]{figures/gentree1.pdf}
+\caption{Generating a text tree from a state transition machine.}
+\label{gentree1}
+\end{figure}
+
+\subsection{Generate-and-Filter}
+
+Generating all the texts in this way before finding matched strings is
+inefficient, because the amount of generated texts can easily become huge.
+Instead, the system performs the patter matching as soon as a text is generated,
+for saving time and memory.
+
+``Generate-and-test\footnote{
+  {\sf http:{\slash}{\slash}en.wikipedia.org{\slash}wiki{\slash}Generate\_and\_test}
+}''
+technique is a simple and effective strategy
+used for solving puzzles and AI problems.
+Using this strategy, the ``8-Queen'' problem can be solved simply by
+generating all the possible queen layouts and checking if
+two or more queens are laid out on the same row, column, or diagonal line.
+Although this strategy is simple, the cost of
+generating all the possible solutions is prohibitive, since
+the solution space of the 8-Queen puzzle is $8^8 = 16,777,216$,
+which is not a small amount even for today's computers.
+
+To solve this problem,
+controlling the generation part from the testing part is usually effective.
+In the 8-Queen problem,
+whenever the testing part finds two queens in the same row or column,
+it can tell the generation part to
+give up current layout in the early stage and proceed to the next layout.
+
+Similarly in our case,
+it is not efficient to perform the matching operation
+after generating all the texts from the regular expression,
+and it is better to calculate the matching
+at the time of generating each text.
+We call it the ``\textit{generate-and-filter}'' strategy,
+and implemented the algorithm in ExpandHelp.
+Unlike simple puzzle problems where
+conditions are strict and finding one solution is enough,
+our goal is to find help description strings which
+fits the query pattern while allowing errors.
+For this goal,
+the system should perform approximate pattern matching
+without sacrificing processing speed.
+%
+We could implement flexible generate-and-filter by using a simple and efficient
+approximate pattern matching algorithm based on the ``shifter algorithm''.
+
+
+
 
 
 Approximate pattern matching
