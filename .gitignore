@@ -1,3 +1,10 @@
 *~
 Gemfile.lock
 pkg
+*.log
+*.aux
+*.blg
+*.bbl
+*.dvi
+*.out
+*.xcp
