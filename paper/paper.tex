@@ -1,3 +1,8 @@
+% compare current (README.md|index.html) with the file from 2 versions ago
+% compare (README.md|index.html) with the one from (1|2|3|4) versions before
+% compare current (README.md|index.html) with that from  ([0-9]+)-days ago
+
+
 \documentclass{sigchi}
 
 % Use this section to set the ACM copyright statement (e.g. for
@@ -5,7 +10,7 @@
 % copyright statement.
 
 % Copyright
-\CopyrightYear{2016}
+\CopyrightYear{2018}
 %\setcopyright{acmcopyright}
 \setcopyright{acmlicensed}
 %\setcopyright{rightsretained}
@@ -137,9 +142,13 @@
 \def\SB{\textsf{Scrapbox}}
 \def\EH{\textsf{ExpandHelp}}
 \long\def\tt#1{\texttt{#1}}
+\long\def\stt#1{\texttt{\small{#1}}}
 \long\def\sf#1{\textsf{#1}}
-\long\def\qtt#1{``\texttt{#1}''}
-\long\def\qsf#1{``\textsf{#1}''}
+\long\def\ssf#1{\textsf{\small{#1}}}
+\long\def\qtt#1{``\tt{#1}''}   % quote tt
+\long\def\sqtt#1{``\stt{#1}''} % smal quote tt
+\long\def\qsf#1{``\sf{#1}''}
+\long\def\sqsf#1{``\ssf{#1}''}
 \long\def\qit#1{``\textit{#1}''}
 
 \begin{document}
@@ -279,10 +288,10 @@ Contributions of this paper are as follows:
 \item Introduction of ``\textit{translation paradigm}'' for
   generating a correct instruction to a machine from
   the user's vague intention
-\item IME-like command etnry system
-% やりたいことを実行するインタフェース (IME的なもの)
 \item Flexible dynamic search system based on RegExp (ExpandHelp)
 % そのための柔軟なインフラ (ExpandHelp)
+\item IME-like command etnry interface
+% やりたいことを実行するインタフェース (IME的なもの)
 \item Data sharing infrastructure for the translation paradigm
 % 共有/編集しやすい正規表現DSLとそのインプリ(Scrapbox+)
 % \item これが唯一の解決法ではないが、こういう考え方がポピュラーになって欲しい
@@ -656,22 +665,28 @@ so that he and other people can get an appropriate support next time.
 
 \subsection{Intelligent help systems}
 
-There have been tremendous amount of researches on intelligent help systems\cite{Delisle:2002:UIH:606412.606415},
+There have been many researches on intelligent help systems\cite{Delisle:2002:UIH:606412.606415},
 but few number of projects seem to be going on these days,
 maybe because now we can use the Internet for getting intelligent help from
-real people.
-Information on the net is really rich these days, and we can easily
+real people,
+either by searching Web pages or 
+by asking in user forums like StackOverflow\footnote{stackoverflow}.
+Information on the net is rich these days, and we can easily
 find somebody who can answer questions intelligently.
-This is a very good news, but 
+This is a good news, but 
 asking many trivial questions on the net is not considered to be a
 good manner, and
-using a powerful and flexible local help system like ExpandHelp is
+using a powerful and flexible local help system like {\EH} is
 preferable before asking other people.
 
 \subsection{Input Methods}
 
-Text input systems for non-English languages are used widely in the world, and
-they are called as ``input methods'' (IMs).
+Text input systems for non-English languages are widely used
+in the world,
+and they are called as ``Input Methods'' (IMs).
+%
+Many research and development on IMs have been going on for years, and
+people are using them every day for entering texts in their mother language.
 
 \begin{figure}[h]
   \includegraphics[width=8cm,bb=0 0 976 670]{figures/nyuuryoku-ime.png}
@@ -679,20 +694,20 @@ they are called as ``input methods'' (IMs).
   \label{bash1}
 \end{figure}
 
-Many research and development on IMs have been performed for years, and
-people are using them all the time for entering text in their mother language.
+IMs are one form of translation systems that convert one
+expression (pronunciation, character shape, etc.)
+into a textual form of a language.
+In the above example, the pronunciation ``kanji''
+is used for getting ``漢字''.
 
-IMs are a kind of translation system that convert one
-expression (pronunciation, etc.) into a textual form of a language.
-In the above example, ``kanji'' will be translated to ``漢字''.
-
-IMs are very popular especially in South-East Asian countries, and
-it is very common for people there to 
+IMs are very popular in the world these days,
+and it is very common for people to 
 use translation systems for using computers.
+Using an additional translation system like {\GH} is ...
 
 \subsection{Text and code completion}
 
-On text editors an│shells,
+On text editors and Unix shells,
 ``text completion'' has been available for a long time.
 %
 When a user types the TAB key after typing \qtt{la} on the Unix shell,
@@ -701,27 +716,42 @@ When a user types \qtt{ls RE} and types the TAB key,
 Unix shell checks the directory, find the \tt{README.md} file, and
 replace the user's input with \qtt{ls README.md}.
 This behavior is called ``text completion'', and many variations of
-this idea have been adopted in text editors and command line editors.
+this idea have been proposed and adopted in text editors and command line editors.
 
-User's history data can be used for 
-The Reactive Keyboard system\cite{ReactiveKeyboard}
+User's history data can also be used for the completion function.
+The Reactive Keyboard\cite{ReactiveKeyboard}
 accumlates the user's command history and use the data
-for predicting the user's next command.
-Programing-by-Example (PBE) systems\cite{Cypher}\cite{Lieberman}.
+for predicting the user's next input.
 
-Gitsome(https://github.com/donnemartin/gitsome)
-helps \tt{git} users by dynamically
-showing possible arguments and related manuals on the Unix shell,
+% Programing-by-Example (PBE) systems\cite{Cypher}\cite{Lieberman}.
+
+Gitsome\footnote{\textsf{https:{\slash}{\slash}github.com{\slash}donnemartin{\slash}gitsome}}
+helps \tt{git} users by
+dynamically showing possible arguments and related manuals on the Unix shell,
 just like {\GH}.
-The goal of Git some is alomost the same as {\GH} and we agree with its concept,
+The goal of Gitsome is alomost the same as {\GH} and we agree with its concept,
 but Gitsome does not support ...
 
 \subsection{Smart IDEs}
 
-Many smart IDEs for suggesting codes are proposed.
+Many smart IDEs for suggesting codes have been proposed resently.
 
-賢い補完
-\cite{Little:2006:TKC:1166253.1166275}
+% 賢い補完
+Little's system\cite{Little:2006:TKC:1166253.1166275}
+generates a complete JavaScript code snippet from keyword fragments.
+For example,
+\qtt{ActiveDocument .PageSetup .LeftMargin = InchesToPoints(2)}
+can be generated from keywords like
+\qsf{left},
+\qsf{margin},
+\qsf{4}, and
+\qsf{inches}.
+The system generates the code using a template database and heuristics
+for the target system.
+It is useful for a special environment, but
+users of the system cannot modify the algorithm or the database
+even when appropriate suggestions cannot be give by the system.
+
 % キーワードの羅列からコマンドを作成するという考えはとても正しいと思うが、実装がいかがなものか?
 % キーワードぐらいは思い出せるプログラマが対象になっている
 % 「margin」とか「left」とかいう単語は思い出す必要がある
@@ -734,7 +764,13 @@ Many smart IDEs for suggesting codes are proposed.
 % そもそもリカーシブな検索アルゴリズムにかなり無理がありそう
 % テンプレートを作るのは大変ではないのか?
 
-AnyCode\cite{Gvero:2015:SJE:2814270.2814295}
+% https://www.youtube.com/watch?v=93vZAmLyOQY
+AnyCode\cite{Gvero:2015:SJE:2814270.2814295} is another system
+that generates a complete code snippet from the user's
+input in natural language.
+AnyCode can handle synonyms like ``make'' == ``create'',
+曖昧検索はできず、かなりキーワードを指定する必要はある
+
 % [anyCode]というシステム。自然言語キーワードを入力するとコードスニペットが表示される。
 % [[copy fileA fileB]]みたいなキーワードから[[FileUtil.copyFile(new File(fileA), new File(fileB))]]みたいなコード候補を生成する
 % [自然言語処理]を行なっている
@@ -747,6 +783,16 @@ AnyCode\cite{Gvero:2015:SJE:2814270.2814295}
 % FileUtil.copyFile(new File(fileA), new File(fileB)) と言われても、どちらが新しいファイルなのかわからない
 
 Active Code Completion\cite{Omar:2012:ACC:2337223.2337324}
+is another code completion system for the Eclipse IDE.
+A database called \textit{palette} are used for code completion and coding support
+for Java classes.
+When a user wants to write a code for drawing a rectangle in purple,
+the user should just tell ``purple'' to the system,
+and the system shows the user a color selection window
+as well as the Java code for drawing a purple rectangle.
+This is a useful feature for the user to write a code including selecting
+a color, but paletts are difficult to create, and should be provided
+as IDE plugins.
 % [/ palette] と呼ばれるテンプレートを用意して[IDE]でのコード補完をサポートする
 % `getDefaultColor()` を定義したいとき`purple`と入力すると、それに対応した候補が提示されるとか
 % 普段使ってる環境で有益な候補が表示されると嬉しいだろうと言っている
@@ -762,7 +808,16 @@ Active Code Completion\cite{Omar:2012:ACC:2337223.2337324}
 % 普通のユーザが作れるようなものではない
 % [* 作成がすごく大変]で、[* 特定のIDEでしか使えない]という問題があると思う
 
-Code Completion from Abbreviated\cite{Han:2009:CCA:1747491.1747530}
+Han's Abbreviation Completion system\cite{Han:2009:CCA:1747491.1747530}
+can generate a code snippet from abbreviation strings give by the user.
+For example, a snippet like \qtt{chooser. showOpenDialog()}
+can be generated from the keyword
+\qsf{ch} and\qsf{opn}, using the code database and HMM.
+It can be very useful as a shorthand for handling long names,
+but users should have a vague knowledge about the correct names
+(e.g. \qtt{chooser}, \qtt{dialog}),
+and large code example corpus should exist before
+
 % [HMM]を使って正しいコードを予測して提示する
 % `ch opn`みたいなテキトーな入力から`chooser.showOpenDialog()`みたいな正しいコードが候補に出る
 % コードデータベースを解析
@@ -778,18 +833,31 @@ Code Completion from Abbreviated\cite{Han:2009:CCA:1747491.1747530}
 % [Cyrus Omar: Active code completion]で参照されている
 
 \subsection{Using cloud data for development}
+
 % 他人の情報利用する系
 % コード共有、コンパイルエラー共有
 
-BluePrint \cite{Brandt:2010:EPI:1753326.1753402}
+Many systems support sharing users' development experiences on the web so that
+they can be used on the developers' IDE.
+
+Using BluePrint\cite{Brandt:2010:EPI:1753326.1753402}
+as a plugin for Adobe Flex Builder,
+users can search sample codes from the Web and use it immediately
+as 
+
 %   サンプルコードをすぐ参照して利用できる[IDE]
 
-Bjorn\cite{Hartmann:2010:OPS:1753326.1753478}
-% 他人のヒストリを使ってコンパイルエラー対処法をサジェスト
+HelpMeOut\cite{Hartmann:2010:OPS:1753326.1753478} tells users
+how to handle compile errors,
+based on the people's experiences of handling compile errors.
 
-\subsection{Using user forums}
+%= 他人のヒストリを使ってコンパイルエラー対処法をサジェスト
 
+
+% \subsection{Using user forums}
+% 
 % Qiita, StackOverflow
+%
 
 \subsection{Literate Programming}
 
