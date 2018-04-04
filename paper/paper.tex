@@ -2,6 +2,10 @@
 % compare (README.md|index.html) with the one from (1|2|3|4) versions before
 % compare current (README.md|index.html) with that from  ([0-9]+)-days ago
 
+% 部屋を暗くする
+% make the room darker 
+% iot ......
+
 
 \documentclass{sigchi}
 
@@ -187,22 +191,23 @@
   he may have to ``toggle the wall switch''
   or issue a command like ``\tt{\$ iot ceilinglight 0}''.
   If the user is a Chinese speaker, he might have to translate his intention
-  ``使房黒暗'' into ``make the room darker'',
-  translate it to ``turn off the ceiling light'', 
-  and finally generate a command string like ``\tt{\$ iot ceilinglight 0}''.
+  % ``使房黒暗'' into ``make the room darker'',
+  ``房間暗一点'' into ``make the room darker'',
+  ``turn off the ceiling light'', 
+  ``toggle the wall switch'',
+  and finally to a command like ``\tt{\$ iot ceilinglight 0}''.
 
   People are perpetually suffering from such multi-level ``\textit{translation gaps}''.
   Translation gaps exist even for experienced computer users, but
   they are serious for vast amount of people around the world.
   %
   We propose a simple and general translation framework
-  {\EH} that can be used in a wide area of situations
+  {\EH} that can be used in various situations
   where such translation is required.
   We show how our framework can be used
   in the {\GH} system
   with which user can easily generate complex \tt{git} commands
   from fragments of users' intentions.
-
 \end{abstract}
 
 \category{H.5.m.}{Information Interfaces and Presentation
@@ -218,32 +223,29 @@ When people want to perform a task using modern artifacts,
 people frequently find difficulty handling them properly.
 %
 Even when manuals and help systems are provided,
-they are usually hard to use because of the
-vocabulary problem \cite{Furnas:1987:VPH:32206.32212}.
+people don't use them\cite{Novick:2006:WDP:1166324.1166329}
+partly because of the vocabulary problem\cite{Furnas:1987:VPH:32206.32212}.
 %
-People don't use online help systems\cite{Novick:2006:WDP:1166324.1166329}.
-Twitterでのアンケート: 80\% が全然使わない
+% Twitterでのアンケート: 80\% が全然使わない
 % https://gyazo.com/2dd525388cce34c916638f51bad386c7
-
-やりたいと思ったことがすぐできればどれほど嬉しいことか
-そもそも検索や翻訳が必要なものであるならそれを楽にすればよい
-
-When we use artifacts,
-we should translate our vague intentions in our brain into actions required for the artifacts.
+% 
+% やりたいと思ったことがすぐできればどれほど嬉しいことか
+% そもそも検索や翻訳が必要なものであるならそれを楽にすればよい
+%
+We should translate our vague intentions in our brain into actions required for the artifacts.
 When we want to watch a movie, we may pick up a DVD disk, put it into a
 DVD player, push the play button, and set up the audio and the monitor.
 When we feel thirsty, we may go to the kitchen, pick up a glass, and
 turn the faucet on to fill the glass with water.
-All the living creatures seem to be performing such translations
+All the living creatures are performing such translations
 between intentions and actions without difficulty, but
 in the modern world, people are suffering from
 serious gaps between what they want to do and what they have to do.
 
-Even when people almost know what they have to do for what they want to do,
-it is often not easy to perform the task properly.
+Even when people vaguely know what they have to do for what they want to do,
+it is often not easy for them to perform the task properly.
 Even when people know that they can watch a movie on the Internet,
 finding a movie and playing it is a difficult task for people without experiences.
-% even when detailed user manuals and documents exist.
 It would be nicer if they could watch a movie on the net
 just by showing a vague title or attributes of the movie
 in various languages.
@@ -252,7 +254,8 @@ in various languages.
 % it is not always easy for people in the world, since they may have
 % to use different languages to look for the information.
 
-We propose a command translation system with which users can generate a complete
+We propose a simple, flexible and powerful
+command translation framework with which users can generate a complete
 command string.
 %
 We provide a database consisting of
@@ -299,7 +302,7 @@ Contributions of this paper are as follows:
 
 \section{Example: GitHelp}
 
-We implemented the {\GH} system
+We implemented the ``{\GH}'' system
 with which a user can translate his vague intention in various languages
 into a complete \tt{git} command
 using the {\EH} framework.
@@ -379,7 +382,7 @@ users can do the same thing only by saying \tt{RE} and \tt{1}.
 
 % \subsection{Translation}
 
-A powerful information retrieval mechanism called {\EH} is used in {\GH}.
+A powerful information retrieval mechanism ``{\EH}'' is used in {\GH}.
 
 Help data used in {\EH} are provided as a set of data entries
 consisting of a regular expression which represents the help entry description
@@ -394,9 +397,9 @@ the following data:
 
 \begin{quote}
   description: \\
-  \tt{Find a (Chinese|Korean|Vietnamese) restaurant \\  in (San Francisco|Chicago|New York) \\  on Yelp.com} \\
+  \stt{Find a (Chinese|Korean|Vietnamese) restaurant \\  in (San Francisco|Chicago|New York) \\  on Yelp.com} \\
   command: \\
-  \tt{open 'http://www.yelp.com/search?\\  find\_loc=\$2\&find\_desc=\$1'}
+  \stt{open 'http://www.yelp.com/search?\\  find\_loc=\$2\&find\_desc=\$1'}
 \end{quote}
 
 The first regular expression, the description part,
@@ -619,13 +622,12 @@ approximate pattern matching algorithm based on the ``shifter algorithm''.
 
 \subsection{Sharing database on the Web}
 
-The data used in {\GH} are represented as {\SB} documents.
+The data used in {\GH} are represented as ``{\SB}'' documents.
 %
-{\SB} is a general-purpose flexible Wiki system for
-any kind of data sharing.
+{\SB} is a general-purpose real-time Wiki system for data sharing.
 {\SB} users can edit the contents of Wiki pages directly
-on Web browsers just like text editors, and simple
-markup symbols can be used just like MarkDown\footnote{markdown}
+on Web browsers just like text editors,
+using simple markup symbols similar to MarkDown\footnote{markdown}
 and other markup languages.
 
 For {\GH}, database entries like the following
