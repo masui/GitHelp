@@ -2,10 +2,10 @@
 % compare (README.md|index.html) with the one from (1|2|3|4) versions before
 % compare current (README.md|index.html) with that from  ([0-9]+)-days ago
 
+% 4/5 17:00 PDT = 4/6 9:00 JST
+
 % 部屋を暗くする
 % make the room darker 
-% iot ......
-
 
 \documentclass{sigchi}
 
@@ -147,6 +147,7 @@
 \def\GH{\textsf{GitHelp}}
 \def\SB{\textsf{Scrapbox}}
 \def\EH{\textsf{ExpandHelp}}
+\def\GIT{\texttt{git}}
 \long\def\tt#1{\texttt{#1}}
 \long\def\stt#1{\texttt{\fontsize{9pt}{0pt}\selectfont{#1}}}
 \long\def\sf#1{\textsf{#1}}
@@ -215,7 +216,7 @@
   where such translation is required.
   We show how our framework can be used
   in the {\GH} system
-  with which user can easily generate complex \tt{git} commands
+  with which user can easily generate complex {\GIT} commands
   from fragments of users' intentions.
 \end{abstract}
 
@@ -311,7 +312,7 @@ Contributions of this paper are as follows:
 
 We implemented the {\GH} system
 with which a user can translate his vague intention in various languages
-into a complete \tt{git} command
+into a complete {\GIT} command
 using the {\EH} framework.
 
 \subsection{Entering a command}
@@ -327,7 +328,7 @@ development activities.
 
 When a user wants to compare the latest \tt{README.md} file
 with the same file from 2 versions before,
-he might try to use \tt{git} with an argument
+he might try to use {\GIT} with an argument
 ``\verb|HEAD^^|''
 for specifying the old version.
 
@@ -365,19 +366,19 @@ he can select the entry by typing arrow keys and type the enter key.
 Then the user's input string is replaced by the right command string
 that satisfies the user's need.
 
-A description like ``2 days ago'' is also shown in the candidate list.
+A description like \sqsf{2 days ago} is also shown in the candidate list.
 This means that the user can use the same string \sqtt{git RE 2}
 for getting the \stt{README.md} file of the day before yesterday.
 The command,
 ``{\fontsize{9pt}{0pt}\selectfont\verb|$ git diff '@{2 days ago}' README.md|}'',
-may not be familiar to most \tt{git} users,
+may not be familiar to most {\GIT} users,
 but users can perform this task only by giving \sqtt{RE} and \sqtt{2}.
 
-A Japanese \stt{git} user can do the same thing just like
+A Japanese {\GIT} user can do the same thing just like
 English-speaking users.
 He can user the term \qtt{比}(compare) to find how he can perfor the job.
 
-\begin{figure}[H]
+\begin{figure}[t]
   % \includegraphics[width=10cm,bb=0 0 1290 866]{figures/githelp1.png}
   \includegraphics[width=12cm,bb=-100 -100 1190 766]{figures/githelp1.png}
   \caption{Invoking {\GH}.}
@@ -390,7 +391,7 @@ he can click the
 button and see the Wiki page shown in Figure \ref{scrapboxpage}.
 The user can edit the page if he wants to add information or finds an error.
 
-\begin{figure}[htb]
+\begin{figure}[b]
 \begin{verbatim}
 \end{verbatim}
 % \centerline{\includegraphics[width=100mm,bb=0 0 1428 1288]{figures/scrapbox1.png}}
@@ -401,18 +402,16 @@ The user can edit the page if he wants to add information or finds an error.
 
 \section{Implementation}
 
-% {\EH} search algorithm and database structure
-
 \subsection{ExpandHelp}
 
 A flexible information retrieval mechanism ``{\EH}'' is used in {\GH}.
-
+%
 Help data used in {\EH} are provided as a set of data entries
 consisting of a regular expression that represents the help entry description
-and a corresponding command pattern.
+and a corresponding command pattern string.
 A description string is used to produce natural language texts
 that are easily understandable by users,
-while command patterns are used for invoking commands or calling library functions
+while command patterns are used for invoking commands
 corresponding to the description.
 %
 For example, a help entry for showing the difference between
@@ -430,7 +429,7 @@ is for generating texts like
 \sqsf{Compare README.md with the one from 1 versions before}, 
 \sqsf{Compare index.html with the one from 2 versions before}, etc.,
 and the second part, command part,
-is used to generate a command to execute a \tt{git} command.
+is used to generate a command to execute a {\GIT} command.
 In the first example, \sqsf{README.md} and \sqsf{1}
 match the first and second parentheses of the regular expression, and
 these values are assigned to \tt{\$1} and \tt{\$2}
@@ -448,7 +447,7 @@ can be used for Japanese users.
 In this case,
 \sqsf{README.mdを1個前のものと比較する},
 \sqsf{README.mdを2個前のものと比較する}, etc.
-are used for theh matching.
+are used for the matching.
 
 % When the matched pattern like \qsf{San Francisco}
 % cannot be directly used in the command,
@@ -530,10 +529,9 @@ are used for theh matching.
 \subsubsection{Generating help menu entries}
 
 Finding appropriate entries from the huge help document space is performed in two steps.
-First, we parse the regular expression to
-generate a state transition diagram that represents all the strings represented
-in the regular expression.
-Second, we generate all the description strings by expanding the regular expression
+First, a state transition diagram is generated from the regular expressions
+used in the descriptions.
+Second, all the description strings are generated by expanding the regular expression
 into a tree, and filter the generated strings by the pattern specified by the user.
 Efficient pattern matching is performed every time a new description text is generated,
 and only the best-matched descriptions are shown to the user as menu entries.
@@ -656,18 +654,18 @@ approximate pattern matching algorithm based on the ``shifter algorithm''.
 
 The ``shifter algorithm''\cite{Wu:1992:FTS:135239.135244}
 is a simple and efficient
-text search algorithm which has interesting features
+text search algorithm that has interesting features
 not found in more common pattern matching algorithms like
 KMP\cite{KMP}, Boyer-Moor\cite{Boyer:1977:FSS:359842.359859}, etc.
 
-When a user wants to find a word \qsf{README} in a text,
+When a user wants to find a word \sqsf{README} in a text,
 he can use a patter matching state machine like below,
 where the gray circle denotes that the state is active.
 
 \begin{figure}[h]
-\includegraphics[width=70mm,bb=0 0 439 73]{figures/readme1.pdf}
-\caption{A state machine for \qsf{README}.}
-\label{readme1}
+  \includegraphics[width=60mm,bb=0 0 439 73]{figures/readme1.pdf}
+  \caption{A state machine for \qsf{README}.}
+  \label{readme1}
 \end{figure}
 
 Initially, only the leftmost node is active, but when the
@@ -675,7 +673,7 @@ state machine receives \qsf{R}, both the first and the second node become active
 and the activation state will change to the following pattern.
 
 \begin{figure}[h]
-\includegraphics[width=70mm,bb=0 0 439 73]{figures/readme2.pdf}
+\includegraphics[width=60mm,bb=0 0 439 73]{figures/readme2.pdf}
 \caption{After receiving \qsf{R}.}
 \label{readme2}
 \end{figure}
@@ -684,7 +682,7 @@ When \qsf{README} is given to the state machine,
 the rightmost node becomes active.
 
 \begin{figure}[h]
-\includegraphics[width=70mm,bb=0 0 439 73]{figures/readme3.pdf}
+\includegraphics[width=60mm,bb=0 0 439 73]{figures/readme3.pdf}
 \caption{After receiving \qsf{README}.}
 \label{readme3}
 \end{figure}
@@ -767,21 +765,19 @@ similar to the pattern (e.g. \sqsf{READY}).
 %  risto rante
 %  restaurant
 \begin{figure}[htb]
-\begin{verbatim}
-\end{verbatim}
-\centerline{\includegraphics[width=40mm,bb=0 0 104 51]{figures/readme-mismatch.pdf}}
-\caption{Matching error between \qsf{README} and \qsf{REDDY}.}
-\label{readme-reddy-mismatch}
+  \centerline{\includegraphics[width=40mm,bb=0 0 104 51]{figures/readme-mismatch.pdf}}
+  \caption{Matching error between \qsf{README} and \qsf{REDDY}.}
+  \label{readme-reddy-mismatch}
 \end{figure}
 
 Adding three more states to Figure \ref{readme1}, we can perform more
-sophisticated pattern matcher which can accept strings with
+flexible pattern matcher which can accept strings with
 0 to 3 matching errors.
 
 \begin{figure}[htb]
-\includegraphics[width=85mm,bb=0 0 443 282]{figures/readme-ambig.pdf}
-\caption{A pattern matcher accepting 0-3 errors.}
-\label{shifterambig}
+  \includegraphics[width=65mm,bb=0 0 443 282]{figures/readme-ambig.pdf}
+  \caption{A pattern matcher accepting 0-3 errors.}
+  \label{shifterambig}
 \end{figure}
 
 Figure \ref{shifterambig} shows a state machine which can detect a string
@@ -879,8 +875,7 @@ The data used in {\GH} are represented as ``{\SB}'' documents.
 %
 {\SB} is a general-purpose real-time Wiki system for data sharing.
 {\SB} users can edit the contents of Wiki pages directly
-on Web browsers just like text editors,
-using simple markup symbols.
+on Web browsers just like using text editors.
 
 The data used for {\GH} is shown in Figure \ref{scrapboxpage}.
 
@@ -893,24 +888,22 @@ The data used for {\GH} is shown in Figure \ref{scrapboxpage}.
 % \label{xxxxx}
 % \end{figure}
 
-This page describes the usage of \sqtt{git diff}, and
+This page shows how to use \sqtt{git diff}, and
 the page contains command specifications in {\EH} format
-in addition to the description of \sqtt{git diff}.
-%
+in addition to the documentation.
+
 % Specs and command lines are specified with a special symbol, and
 % all other documents can be written just like standard manuals and help documents.
 
-Although usage examples are often shown on Unix man pages,
-they cannot be used as the database of online help system.
+Usage examples are often shown on documents and manuals like Unix man pages,
+they cannot be used as the database of an online help system.
 On the other hand,
-a {\SB} document contains both the manual page and the help database
-at the same place.
-%
-This strategy is similar to the
-``Literate Programming''\footnote{
+a {\SB} document contains both the manual document and the help database
+in the same place, just like
+writing a source code and the document in the same place
+using the ``Literate Programming''\footnote{
   \ssf{https:{\slash}{\slash}en.wikipedia.org{\slash}wiki{\slash}Literate\_programming}
-} style,
-where source codes and documents are put in the same document.
+} style.
 
 Also, since the database is on the Wiki page, any member of the
 Wiki can correct the document or add additional {\GH} specifications.
@@ -960,7 +953,8 @@ is used for getting ``漢字''.
 IMs are very popular in the world these days,
 and it is very common for people to 
 use translation systems for using computers.
-Using an additional translation system like {\GH} is ...
+
+The behavior of {\GH} is similar to conventional IMs.
 
 \subsection{Text and code completion}
 
@@ -968,22 +962,20 @@ On text editors and Unix shells,
 ``text completion'' has been available for a long time.
 %
 When a user types the TAB key after typing \sqtt{la} on the Unix shell,
-\sqtt{latex}, \sqtt{latex}, and other commands are shown as candidates.
+\sqtt{latex}, \sqtt{latex}, and other Unix commands are shown as candidates.
 When a user types \sqtt{ls RE} and types the TAB key,
-Unix shell checks the directory, find the \stt{README.md} file, and
+the shell checks the directory, find the \stt{README.md} file, and
 replace the user's input with \sqtt{ls README.md}.
 This behavior is called ``text completion'', and many variations of
-this idea have been proposed and adopted in text editors and command line editors.
+this idea have been proposed and adopted in command shells and text editors.
 
 User's history data can also be used for the completion function.
 The Reactive Keyboard\cite{ReactiveKeyboard}
 accumlates the user's command history and use the data
 for predicting the user's next input.
 
-% Programing-by-Example (PBE) systems\cite{Cypher}\cite{Lieberman}.
-
 Gitsome\footnote{\textsf{https:{\slash}{\slash}github.com{\slash}donnemartin{\slash}gitsome}}
-helps \tt{git} users by
+helps {\GIT} users by
 dynamically showing possible arguments and related manuals on the Unix shell,
 just like {\GH}.
 The goal of Gitsome is alomost the same as {\GH} and we agree with its concept,
@@ -991,21 +983,23 @@ but Gitsome does not support ...
 
 \subsection{Smart IDEs}
 
-Many smart IDEs for suggesting codes have been proposed resently.
+Integrated Development Environments (IDEs) are widely used for
+software development, and
+many smart IDEs for suggesting codes have been proposed resently.
 
-% 賢い補完
 Little's system\cite{Little:2006:TKC:1166253.1166275}
-generates a complete JavaScript code snippet from keyword fragments.
-For example,
+generates a complete JavaScript code snippet from keyword fragments
+give by users.
+For example, a code snippet
 \sqtt{ActiveDocument .PageSetup .LeftMargin = InchesToPoints(2)}
 can be generated from keywords like
 \sqsf{left},
 \sqsf{margin},
-\sqsf{4}, and
-\sqsf{inches}.
+\sqsf{inches},
+and \sqsf{2}.
 The system generates the code using a template database and heuristics
-for the target system.
-It is useful for a special environment, but
+designed for the target system.
+It is useful for a specific environment, but
 users of the system cannot modify the algorithm or the database
 even when appropriate suggestions cannot be give by the system.
 
@@ -1067,9 +1061,9 @@ as IDE plugins.
 
 Han's Abbreviation Completion system\cite{Han:2009:CCA:1747491.1747530}
 can generate a code snippet from abbreviation strings give by the user.
-For example, a snippet like \sqtt{chooser. showOpenDialog()}
-can be generated from the keyword
-\sqsf{ch} and\sqsf{opn}, using the code database and HMM.
+For example, a code snippet like \sqtt{chooser. showOpenDialog()}
+can be generated from strings like
+\sqsf{ch} and \sqsf{opn}, using the code database and HMM.
 It can be very useful as a shorthand for handling long names,
 but users should have a vague knowledge about the correct names
 (e.g. \sqtt{chooser}, \sqtt{dialog}),
@@ -1126,13 +1120,77 @@ JavaDoc
 Jupyter
 Eve
 
-\section{Evaluation}
+\section{Discussions}
+
+Since the translation mechanism of {\EH} is simple and flexible,
+it can be used for a wide range of application domains where
+intelligent help is required.
+{\EH} can be used for 
+
+
+\paragraph{Order of command and arguments}
+
+Using a command shell,
+users have to enter a command first and enter options and arguments after that.
+Using a GUI desktop,
+users can right-click a data icon to show a menu,
+and select what he wants to do from the menu.
+Switching between command-oriented usage pattern and
+data-oriented usage pattern is sometimes confusing.
+Using {\EH}, users can find what they can do
+either by specifying commands or by specifying data, 
+without worrying about the order.
+
+\paragraph{Usage of regular expressions}
+
+An advantage of using a regular expression is that
+it is fairly easy for users to write description texts.
+People can easily write a help description like
+\sqtt{(Start|Run) Firefox browser}
+without having a knowledge of automata or formal grammar.
+We can use arbitrary texts for the database of Expand Help.
+For example,
+we can collect hundreds of books titled ``Windows tips'' from the market
+and convert all the title of the tips into help data of ExpandHelp.
+
+\paragraph{Toward more general help system}
+
+Since a user can activate a command or access a Web page
+from ExpandHelp only by typing keywords,
+it can be used as a command launcher rather than a help system.
+Adding data to an existing help system is usually a hard task,
+but adding data so ExpandHelp is very simple.
+It would also be convenient to use a Wiki page for providing the help
+data for ExpandHelp, since users can easily edit the description
+for their needs.
+We are planning to distribute Wiki-based ExpandHelp to the public and
+share the help data between groups of people.
 
 \section{Conclusion}
 
+We have introduced a general-purpose flexible translation framework {\EH}
+and used it for {\GH}, a system for supporting {\GIT} users.
+%
+The database of {\EH} are shared on a real-time general-purpose Wiki system {\SB},
+and all the users can share it to improve the quality of the help system.
 
-% REFERENCES FORMAT
+Unlike existing smart IDEs for supporting programming tasks,
+{\EH} framework can be used in wide range of situations
+where translation-based help is required.
+
+We presented a powerful and flexible help system ``ExpandHelp''
+constructed on the generate-and-filter algorithm, where
+the system generates all the possible expressions of
+help entries expanded from regular expressions given by the help data provider,
+while the output expressions are filtered by search keywords using
+an efficient approximate pattern matching algorithm.
+Since the data format is simple and the search algorithm is fast and flexible,
+developers can easily publish useful help data, while
+users can have bigger chances of finding an appropriate
+data from vague knowledges.
+
 % References must be the same font size as other body text.
+% そうなん?
 \bibliographystyle{SIGCHI-Reference-Format}
 \bibliography{paper}
 
