@@ -146,9 +146,9 @@
 \def\SB{\textsf{Scrapbox}}
 \def\EH{\textsf{ExpandHelp}}
 \long\def\tt#1{\texttt{#1}}
-\long\def\stt#1{\texttt{\small{#1}}}
+\long\def\stt#1{\texttt{\fontsize{9pt}{0pt}\selectfont{#1}}}
 \long\def\sf#1{\textsf{#1}}
-\long\def\ssf#1{\textsf{\small{#1}}}
+\long\def\ssf#1{\textsf{\fontsize{9pt}{0pt}\selectfont{#1}}}
 \long\def\qtt#1{``\tt{#1}''}   % quote tt
 \long\def\sqtt#1{``\stt{#1}''} % smal quote tt
 \long\def\qsf#1{``\sf{#1}''}
@@ -185,19 +185,26 @@
   there is usually a huge mismatch between the users' intention
   and the required action.
   % the language and vocabularies used for the task are completely different.
-  When a user wants to ``make the room darker'',
-  he should translate it to a real action like ``turn off the ceiling light''.
-  To do so,
-  he may have to ``toggle the wall switch''
-  or issue a command like ``\tt{\$ iot ceilinglight 0}''.
-  If the user is a Chinese speaker, he might have to translate his intention
-  % ``使房黒暗'' into ``make the room darker'',
-  ``房間暗一点'' into ``make the room darker'',
-  ``turn off the ceiling light'', 
-  ``toggle the wall switch'',
-  and finally to a command like ``\tt{\$ iot ceilinglight 0}''.
-
-  People are perpetually suffering from such multi-level ``\textit{translation gaps}''.
+  %
+  For example, when a Chinese person wants to ``房間暗一点'' (make the room darker),
+  % he may have to translate his intention into an English expression ``make the room darker'',
+  he may have to find that he should ``turn off the ceiling light'' for the task,
+  translate it to a required action ``toggle the wall switch''
+  or a command like ``\tt{\$ iot clight 0}''.
+  %
+  % When a user wants to ``make the room darker'',
+  % he should translate it to a real action like ``turn off the ceiling light''.
+  % To do so,
+  % he may have to ``toggle the wall switch''
+  % or issue a command like ``\tt{\$ iot ceilinglight 0}''.
+  % If the user is a Chinese speaker, he might have to translate his intention
+  % ``房間暗一点'' into ``make the room darker'',
+  % ``turn off the ceiling light'', 
+  % ``toggle the wall switch'',
+  % and finally to a command like ``\tt{\$ iot ceilinglight 0}''.
+  %
+  There is a huge gap between ``房間暗'' and ``\tt{\$ iot clight 0}'', and
+  people are perpetually suffering from such multi-level ``\textit{translation gaps}''.
   Translation gaps exist even for experienced computer users, but
   they are serious for vast amount of people around the world.
   %
@@ -255,18 +262,16 @@ in various languages.
 % to use different languages to look for the information.
 
 We propose a simple, flexible and powerful
-command translation framework with which users can generate a complete
-command string.
+translation framework with which users can generate a complete
+command string from fragments of users' vague intentions.
 %
-We provide a database consisting of
-pairs of
-(1) the description of the task that users want to perform,
+We provide a database consisting of pairs of
+the description of the task that users want to perform (e.g. 房間暗一点)
 and
-(2) the actual command string required by the system.
-(1) can be written using regular expressions in any language,
-
-For example, the database can include data like
-\tt{\[ heya wo kuraku suru, \% iot ceiling 0 \]}.
+the actual command string required by the system (e.g. \tt{\$ iot clight 0}).
+Descriptions can be written in any natural language using regular expressions
+and the database on the Wiki pages can be edited by any user
+who wants to improve the database.
 
 % やりたいことの[* 平易な表現と実行コマンドの組を用意]して[* 共有]しておいて、[* 簡単に検索/実行]できるようにする
 % 表現は[* 何語で書いてあってもかまわない]
@@ -289,27 +294,27 @@ Contributions of this paper are as follows:
 \begin{enumerate}
 % 各種技術を組み合わせた翻訳支援というパラダイムの提案
 \item Introduction of ``\textit{translation paradigm}'' for
-  generating a correct instruction to a machine from
-  the user's vague intention
-\item Flexible dynamic search system based on RegExp (ExpandHelp)
+  generating a correct instruction to an artifact from
+  the user's vague intention in natural language.
+\item General-purpose flexible dynamic search system based on regular expressions.
 % そのための柔軟なインフラ (ExpandHelp)
-\item IME-like command etnry interface
+% \item IME-like command etnry interface
 % やりたいことを実行するインタフェース (IME的なもの)
-\item Data sharing infrastructure for the translation paradigm
+\item Data sharing infrastructure for the above strategy.
 % 共有/編集しやすい正規表現DSLとそのインプリ(Scrapbox+)
 % \item これが唯一の解決法ではないが、こういう考え方がポピュラーになって欲しい
 \end{enumerate}
 
 \section{Example: GitHelp}
 
-We implemented the ``{\GH}'' system
+We implemented the {\GH} system
 with which a user can translate his vague intention in various languages
 into a complete \tt{git} command
 using the {\EH} framework.
 
 \subsection{Entering a command}
 
-We assume that the user is using \tt{bash} for his software
+We assume that the user uses \tt{bash} for his software
 development activities.
 
 % \begin{figure}[h]
@@ -318,120 +323,129 @@ development activities.
 %   \label{bash1}
 % \end{figure}
 
-When the user wants to compare the latest \tt{README.md} file with an
-older version, he tries to use \tt{git} to show the difference.
-He may know that he can use the \tt{git diff} command to do the
-conparison and invoke the following command like the following.
-
-\begin{quotation}
-\begin{verbatim}
-$ git diff README.md
-$
-\end{verbatim}
-\end{quotation}
-
-Nothing happens, because this is not the approriate command
-to compare the latest version of \tt{README.md}
-with older versions.
-%
-More experienced user might use a command like the following,
-but it does not show anything either, because the version specification
+When a user wants to compare the latest \tt{README.md} file
+with the same file from 2 versions before,
+he might try to use \tt{git} with an argument
 ``\verb|HEAD^^|''
-specifies a file included in the older ``commit'',
-and the following command only compares the \tt{README.md}
-with the with the file included in the last commit, where
-\tt{README.md} might be the same as the latest version.
+for specifying an old version.
 
 \begin{quotation}
   \verb|$ git diff HEAD^^ README.md|
+  \par
+  \verb|$|
 \end{quotation}
 
+Nothing happens here because
+\verb|HEAD^^|
+specifies a file included in the older commit,
+and the command above only compares the \tt{README.md}
+with the file included in an old commit, where
+\tt{README.md} might be the same as the latest version.
+
 If {\GH} is installed,
-the user can type a special key (e.g. \tt{Cmd-Ctrl-G}) to invoke {\GH}
-after typing ``\verb|git RE |'' to see how he can do the job.
+the user can type a special shortcut key
+% (e.g. \tt{Cmd-Ctrl-G})
+to invoke {\GH} after typing ``\verb|git RE 2|'' to see how he can do the job.
 
 \begin{figure}[h]
   % \includegraphics[width=10cm,bb=0 0 1290 866]{figures/githelp1.png}
-  \includegraphics[width=10cm,bb=-100 -100 1190 766]{figures/githelp1.png}
+  % \includegraphics[width=12cm,bb=-100 -100 1190 766]{figures/githelp1.png}
+  \includegraphics[width=9cm,bb=0 0 1000 600]{figures/githelp1.png}
   \caption{Invoking {\GH}.}
   \label{bash1}
 \end{figure}
 
 Here, various candidate entries with
 descriptios and command strings are listed.
-One of the entries says ``README.mdをひとつ前のバージョンと比較する'',
-which means that ``to compare README with the last verson.''
+One of the entries says ``README.mdをふたつ前のバージョンと比較する'',
+which means ``to compare \tt{README.md} with the one from 2 versions before.''
 %
-If the user thinks that that's what he wanted to do,
-he can select the entry by moving the selection by typing arrow keys
+If the user thinks that that's what he wants to do,
+he can select the entry by selecting it by typing arrow keys
 and type the enter key.
-Then the command line is replaced by the correct command string
+Then the user's input string is replaced by the right command string
 that satisfies the user's need.
 
-A description like ``1日前''(1 day ago) was also shown in the candidate list.
-This means that the user can use the same string ``\tt{git RE 1}''
-for getting the README.md file of the day before yesterday.
-The command is ``\verb|$ git ... '@{1 days ago}|''.
-Although such command options are very difficult to remember,
-users can do the same thing only by saying \tt{RE} and \tt{1}.
+A description like ``2日前''(2 days ago) was also shown in the candidate list.
+This means that the user can use the same string ``\tt{git RE 2}''
+for getting the \tt{README.md} file of the day before yesterday.
+The command,
+``\verb|$ git diff '@{2 days ago}' README.md|'',
+is difficult to remember,
+but users can do the same thing only by saying \tt{RE} and \tt{2}.
 
+A Japanese \tt{git} user can do the same thing just like
+English-speaking users.
+
+\begin{figure}[h]
+  % \includegraphics[width=10cm,bb=0 0 1290 866]{figures/githelp1.png}
+  \includegraphics[width=12cm,bb=-100 -100 1190 766]{figures/githelp1.png}
+  \caption{Invoking {\GH}.}
+  \label{bash2}
+\end{figure}
+
+If the user wants to know more about the command line options,
+he can click the ``i'' button and browse the Wiki page.
+The page can be edited by any user, and 
+
+(Figure of Wiki here)
 
 \section{Implementation}
 
-{\EH} search algorithm and database structure
+% {\EH} search algorithm and database structure
 
 % \subsection{Translation}
 
-A powerful information retrieval mechanism ``{\EH}'' is used in {\GH}.
+A flexible information retrieval mechanism ``{\EH}'' is used in {\GH}.
 
 Help data used in {\EH} are provided as a set of data entries
-consisting of a regular expression which represents the help entry description
+consisting of a regular expression that represents the help entry description
 and a corresponding command pattern.
 A description string is used to produce natural language texts
 that are easily understandable by users,
 while command patterns are used for invoking commands or calling library functions
 corresponding to the description.
 %
-For example, a help entry for finding a restaurant on the Web consists of
-the following data:
+For example, a help entry for showing the difference between
+current file and older file can be like this:
 
 \begin{quote}
   description: \\
-  \stt{Find a (Chinese|Korean|Vietnamese) restaurant \\  in (San Francisco|Chicago|New York) \\  on Yelp.com} \\
+  \stt{Compare (\#{files}) with the one from (1|2|3|4) versions before}\\
   command: \\
-  \stt{open 'http://www.yelp.com/search?\\  find\_loc=\$2\&find\_desc=\$1'}
+  \stt{git diff ....}
 \end{quote}
 
 The first regular expression, the description part,
 is for generating texts like
-\qsf{Find a Chinese restaurant in San Francisco}, 
-\qsf{Find a Chinese restaurant in Chicago}, etc.,
+\qsf{Compare README.md with the one from 1 versions before}, 
+\qsf{Compare index.html with the one from 2 versions before}, etc.,
 and the second part, command part,
-is used to generate a command for accessing \tt{Yelp.com}.
-In the first example, \qsf{Chinese} and \qsf{San Francisco}
+is used to generate a command to execute a \tt{git} command.
+In the first example, \qsf{README.md} and \qsf{1}
 match the first and second parentheses of the regular expression, and
 these values are assigned to \tt{\$1} and \tt{\$2}
-for the command part, generating a URL
-\tt{http://www.yelp.com/search?find\_loc=San\%20Francisco\&find\_desc=Chinese}.
+for the command part, generating a command
+\tt{git xxxxxxx}.
 
-When the matched pattern like \qsf{San Francisco}
-cannot be directly used in the command,
-parameters for the command can be put after the description string,
-separated by a TAB character.
-For example, when a number like ``\tt{29247}'' should be used
-for checking the
-weather of San Francisco, we can describe the help entry like this:
-
-\begin{quote}\small
- description: \\
- \tt{Check the weather of (San Francisco{\textbackslash}t29247| New York{\textbackslash}t23164)} \\
- command: \\
- \tt{open 'http://local.msn.com/ten-day.aspx?\\eid=\$1'}
-\end{quote}
-
-Here, selecting a menu entry \qsf{Check the weather of San Francisco}
-will produce a command
-\tt{open 'http:{\slash}{\slash}local. msn.com{\slash}ten-day.aspx?eid=29247'}.
+% When the matched pattern like \qsf{San Francisco}
+% cannot be directly used in the command,
+% parameters for the command can be put after the description string,
+% separated by a TAB character.
+% For example, when a number like ``\tt{29247}'' should be used
+% for checking the
+% weather of San Francisco, we can describe the help entry like this:
+% 
+% \begin{quote}\small
+%  description: \\
+%  \tt{Check the weather of (San Francisco{\textbackslash}t29247| New York{\textbackslash}t23164)} \\
+%  command: \\
+%  \tt{open 'http://local.msn.com/ten-day.aspx?\\eid=\$1'}
+% \end{quote}
+%
+% Here, selecting a menu entry \qsf{Check the weather of San Francisco}
+% will produce a command
+% \tt{open 'http:{\slash}{\slash}local. msn.com{\slash}ten-day.aspx?eid=29247'}.
 
 \subsection{(section written for GitHelp)}
 
@@ -456,7 +470,7 @@ An example of the desc-exec pair can be the following:
 into
 ``\verb|rm README.md|
 
-First, the spec like \verb|#{file}| is expanded to a list of filenames like
+First, the spec like \stt{\#\{file\}} is expanded to a list of filenames like
 \verb+README.md|Makefile|test.c+,
 and the spec string becomes
 ``\verb+(delete|remove) a file (README.md|Makefile|test.c)+''.
@@ -477,13 +491,13 @@ this is translated to
 
 If ``\verb|destroy|'' should also be used for the spec,
 the spec can be modified to 
-\verb+(delete|remove) a (#{file})+.
+\stt{(delete|remove) a (\#{file})}.
 
 Any kind of specs in any language can be used for the specification.
 For example,
 
 \begin{verbatim}
-  #{file}を(消す|消去する)
+  \#{file}を(消す|消去する)
   /bin/rm $1
 \end{verbatim}
 
@@ -511,18 +525,18 @@ in modern programming languages and in the Unix environment.
 In {\EH}, we use regular expressions for
 generating various patterns of descriptions in a short form.
 For example, we use a short regular expression
-\qtt{(remove|delete|erase) (data|file)}
+\sqtt{(remove|delete|erase) (data|file)}
 for representing expressions like
-\qsf{remove data},\qsf{erase file}, etc.
+\sqsf{remove data},\sqsf{erase file}, etc.
 
 Converting a regular expression to a state transition machine is a straightforward task.
 When we have a regular expression
-\qtt{Find a (Chinese|Korean|Vietnamese) restaurant in (San Francisco|Chicago|New York) on Yelp.com}, 
+\sqtt{Compare (README.md|index.html|package.json) with the one (1|2|...|10) versions before}, 
 we can parse the string and convert it into a state transition diagram
 shown in Figure \ref{statemachine1}.
 
 \begin{figure}[htb]
-\includegraphics[width=90mm,bb=0 0 573 124]{figures/statemachine.pdf}
+\includegraphics[width=90mm,bb=0 0 571 126]{figures/statemachine.pdf}
 \caption{State transition diagram for finding a restaurant.}
 \label{statemachine1}
 \end{figure}
@@ -532,10 +546,10 @@ we can generate the following description texts.
 
 \begin{quote}
 \small
-\textsf{Find a Chinese restaurant in San Francisco} \\
-\textsf{Find a Chinese restaurant in Chicago} \\
+\ssf{Compare README.md with the one 1 versions before} \\
+\ssf{Compare index.html with the one 1 versions before} \\
 ...\\
-\textsf{Find a Vietnamese restaurant in New York}\\
+\ssf{Compare package.json with the one 10 versions beforef}\\
 \end{quote}
 
 \subsubsection{Phase 2: Generating texts from a state transition diagram}
@@ -552,15 +566,15 @@ we can visit other nodes via edges and generate a tree of generated texts
 shown in Figure \ref{gentree1}.
 After visiting the initial node
 \raisebox{-2pt}{\includegraphics[height=10pt,bb=0 0 40 40]{figures/startnode.pdf}},
-the system generates a string \qsf{Find a} and proceeds to the next node.
+the system generates a string \sqsf{Compare} and proceeds to the next node.
 In the second generation,
-the system can add \qsf{Chinese}, \qsf{Korean}, and \qsf{Vietnamese}
-to \qsf{Find a}, generating
-\qsf{Find a Chinese}, \qsf{Find a Korean}, etc.
+the system can add \sqsf{README.md}, \sqsf{index.html}, and \sqsf{package.json}
+to \sqsf{Compare}, generating
+\sqsf{Compare README.md}, \sqsf{Compare index.html}, etc.
 The system can repeat finding edges from previously visited nodes,
 and eventually generates all the strings described above.
 Of course, it is impossible to generate all the strings
-from a regular expression like ``\tt{(0|1)+}'' which represents infinite length of
+from a regular expression like ``\tt{(0|1)+}'' that represents infinite length of
 strings consisting of \tt{0}s and \tt{1}s, so the generation should be
 terminated at certain generation.
 
@@ -577,10 +591,10 @@ inefficient, because the amount of generated texts can easily become huge.
 Instead, the system performs the patter matching as soon as a text is generated,
 for saving time and memory.
 
-``Generate-and-test\footnote{
+``Generate-and-test''\footnote{
   {\sf http:{\slash}{\slash}en.wikipedia.org{\slash}wiki{\slash}Generate\_and\_test}
-}''
-technique is a simple and effective strategy
+}
+is a simple and effective strategy
 used for solving puzzles and AI problems.
 For example,
 the ``8-Queen'' problem can be solved simply by
@@ -654,7 +668,9 @@ a {\SB} document contains both the manual page and the help database
 at the same place.
 %
 This strategy is similar to the
-``Literate Programming'' style,
+``Literate Programming''\footnote{
+  \ssf{https:{\slash}{\slash}en.wikipedia.org{\slash}wiki{\slash}Literate\_programming}
+} style,
 where source codes and documents are put in the same document.
 
 Also, since the database is on the Wiki page, any member of the
