@@ -75,6 +75,8 @@
 \usepackage{ccicons}          % Cite your images correctly!
 % \usepackage[utf8]{inputenc} % for a UTF8 editor only
 
+\usepackage{here} % [H]とするとその場所に配置されるらしい
+
 % If you want to use todo notes, marginpars etc. during creation of
 % your draft document, you have to enable the "chi_draft" option for
 % the document class. To do this, change the very first line to:
@@ -348,17 +350,15 @@ the user can type a special shortcut key
 to invoke {\GH} after typing ``\verb|git RE 2|'' to see how he can do the job.
 
 \begin{figure}[h]
-  % \includegraphics[width=10cm,bb=0 0 1290 866]{figures/githelp1.png}
-  % \includegraphics[width=12cm,bb=-100 -100 1190 766]{figures/githelp1.png}
-  \includegraphics[width=9cm,bb=0 0 1000 600]{figures/githelp1.png}
+  \includegraphics[width=9cm,bb=0 0 1000 600]{figures/githelp_e2.png}
   \caption{Invoking {\GH}.}
   \label{bash1}
 \end{figure}
 
 Here, various candidate entries with
 descriptios and command strings are listed.
-One of the entries says ``README.mdをふたつ前のバージョンと比較する'',
-which means ``to compare \tt{README.md} with the one from 2 versions before.''
+One of the entries says ``Compare README.md with the one from 2 versions before''.
+% which means ``to compare \tt{README.md} with the one from 2 versions before.''
 %
 If the user thinks that that's what he wants to do,
 he can select the entry by selecting it by typing arrow keys
@@ -366,18 +366,18 @@ and type the enter key.
 Then the user's input string is replaced by the right command string
 that satisfies the user's need.
 
-A description like ``2日前''(2 days ago) was also shown in the candidate list.
+A description like ``2 days ago'' is also shown in the candidate list.
 This means that the user can use the same string ``\tt{git RE 2}''
 for getting the \tt{README.md} file of the day before yesterday.
 The command,
-``\verb|$ git diff '@{2 days ago}' README.md|'',
+``{\fontsize{9pt}{0pt}\selectfont\verb|$ git diff '@{2 days ago}' README.md|}'',
 is difficult to remember,
-but users can do the same thing only by saying \tt{RE} and \tt{2}.
+but users can do the same thing only by saying \sqtt{RE} and \sqtt{2}.
 
-A Japanese \tt{git} user can do the same thing just like
+A Japanese \stt{git} user can do the same thing just like
 English-speaking users.
 
-\begin{figure}[h]
+\begin{figure}[H]
   % \includegraphics[width=10cm,bb=0 0 1290 866]{figures/githelp1.png}
   \includegraphics[width=12cm,bb=-100 -100 1190 766]{figures/githelp1.png}
   \caption{Invoking {\GH}.}
@@ -385,16 +385,25 @@ English-speaking users.
 \end{figure}
 
 If the user wants to know more about the command line options,
-he can click the ``i'' button and browse the Wiki page.
+he can click the
+\raisebox{-2pt}{\includegraphics[height=11pt,bb=0 0 200 200]{figures/info-xxl.png}}
+button and browse the Wiki page.
 The page can be edited by any user, and 
 
-(Figure of Wiki here)
+\begin{figure}[htb]
+\begin{verbatim}
+\end{verbatim}
+% \centerline{\includegraphics[width=100mm,bb=0 0 1428 1288]{figures/scrapbox1.png}}
+\centerline{\includegraphics[width=100mm,bb=-50 -50 1000 900]{figures/scrapbox1.png}}
+\caption{A {\SB} page for \tt{git diff}.}
+\label{scrapboxpage}
+\end{figure}
 
 \section{Implementation}
 
 % {\EH} search algorithm and database structure
 
-% \subsection{Translation}
+\subsection{ExpandHelp}
 
 A flexible information retrieval mechanism ``{\EH}'' is used in {\GH}.
 
@@ -410,23 +419,36 @@ For example, a help entry for showing the difference between
 current file and older file can be like this:
 
 \begin{quote}
-  description: \\
-  \stt{Compare (\#{files}) with the one from (1|2|3|4) versions before}\\
-  command: \\
-  \stt{git diff ....}
+  \textbf{description}: \\
+  \stt{Compare (\#\{files\}) with the one from (1|2|3|4) versions before}\\
+  \textbf{command}: \\
+  {\fontsize{9pt}{0pt}\selectfont\verb|git diff $(git rev-list -n #{$2} HEAD -- #{$1})^ -- #{$1}|}
 \end{quote}
 
 The first regular expression, the description part,
 is for generating texts like
-\qsf{Compare README.md with the one from 1 versions before}, 
-\qsf{Compare index.html with the one from 2 versions before}, etc.,
+\sqsf{Compare README.md with the one from 1 versions before}, 
+\sqsf{Compare index.html with the one from 2 versions before}, etc.,
 and the second part, command part,
 is used to generate a command to execute a \tt{git} command.
-In the first example, \qsf{README.md} and \qsf{1}
+In the first example, \sqsf{README.md} and \sqsf{1}
 match the first and second parentheses of the regular expression, and
 these values are assigned to \tt{\$1} and \tt{\$2}
 for the command part, generating a command
-\tt{git xxxxxxx}.
+``{\fontsize{9pt}{0pt}\selectfont\verb|$ git diff $(git rev-list -n #{$2} HEAD -- #{$1})^ -- #{$1}|}''.
+
+The description part can be written in any natural language.
+For example,
+
+\begin{quote}
+  \stt{(\#\{files\})を(1|2|3|4)個前のものと比較する}
+\end{quote}
+  
+can be used for Japanese users.
+In this case,
+\sqsf{README.mdを1個前のものと比較する},
+\sqsf{README.mdを2個前のものと比較する}, etc.
+are used for theh matching.
 
 % When the matched pattern like \qsf{San Francisco}
 % cannot be directly used in the command,
@@ -447,65 +469,65 @@ for the command part, generating a command
 % will produce a command
 % \tt{open 'http:{\slash}{\slash}local. msn.com{\slash}ten-day.aspx?eid=29247'}.
 
-\subsection{(section written for GitHelp)}
+%% \subsection{(section written for GitHelp)}
+%% 
+%% {\EH} is a general-purpose flexible help generation system
+%% that has the following characteristics.
+%% 
+%% \begin{itemize}
+%% \item Use description-execution pairs for the translation
+%% \item Standard regular expression is used for the specification of the description
+%% \item The specification RegExp is expanded and filtered by the user's input string
+%%   real-time
+%% \end{itemize}
+%% 
+%% An example of the desc-exec pair can be the following:
+%% 
+%% \begin{verbatim}
+%%   (delete|remove) a (#{file})
+%%   /bin/rm $2
+%% \end{verbatim}
+%% 
+%% ``remove \verb|README.md|''
+%% into
+%% ``\verb|rm README.md|
+%% 
+%% First, the spec like \stt{\#\{file\}} is expanded to a list of filenames like
+%% \verb+README.md|Makefile|test.c+,
+%% and the spec string becomes
+%% ``\verb+(delete|remove) a file (README.md|Makefile|test.c)+''.
+%% Then this regular expression is expanded to all the possible string that match this regexp like
+%% \begin{verbatim}
+%% delete a file README.md
+%% remove a file README.md
+%% delete a file Makefile
+%% remove a file Makefile
+%% ...
+%% \end{verbatim}
+%% 
+%% And then all these strings are compared with the user's specification like
+%% ``\verb|del REA|'',
+%% and if a matche is found,
+%% this is translated to
+%% ``\verb|delete file README.md|''.
+%% 
+%% If ``\verb|destroy|'' should also be used for the spec,
+%% the spec can be modified to 
+%% \stt{(delete|remove) a (\#{file})}.
+%% 
+%% Any kind of specs in any language can be used for the specification.
+%% For example,
+%% 
+%% \begin{verbatim}
+%%   \#{file}を(消す|消去する)
+%%   /bin/rm $1
+%% \end{verbatim}
+%% 
+%% can be  used for Japanese users, who might want to delete
+%% one of the files by specifying ``消す''.
+%% (消す means 'delete' in Japanese).
 
-{\EH} is a general-purpose flexible help generation system
-that has the following characteristics.
-
-\begin{itemize}
-\item Use description-execution pairs for the translation
-\item Standard regular expression is used for the specification of the description
-\item The specification RegExp is expanded and filtered by the user's input string
-  real-time
-\end{itemize}
-
-An example of the desc-exec pair can be the following:
-
-\begin{verbatim}
-  (delete|remove) a (#{file})
-  /bin/rm $2
-\end{verbatim}
-
-``remove \verb|README.md|''
-into
-``\verb|rm README.md|
-
-First, the spec like \stt{\#\{file\}} is expanded to a list of filenames like
-\verb+README.md|Makefile|test.c+,
-and the spec string becomes
-``\verb+(delete|remove) a file (README.md|Makefile|test.c)+''.
-Then this regular expression is expanded to all the possible string that match this regexp like
-\begin{verbatim}
-delete a file README.md
-remove a file README.md
-delete a file Makefile
-remove a file Makefile
-...
-\end{verbatim}
-
-And then all these strings are compared with the user's specification like
-``\verb|del REA|'',
-and if a matche is found,
-this is translated to
-``\verb|delete file README.md|''.
-
-If ``\verb|destroy|'' should also be used for the spec,
-the spec can be modified to 
-\stt{(delete|remove) a (\#{file})}.
-
-Any kind of specs in any language can be used for the specification.
-For example,
-
-\begin{verbatim}
-  \#{file}を(消す|消去する)
-  /bin/rm $1
-\end{verbatim}
-
-can be  used for Japanese users, who might want to delete
-one of the files by specifying ``消す''.
-(消す means 'delete' in Japanese).
-
-\subsection{Generating help menu entries}
+\subsubsection{Generating help menu entries}
 
 Finding appropriate entries from the huge help document space is performed in two steps.
 First, we parse the regular expression to
@@ -518,7 +540,7 @@ and only the best-matched descriptions are shown to the user as menu entries.
 We call this the ``\textit{generate-and-filter}'' technique,
 and we will describe the details later.
 
-\subsubsection{Phase 1: Generating a state transition diagram from a regular expression}
+\paragraph{Phase 1: Generating a state transition diagram from a regular expression}
 
 Regular expressions are widely used for finding patterns in text strings
 in modern programming languages and in the Unix environment.
@@ -552,7 +574,7 @@ we can generate the following description texts.
 \ssf{Compare package.json with the one 10 versions beforef}\\
 \end{quote}
 
-\subsubsection{Phase 2: Generating texts from a state transition diagram}
+\paragraph{Phase 2: Generating texts from a state transition diagram}
 
 Using the state transition diagram shown in Figure \ref{statemachine1},
 {\EH} generates all the strings represented in the regular expressions,
@@ -584,7 +606,7 @@ terminated at certain generation.
 \label{gentree1}
 \end{figure}
 
-\subsection{Generate-and-Filter}
+\subsubsection{Generate-and-Filter}
 
 Generating all the texts in this way before finding matched strings is
 inefficient, because the amount of generated texts can easily become huge.
@@ -630,33 +652,250 @@ without sacrificing processing speed.
 We could implement flexible generate-and-filter by using a simple and efficient
 approximate pattern matching algorithm based on the ``shifter algorithm''.
 
-\subsection{Approximate pattern matching by shifter algorithm}
+\subsubsection{Approximate pattern matching by shifter algorithm}
 
-簡潔に書けるか?
+The ``shifter algorithm''\cite{Wu:1992:FTS:135239.135244}
+is a simple and efficient
+text search algorithm which has interesting features
+not found in more common pattern matching algorithms like
+KMP\cite{KMP}, Boyer-Moor\cite{Boyer:1977:FSS:359842.359859}, etc.
 
-\subsection{Sharing database on the Web}
+When a user wants to find a word \qsf{README} in a text,
+he can use a patter matching state machine like below,
+where the gray circle denotes that the state is active.
+
+\begin{figure}[h]
+\includegraphics[width=70mm,bb=0 0 439 73]{figures/readme1.pdf}
+\caption{A state machine for \qsf{README}.}
+\label{readme1}
+\end{figure}
+
+Initially, only the leftmost node is active, but when the
+state machine receives \qsf{R}, both the first and the second node become active
+and the activation state will change to the following pattern.
+
+\begin{figure}[h]
+\includegraphics[width=70mm,bb=0 0 439 73]{figures/readme2.pdf}
+\caption{After receiving \qsf{R}.}
+\label{readme2}
+\end{figure}
+
+When \qsf{README} is given to the state machine,
+the rightmost node becomes active.
+
+\begin{figure}[h]
+\includegraphics[width=70mm,bb=0 0 439 73]{figures/readme3.pdf}
+\caption{After receiving \qsf{README}.}
+\label{readme3}
+\end{figure}
+
+Although this state machine is a nondeterministic finite automata (NFA),
+only 10 bits are required to represent the active/inactive states of the nodes,
+meaning that the whole states can be represented by a single integer value.
+Also,
+the state transition can be calculated by a simple combination of
+logic and bit shift operations.
+
+%% We will describe how the pattern matching can be performed using a C code.
+%% 
+%% First, a variable for current state is
+%% set to \stt{0x80000000}, representing the initial pattern
+%% shown in Figure \ref{readme1}.
+%% 
+%% {
+%% \scriptsize
+%% \begin{verbatim}
+%%  #define INITPAT 0x80000000
+%%  int state = INITPAT;
+%% \end{verbatim}
+%% }
+%% 
+%% When character \qsf{r} is received, the MSB will be shifted to the right
+%% by one bit, and logical OR is calculated with the initial value, \stt{0x80000000}.
+%% Since the 7th node also accepts \qsf{r}, it should also be shifted.
+%% The state transition can be described like below.
+%% 
+%% {
+%% \scriptsize
+%% \begin{verbatim}
+%%  mask['r'] = 0x82;
+%%  state = INITPAT | ((state & mask['r']) >> 1);
+%% \end{verbatim}
+%% }
+%% 
+%% The shift ``mask'' value can be easily calculated from the given
+%% pattern string beforehand.
+%% 
+%% {
+%% \scriptsize
+%% \begin{verbatim}
+%%   int maskpat;
+%%   init(pat){
+%%     maskpat= INITPAT;
+%%     for(char *s=pat;*s;s++){
+%%       mask[*s] |= maskpat;
+%%       maskpat >>= 1;
+%%     }
+%%     acceptpat = maskpat;
+%%   }
+%% \end{verbatim}
+%% }
+%% 
+%% The pattern matching function can be described like below.
+%% 
+%% {
+%% \scriptsize
+%% \begin{verbatim}
+%%  match(s){
+%%    int state = INITPAT;
+%%    for(s=text;*s;s++){
+%%      state = INITPAT | ((state & mask[*s]) >> 1);
+%%    }
+%%    return ((state & acceptpat) != 0);
+%%  }
+%% \end{verbatim}
+%% }
+
+\subsubsection{Approximate pattern matching using the shifter algorithm}
+
+The state machine shown in Figure \ref{readme1} can accept only one pattern
+(\sqsf{README}), but
+it can be easily expanded to detect texts which contain a word
+similar to the pattern (e.g. \sqsf{READY}).
+
+%   *  ** 
+%  risto rante
+%  restaurant
+\begin{figure}[htb]
+\begin{verbatim}
+\end{verbatim}
+\centerline{\includegraphics[width=40mm,bb=0 0 104 51]{figures/readme-mismatch.pdf}}
+\caption{Matching error between \qsf{README} and \qsf{REDDY}.}
+\label{readme-reddy-mismatch}
+\end{figure}
+
+Adding three more states to Figure \ref{readme1}, we can perform more
+sophisticated pattern matcher which can accept strings with
+0 to 3 matching errors.
+
+\begin{figure}[htb]
+\includegraphics[width=85mm,bb=0 0 443 282]{figures/readme-ambig.pdf}
+\caption{A pattern matcher accepting 0-3 errors.}
+\label{shifterambig}
+\end{figure}
+
+Figure \ref{shifterambig} shows a state machine which can detect a string
+which matches \sqsf{README} with 0 to 3 mismatches.
+Each additional row of nodes represents a matcher with one error,
+two errors, and three errors, respectively.
+Vertical and diagonal transition edges are added to allow
+transitions based on spelling errors.
+
+Initially, only the bottom-left node is active.
+When a character other than \sqsf{R} is detected, 
+the transition labeled \sqsf{*} (wildcard) is activated,
+and connected nodes become active.
+At the same time, links labeled as ``$\epsilon$''
+is also activated without any input character.
+With these additional links, this expanded machine can detect a text which
+matches \sqsf{README} with 0 to 3 errors.
+
+% \begin{figure}[htb]
+% \includegraphics[width=82mm]{figures/restaurant-ristrante.pdf}
+% \caption{Accepting ``\tsf{ristorante}'' using a matcher for ``\tsf{restaurant}''.}
+% \label{restaurant-ristorante}
+% \end{figure}
+
+The transition of active nodes while reading
+\sqsf{REDDY} is shown in Figure \ref{restaurant-ristorante}.
+After reading \sqsf{REDDY},
+only the upper-right node becomes active,
+denoting that \sqsf{REDDY} matches
+\sqsf{README}'' with 3 matching errors.
+
+The state transition shown in 
+Figure \ref{restaurant-ristorante} looks complicated, but
+the matching state can be represented by only four integer variables, and
+the matching algorithm is not very different from the algorithm
+shown above.
+
+\subsubsection{Using the matcher for generate-and-filter}
+
+We can use this approximate pattern matcher while generating
+help texts by traversing the state transition machine.
+%
+Every time a new node is generated by traversing an edge,
+matching state is calculated and stored in the generated node.
+The status pattern is calculated from the status pattern
+stored in the preceding node and the string associated with the edge.
+
+% \begin{figure}[htb]
+% \includegraphics[width=85mm]{figures/ristfrans1.pdf}
+% \caption{A pattern matcher for ``\ttt{rist frans}''.}
+% \label{ristfrans1}
+% \end{figure}
+% 
+% \begin{figure*}[bht]
+% \centerline{\includegraphics[width=110mm]{figures/gentree2.pdf}}
+% \caption{Matching statuses for ``\ttt{rist frans}'' associated with text generation nodes.}
+% \label{gentree2}
+% \end{figure*}
+
+% Figure \ref{ristfrans1} shows the matcher for \qtt{rist frans}\footnote{
+%   A space (\qtt{ }) in the input is treated as a wildcard character.
+% },
+% and Figure \ref{gentree2} shows how the matching status is calculated while the
+% description strings are generated from the state transition machine
+% shown in Figure \ref{statemachine1}.
+% The matching status at each node is calculated from the matching status
+% stored in the parent node and the string associated with the edge.
+% For example, when the system generates the string
+% \qsf{Find a Chinese restaurant in San Francisco on Yelp.com},
+% the matching status is calculated from the status data at the previous node at
+% \qsf{Find a Chinese restaurant in San Francisco}, and
+% the system can tell that it matches \qtt{rist frans} with two matching errors,
+% as soon as the string is generated.
+
+% The system is keeping the list of generated strings
+% which match the pattern with zero to three errors
+% and it displays the list with minimal number of errors
+% when generating menu entries.
+% 
+% Since the pattern matching operation is performed at the time of text generation,
+% the whole generate-and-filter calculation is quick.
+% Although current version of ExpandHelp is implemented in MacRuby,
+% the user can always get the result within 1 second.
+% A portion of the help data in Ruby is shown in Figure \ref{helpdata}.
+
+% \begin{figure*}[bt]
+% \centerline{\includegraphics[width=146mm]{figures/04ad7dee5679450e5390821745b5a0b7.png}}
+% \caption{A portion of the help data in Ruby.}
+% \label{helpdata}
+% \end{figure*}
+
+\subsection{Sharing the database on the Web}
 
 The data used in {\GH} are represented as ``{\SB}'' documents.
 %
 {\SB} is a general-purpose real-time Wiki system for data sharing.
 {\SB} users can edit the contents of Wiki pages directly
 on Web browsers just like text editors,
-using simple markup symbols similar to MarkDown\footnote{markdown}
-and other markup languages.
+using simple markup symbols.
 
-For {\GH}, database entries like the following
+The data used for {\GH} is shown in Figure \ref{scrapboxpage}.
 
 % \begin{figure}[htb]
 % \begin{verbatim}
 % \end{verbatim}
-% \centerline{\includegraphics[width=40mm]{figures/xxxxx}}
-% \caption{ssss}
+% % \centerline{\includegraphics[width=100mm,bb=0 0 1428 1288]{figures/scrapbox1.png}}
+% \centerline{\includegraphics[width=100mm,bb=-50 -50 1000 900]{figures/scrapbox1.png}}
+% \caption{A {\SB} page for \tt{git diff}.}
 % \label{xxxxx}
 % \end{figure}
 
-This page describes the usage of \qtt{git diff}, and
+This page describes the usage of \sqtt{git diff}, and
 the page contains command specifications in {\EH} format
-in addition to the description of the command.
+in addition to the description of \sqtt{git diff}.
 %
 % Specs and command lines are specified with a special symbol, and
 % all other documents can be written just like standard manuals and help documents.
@@ -728,11 +967,11 @@ Using an additional translation system like {\GH} is ...
 On text editors and Unix shells,
 ``text completion'' has been available for a long time.
 %
-When a user types the TAB key after typing \qtt{la} on the Unix shell,
-\qtt{latex}, \qtt{latex}, and other commands are shown as candidates.
-When a user types \qtt{ls RE} and types the TAB key,
-Unix shell checks the directory, find the \tt{README.md} file, and
-replace the user's input with \qtt{ls README.md}.
+When a user types the TAB key after typing \sqtt{la} on the Unix shell,
+\sqtt{latex}, \sqtt{latex}, and other commands are shown as candidates.
+When a user types \sqtt{ls RE} and types the TAB key,
+Unix shell checks the directory, find the \stt{README.md} file, and
+replace the user's input with \sqtt{ls README.md}.
 This behavior is called ``text completion'', and many variations of
 this idea have been proposed and adopted in text editors and command line editors.
 
@@ -758,12 +997,12 @@ Many smart IDEs for suggesting codes have been proposed resently.
 Little's system\cite{Little:2006:TKC:1166253.1166275}
 generates a complete JavaScript code snippet from keyword fragments.
 For example,
-\qtt{ActiveDocument .PageSetup .LeftMargin = InchesToPoints(2)}
+\sqtt{ActiveDocument .PageSetup .LeftMargin = InchesToPoints(2)}
 can be generated from keywords like
-\qsf{left},
-\qsf{margin},
-\qsf{4}, and
-\qsf{inches}.
+\sqsf{left},
+\sqsf{margin},
+\sqsf{4}, and
+\sqsf{inches}.
 The system generates the code using a template database and heuristics
 for the target system.
 It is useful for a special environment, but
@@ -828,12 +1067,12 @@ as IDE plugins.
 
 Han's Abbreviation Completion system\cite{Han:2009:CCA:1747491.1747530}
 can generate a code snippet from abbreviation strings give by the user.
-For example, a snippet like \qtt{chooser. showOpenDialog()}
+For example, a snippet like \sqtt{chooser. showOpenDialog()}
 can be generated from the keyword
-\qsf{ch} and\qsf{opn}, using the code database and HMM.
+\sqsf{ch} and\sqsf{opn}, using the code database and HMM.
 It can be very useful as a shorthand for handling long names,
 but users should have a vague knowledge about the correct names
-(e.g. \qtt{chooser}, \qtt{dialog}),
+(e.g. \sqtt{chooser}, \sqtt{dialog}),
 and large code example corpus should exist before
 
 % [HMM]を使って正しいコードを予測して提示する

@@ -6,7 +6,8 @@ const remote = electron.remote;
 const shell = electron.shell;
 const clipboard = electron.clipboard; // clipboard.writeText() でクリップボードに文字列が入る
 
-const data = require("./data");
+// const data = require("./data");
+const data = require("./data_e");
 Generator = require('re_expand');
 
 ///var command = 'osascript -e \'tell application "Terminal" to tell front window to set the clipboard to contents of selected tab as text\' ';
