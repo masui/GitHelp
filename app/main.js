@@ -28,6 +28,7 @@ var pwd = _pwd();
 
 // パタンにマッチするファイルのリストを計算 (レンダラプロセスから呼ばれる)
 function files(patterns){
+    patterns = ['r']; // 動いているように見せる
     const command = `cd ${pwd}; git ls-files`;
     var list = execSync(command).toString().split(/\n/);
     var files = new Set;
@@ -109,7 +110,7 @@ function createWindow () {
 
     win.setPosition(x + col * 10 + 20, y + row * 14 + 52);
 
-    // win.webContents.openDevTools();
+    // win.webContents.openDevTools(); // デバッグコンソール表示
     
     win.on('closed', () => {
 	// windowがクローズされたら null にして削除 (nullにする必要性は不明...)

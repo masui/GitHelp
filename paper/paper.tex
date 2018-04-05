@@ -27,7 +27,7 @@
 % ISBN
 \isbn{123-4567-24-567/08/06}
 %Conference
-\conferenceinfo{UIST'18,}{May 07--12, 2016, San Jose, CA, USA}
+\conferenceinfo{UIST'18,}{October 14--17, 2018, Berlin, Germany}
 %Price
 \acmPrice{\$15.00}
 
@@ -89,12 +89,13 @@
 % re-using, if desired).  Use \emtpyauthor when submitting for review
 % so you remain anonymous.
 \def\plaintitle{Bridging the Translation Gap with ExpandHelp}
-\def\plainauthor{First Author, Second Author, Third Author,
-  Fourth Author, Fifth Author, Sixth Author}
+\def\plainauthor{Toshiyuki Masui, Jun Kato}
 \def\emptyauthor{}
-\def\plainkeywords{Authors' choice; of terms; separated; by
-  semicolons; include commas, within terms only; required.}
-\def\plaingeneralterms{Documentation, Standardization}
+\def\plainkeywords{
+  Help systems; Regular expression, Input method, Generate and filter;
+  ExpandHelp; GitHelp
+}
+% \def\plaingeneralterms{Documentation, Standardization}
 
 % llt: Define a global style for URLs, rather that the default one
 \makeatletter
@@ -157,6 +158,7 @@
 \long\def\qsf#1{``\sf{#1}''}
 \long\def\sqsf#1{``\ssf{#1}''}
 \long\def\qit#1{``\textit{#1}''}
+\long\def\smallfont{\fontsize{9pt}{0pt}\selectfont}
 
 \begin{document}
 
@@ -164,7 +166,7 @@
 
 \numberofauthors{3}
 \author{%
-  \alignauthor{Toshiyuki Masui
+  \alignauthor{Toshiyuki Masui \\
     \affaddr{Keio University}\\
     \affaddr{Fujisawa, Japan}\\
     \email{masui@pitecan.com}}\\
@@ -177,7 +179,7 @@
 \maketitle
 
 \begin{abstract}
-  We introduce a flexible command translation system that can generate
+  We introduce a flexible command translation framework that can generate
   a complex command string from vague keywords
   given by the user.
   %
@@ -186,7 +188,7 @@
   %
   When people use computers to perform tasks,
   there is usually a huge mismatch between the users' intention
-  and the required action.
+  and required actions.
   % the language and vocabularies used for the task are completely different.
   %
   For example, when a Chinese person wants to ``房間暗一点'' (make the room darker),
@@ -209,21 +211,25 @@
   There is a huge gap between ``房間暗'' and ``\tt{\$ iot clight 0}'', and
   people are perpetually suffering from such multi-level ``\textit{translation gaps}''.
   Translation gaps exist even for experienced computer users, but
-  they are serious for vast amount of people around the world.
+  they are serious for vast amount of people
+  whose mother languages are far from the command syntax required for
+  handling computers.
   %
-  We propose a simple and general translation framework
+  We propose a simple and flexible translation framework
   {\EH} that can be used in various situations
-  where such translation is required.
+  where such translation is necessary.
   We show how our framework can be used
   in the {\GH} system
   with which user can easily generate complex {\GIT} commands
-  from fragments of users' intentions.
+  from fragments of users' intentions in various languages.
 \end{abstract}
 
 \category{H.5.m.}{Information Interfaces and Presentation
-  (e.g. HCI)}{Miscellaneous} \category{See
-  \url{http://acm.org/about/class/1998/} for the full list of ACM
-  classifiers. This section is required.}{}{}
+  (e.g. HCI)}{Miscellaneous}
+
+% \category{See
+%   \url{http://acm.org/about/class/1998/} for the full list of ACM
+%   classifiers. This section is required.}{}{}
 
 \keywords{\plainkeywords}
 
@@ -232,7 +238,7 @@
 When people want to perform a task using modern artifacts,
 people frequently find difficulty handling them properly.
 %
-Even when manuals and help systems are provided,
+Even when manuals and help documents are provided,
 people don't use them\cite{Novick:2006:WDP:1166324.1166329}
 partly because of the vocabulary problem\cite{Furnas:1987:VPH:32206.32212}.
 %
@@ -247,33 +253,34 @@ When we want to watch a movie, we may pick up a DVD disk, put it into a
 DVD player, push the play button, and set up the audio and the monitor.
 When we feel thirsty, we may go to the kitchen, pick up a glass, and
 turn the faucet on to fill the glass with water.
-All the living creatures are performing such translations
+In either of these cases, there is a tremendous gap
+betwee the user's intentions and required actions.
+All the living creatures are seemingly performing such translations
 between intentions and actions without difficulty, but
 in the modern world, people are suffering from
 serious gaps between what they want to do and what they have to do.
 
-Even when people vaguely know what they have to do for what they want to do,
-it is often not easy for them to perform the task properly.
+Even when people almost know what they have to do,
+it is often not easy for them to perform the task without confusion.
 Even when people know that they can watch a movie on the Internet,
 finding a movie and playing it is a difficult task for people without experiences.
-It would be nicer if they could watch a movie on the net
-just by showing a vague title or attributes of the movie
-in various languages.
+It would be nicer if they could watch a movie
+just by showing a fragment of the title or attributes of the movie.
 
 % We can use search engines to find clues for performing the tasks, but
 % it is not always easy for people in the world, since they may have
 % to use different languages to look for the information.
 
 We propose a simple, flexible and powerful
-translation framework with which users can generate a complete
+translation framework {\EH}, with which users can generate a complete
 command string from fragments of users' vague intentions.
 %
-We provide a database consisting of pairs of
+We use a database consisting of pairs of
 the description of the task that users want to perform (e.g. 房間暗一点)
 and
 the actual command string required by the system (e.g. \tt{\$ iot clight 0}).
 Descriptions can be written in any natural language using regular expressions
-and the database on the Wiki pages can be edited by any user
+and the database are shared on the Wiki pages and can be edited by any user
 who wants to improve the database.
 
 % やりたいことの[* 平易な表現と実行コマンドの組を用意]して[* 共有]しておいて、[* 簡単に検索/実行]できるようにする
@@ -297,13 +304,15 @@ Contributions of this paper are as follows:
 \begin{enumerate}
 % 各種技術を組み合わせた翻訳支援というパラダイムの提案
 \item Introduction of ``\textit{translation paradigm}'' for
-  generating a correct instruction to an artifact from
-  the user's vague intention in natural language.
-\item General-purpose flexible dynamic search system based on regular expressions.
+  generating a correct command to an artifact from
+  the user's vague intention.
+\item Flexible dynamic help extraction algorithm
+  ``\textit{generate and filter}''
+  using regular expressions.
 % そのための柔軟なインフラ (ExpandHelp)
 % \item IME-like command etnry interface
 % やりたいことを実行するインタフェース (IME的なもの)
-\item Data sharing infrastructure for the above strategy.
+\item Help data sharing infrastructure for the above strategy.
 % 共有/編集しやすい正規表現DSLとそのインプリ(Scrapbox+)
 % \item これが唯一の解決法ではないが、こういう考え方がポピュラーになって欲しい
 \end{enumerate}
@@ -315,74 +324,97 @@ with which a user can translate his vague intention in various languages
 into a complete {\GIT} command
 using the {\EH} framework.
 
-\subsection{Entering a command}
+% \subsection{Entering a command}
 
 We assume that the user uses \tt{bash} for his software
 development activities.
-
-% \begin{figure}[h]
-%   \includegraphics[width=8cm,bb=0 0 670 254]{figures/bash1.png}
-%   \caption{Bash shell.}
-%   \label{bash1}
-% \end{figure}
-
-When a user wants to compare the latest \tt{README.md} file
+% 
+When a user wants to compare the latest \stt{README.md} file
 with the same file from 2 versions before,
-he might try to use {\GIT} with an argument
-``\verb|HEAD^^|''
+he might try to use {\GIT} with an option
+``{\smallfont\verb|HEAD^^|}''
 for specifying the old version.
 
-\begin{quotation}
+\begin{figure}[h]
+  {\smallfont
   \verb|$ git diff HEAD^^ README.md|
   \par
   \verb|$|
-\end{quotation}
+  }
+  \caption{Invoking \stt{git diff}.}
+  \label{gitdiff}
+\end{figure}
+
+% \begin{quotation}
+%   {\smallfont
+%   \verb|$ git diff HEAD^^ README.md|
+%   \par
+%   \verb|$|
+%   }
+% \end{quotation}
 
 However, nothing happens here because
 \verb|HEAD^^|
 specifies a file included in the older commit,
-and the command above only compares the \stt{README.md}
-with the file included in an old commit, where
-\stt{README.md} might be the same as the latest version.
+and the command in figure \ref{gitdiff} only compares the
+\stt{README.md} with the file included in an old commit, where
+\stt{README.md} has not been changed since then.
 
 If {\GH} is installed,
 the user can type a special shortcut key
 % (e.g. \tt{Cmd-Ctrl-G})
-to invoke {\GH} after typing \stt{git RE 2} to see how he can
+to invoke {\GH} after typing \sqtt{git RE 2} to see how he can
 perform the task.
 
 \begin{figure}[h]
-  \includegraphics[width=9cm,bb=0 0 1000 600]{figures/githelp_e2.png}
-  \caption{Invoking {\GH} after typing \stt{git rea 2}.}
-  \label{bash1}
+  % \includegraphics[width=9cm,bb=0 0 1194 822]{figures/example1.png}
+  \includegraphics[width=9cm,bb=0 0 900 600]{figures/example1.png}
+  %\includegraphics[width=9cm,bb=0 0 1000 600]{figures/githelp_e2.png}
+  \caption{Invoking {\GH} after typing \stt{git read 2}.}
+  \label{example1}
 \end{figure}
 
 Here, various candidate entries with
-descriptios and command strings are listed.
+descriptions and command strings are listed,
+just like text input support systems for non-English languages.
 One of the entries says
-``\ssf{Compare} \stt{README.md} \ssf{with the one from 2 versions before}''.
-If the user thinks that that's what he wants to do,
+``\ssf{Compare} \stt{README.md} \ssf{with the one from 2 versions before}'',
+and if the user thinks that's what he wants to do,
 he can select the entry by typing arrow keys and type the enter key.
 Then the user's input string is replaced by the right command string
 that satisfies the user's need.
 
-A description like \sqsf{2 days ago} is also shown in the candidate list.
+A description like \sqsf{2 days ago} is also shown in the candidate list
+of Figure \ref{example1}.
 This means that the user can use the same string \sqtt{git RE 2}
-for getting the \stt{README.md} file of the day before yesterday.
-The command,
-``{\fontsize{9pt}{0pt}\selectfont\verb|$ git diff '@{2 days ago}' README.md|}'',
+for getting the information of \stt{README.md} file of the day before yesterday.
+The generated argument
+``{\smallfont\verb|@{2 days ago}|}'',
 may not be familiar to most {\GIT} users,
-but users can perform this task only by giving \sqtt{RE} and \sqtt{2}.
+but users can perform this task only by giving \sqtt{RE} and \sqtt{2}
+without knowing the correct syntax of this option.
+
+When the user types a special shortcut key
+after typing \sqtt{git sh reed 3},
+entries related to \stt{README.md} file are listed because
+\sqtt{reed} is close to \sqtt{README.md}.
+
+\begin{figure}[h]
+  %\includegraphics[width=9cm,bb=0 0 1100 760]{figures/example2.png}
+  \includegraphics[width=9cm,bb=-100 0 800 550]{figures/example2.png}
+  \caption{Invoking {\GH} after typing \stt{git sh reed 3}.}
+  \label{example2}
+\end{figure}
 
 A Japanese {\GIT} user can do the same thing just like
-English-speaking users.
-He can user the term \qtt{比}(compare) to find how he can perfor the job.
+English-speaking users (Figure \ref{example3}).
+He can user the term \qtt{比}, etc. to find how he can perform the job.
 
 \begin{figure}[t]
-  % \includegraphics[width=10cm,bb=0 0 1290 866]{figures/githelp1.png}
+  % bb=0 0 1290 866
   \includegraphics[width=12cm,bb=-100 -100 1190 766]{figures/githelp1.png}
-  \caption{Invoking {\GH}.}
-  \label{bash2}
+  \caption{Invoking {\GH} in Japanese environment.}
+  \label{example3}
 \end{figure}
 
 If the user wants to know more about the command line,
@@ -390,40 +422,44 @@ he can click the
 \raisebox{-2pt}{\includegraphics[height=11pt,bb=0 0 200 200]{figures/info-xxl.png}}
 button and see the Wiki page shown in Figure \ref{scrapboxpage}.
 The user can edit the page if he wants to add information or finds an error.
+In this page, description part is preceded by a ``\texttt{\$}'' symbol and
+the command part is preceded by ``\texttt{\%}''.
 
-\begin{figure}[b]
-\begin{verbatim}
-\end{verbatim}
+
+\begin{figure}[t]
 % \centerline{\includegraphics[width=100mm,bb=0 0 1428 1288]{figures/scrapbox1.png}}
-\centerline{\includegraphics[width=100mm,bb=-50 -50 1000 900]{figures/scrapbox1.png}}
-\caption{A {\SB} page for \tt{git diff}.}
-\label{scrapboxpage}
+  \centerline{\includegraphics[width=100mm,bb=-50 -50 1100 950]{figures/scrapbox2.png}}
+  \caption{A {\SB} page for \tt{git diff}.}
+  \label{scrapboxpage}
 \end{figure}
 
 \section{Implementation}
 
 \subsection{ExpandHelp}
 
-A flexible information retrieval mechanism ``{\EH}'' is used in {\GH}.
+A flexible help data retrieval mechanism ``{\EH}'' is used in {\GH}.
 %
 Help data used in {\EH} are provided as a set of data entries
-consisting of a regular expression that represents the help entry description
+consisting of a regular expression that represents description of the help entry
 and a corresponding command pattern string.
 A description string is used to produce natural language texts
 that are easily understandable by users,
-while command patterns are used for invoking commands
+while command patterns represents the generated command string
 corresponding to the description.
 %
 For example, a help entry for showing the difference between
-current file and older file can be like this:
+current file and older file can be defined like this:
 
 \begin{quote}
   \textbf{description}: \\
   \stt{Compare (\#\{files\}) with the one from (1|2|3|4) versions before}\\
   \textbf{command}: \\
-  {\fontsize{9pt}{0pt}\selectfont\verb|git diff $(git rev-list -n #{$2} HEAD -- #{$1})^ -- #{$1}|}
+  {\smallfont\verb|git diff $(git rev-list -n #{$2} HEAD -- #{$1})^|} \\
+  {\smallfont\verb| -- #{$1}|}
 \end{quote}
 
+Special symbol like \stt{\#\{files\}} in the description part is expanded to
+the list of filenames like \stt{README.md|index.html}.
 The first regular expression, the description part,
 is for generating texts like
 \sqsf{Compare README.md with the one from 1 versions before}, 
@@ -434,7 +470,7 @@ In the first example, \sqsf{README.md} and \sqsf{1}
 match the first and second parentheses of the regular expression, and
 these values are assigned to \tt{\$1} and \tt{\$2}
 for the command part, generating a command
-``{\fontsize{9pt}{0pt}\selectfont\verb|$ git diff $(git rev-list -n #{$2} HEAD -- #{$1})^ -- #{$1}|}''.
+``{\smallfont\verb|$ git diff $(git rev-list -n #{$2} HEAD -- #{$1})^ -- #{$1}|}''.
 
 The description part can be written in any natural language.
 For example,
@@ -448,25 +484,6 @@ In this case,
 \sqsf{README.mdを1個前のものと比較する},
 \sqsf{README.mdを2個前のものと比較する}, etc.
 are used for the matching.
-
-% When the matched pattern like \qsf{San Francisco}
-% cannot be directly used in the command,
-% parameters for the command can be put after the description string,
-% separated by a TAB character.
-% For example, when a number like ``\tt{29247}'' should be used
-% for checking the
-% weather of San Francisco, we can describe the help entry like this:
-% 
-% \begin{quote}\small
-%  description: \\
-%  \tt{Check the weather of (San Francisco{\textbackslash}t29247| New York{\textbackslash}t23164)} \\
-%  command: \\
-%  \tt{open 'http://local.msn.com/ten-day.aspx?\\eid=\$1'}
-% \end{quote}
-%
-% Here, selecting a menu entry \qsf{Check the weather of San Francisco}
-% will produce a command
-% \tt{open 'http:{\slash}{\slash}local. msn.com{\slash}ten-day.aspx?eid=29247'}.
 
 %% \subsection{(section written for GitHelp)}
 %% 
@@ -528,7 +545,8 @@ are used for the matching.
 
 \subsubsection{Generating help menu entries}
 
-Finding appropriate entries from the huge help document space is performed in two steps.
+Finding appropriate entries from the (possibly huge) help document space is
+performed in two steps.
 First, a state transition diagram is generated from the regular expressions
 used in the descriptions.
 Second, all the description strings are generated by expanding the regular expression
@@ -543,21 +561,22 @@ and we will describe the details later.
 Regular expressions are widely used for finding patterns in text strings
 in modern programming languages and in the Unix environment.
 In {\EH}, we use regular expressions for
-generating various patterns of descriptions in a short form.
+generating various patterns of descriptions from a short specification.
 For example, we use a short regular expression
 \sqtt{(remove|delete|erase) (data|file)}
 for representing expressions like
 \sqsf{remove data},\sqsf{erase file}, etc.
 
-Converting a regular expression to a state transition machine is a straightforward task.
+Converting a regular expression to a state transition machine is a
+straightforward task.
 When we have a regular expression
 \sqtt{Compare (README.md|index.html|package.json) with the one (1|2|...|10) versions before}, 
-we can parse the string and convert it into a state transition diagram
+we can convert it into a state transition diagram
 shown in Figure \ref{statemachine1}.
 
 \begin{figure}[htb]
 \includegraphics[width=90mm,bb=0 0 571 126]{figures/statemachine.pdf}
-\caption{State transition diagram for finding a restaurant.}
+\caption{State transition diagram for a \stt{git} command description.}
 \label{statemachine1}
 \end{figure}
 
@@ -569,7 +588,7 @@ we can generate the following description texts.
 \ssf{Compare README.md with the one 1 versions before} \\
 \ssf{Compare index.html with the one 1 versions before} \\
 ...\\
-\ssf{Compare package.json with the one 10 versions beforef}\\
+\ssf{Compare package.json with the one 10 versions before}\\
 \end{quote}
 
 \paragraph{Phase 2: Generating texts from a state transition diagram}
@@ -614,8 +633,7 @@ for saving time and memory.
 ``Generate-and-test''\footnote{
   {\sf http:{\slash}{\slash}en.wikipedia.org{\slash}wiki{\slash}Generate\_and\_test}
 }
-is a simple and effective strategy
-used for solving puzzles and AI problems.
+is a simple and effective strategy used for solving puzzles.
 For example,
 the ``8-Queen'' problem can be solved simply by
 generating all the possible queen layouts and checking if
@@ -663,125 +681,65 @@ he can use a patter matching state machine like below,
 where the gray circle denotes that the state is active.
 
 \begin{figure}[h]
-  \includegraphics[width=60mm,bb=0 0 439 73]{figures/readme1.pdf}
+  \centerline{\includegraphics[width=50mm,bb=0 0 439 73]{figures/readme1.pdf}}
   \caption{A state machine for \qsf{README}.}
   \label{readme1}
 \end{figure}
 
 Initially, only the leftmost node is active, but when the
-state machine receives \qsf{R}, both the first and the second node become active
+state machine receives \sqsf{R}, both the first and the second node become active,
 and the activation state will change to the following pattern.
 
 \begin{figure}[h]
-\includegraphics[width=60mm,bb=0 0 439 73]{figures/readme2.pdf}
-\caption{After receiving \qsf{R}.}
-\label{readme2}
+  \centerline{\includegraphics[width=50mm,bb=0 0 439 73]{figures/readme2.pdf}}
+  \caption{After receiving \qsf{R}.}
+  \label{readme2}
 \end{figure}
 
-When \qsf{README} is given to the state machine,
+When \sqsf{README} is given to the state machine,
 the rightmost node becomes active.
+%
+%\begin{figure}[h]
+%\includegraphics[width=60mm,bb=0 0 439 73]{figures/readme3.pdf}
+%\caption{After receiving \qsf{README}.}
+%\label{readme3}
+%\end{figure}
 
-\begin{figure}[h]
-\includegraphics[width=60mm,bb=0 0 439 73]{figures/readme3.pdf}
-\caption{After receiving \qsf{README}.}
-\label{readme3}
-\end{figure}
-
-Although this state machine is a nondeterministic finite automata (NFA),
-only 10 bits are required to represent the active/inactive states of the nodes,
+Although this state machine is a nondeterministic finite state automata (NFA),
+only 7 bits are required to represent the active/inactive states of the nodes,
 meaning that the whole states can be represented by a single integer value.
 Also,
 the state transition can be calculated by a simple combination of
 logic and bit shift operations.
 
-%% We will describe how the pattern matching can be performed using a C code.
-%% 
-%% First, a variable for current state is
-%% set to \stt{0x80000000}, representing the initial pattern
-%% shown in Figure \ref{readme1}.
-%% 
-%% {
-%% \scriptsize
-%% \begin{verbatim}
-%%  #define INITPAT 0x80000000
-%%  int state = INITPAT;
-%% \end{verbatim}
-%% }
-%% 
-%% When character \qsf{r} is received, the MSB will be shifted to the right
-%% by one bit, and logical OR is calculated with the initial value, \stt{0x80000000}.
-%% Since the 7th node also accepts \qsf{r}, it should also be shifted.
-%% The state transition can be described like below.
-%% 
-%% {
-%% \scriptsize
-%% \begin{verbatim}
-%%  mask['r'] = 0x82;
-%%  state = INITPAT | ((state & mask['r']) >> 1);
-%% \end{verbatim}
-%% }
-%% 
-%% The shift ``mask'' value can be easily calculated from the given
-%% pattern string beforehand.
-%% 
-%% {
-%% \scriptsize
-%% \begin{verbatim}
-%%   int maskpat;
-%%   init(pat){
-%%     maskpat= INITPAT;
-%%     for(char *s=pat;*s;s++){
-%%       mask[*s] |= maskpat;
-%%       maskpat >>= 1;
-%%     }
-%%     acceptpat = maskpat;
-%%   }
-%% \end{verbatim}
-%% }
-%% 
-%% The pattern matching function can be described like below.
-%% 
-%% {
-%% \scriptsize
-%% \begin{verbatim}
-%%  match(s){
-%%    int state = INITPAT;
-%%    for(s=text;*s;s++){
-%%      state = INITPAT | ((state & mask[*s]) >> 1);
-%%    }
-%%    return ((state & acceptpat) != 0);
-%%  }
-%% \end{verbatim}
-%% }
-
-\subsubsection{Approximate pattern matching using the shifter algorithm}
+\subsubsection{Approximate pattern matching using shifter algorithm}
 
 The state machine shown in Figure \ref{readme1} can accept only one pattern
 (\sqsf{README}), but
-it can be easily expanded to detect texts which contain a word
-similar to the pattern (e.g. \sqsf{READY}).
+it can be easily expanded to detect texts that contain a word
+similar to the pattern (e.g. \sqsf{REEDEE}).
 
 %   *  ** 
 %  risto rante
 %  restaurant
-\begin{figure}[htb]
-  \centerline{\includegraphics[width=40mm,bb=0 0 104 51]{figures/readme-mismatch.pdf}}
-  \caption{Matching error between \qsf{README} and \qsf{REDDY}.}
-  \label{readme-reddy-mismatch}
-\end{figure}
+% \begin{figure}[htb]
+%   \centerline{\includegraphics[width=30mm,bb=0 0 104 51]{figures/readme-mismatch.pdf}}
+%   \caption{Matching error between \qsf{README} and \qsf{REEDEE}.}
+%   \label{readme-reddy-mismatch}
+% \end{figure}
 
-Adding three more states to Figure \ref{readme1}, we can perform more
+Adding three more rows of states to Figure \ref{readme1}, we can perform more
 flexible pattern matcher which can accept strings with
 0 to 3 matching errors.
 
 \begin{figure}[htb]
-  \includegraphics[width=65mm,bb=0 0 443 282]{figures/readme-ambig.pdf}
+  \centerline{\includegraphics[width=60mm,bb=0 0 443 282]{figures/readme-ambig.pdf}}
   \caption{A pattern matcher accepting 0-3 errors.}
   \label{shifterambig}
 \end{figure}
 
-Figure \ref{shifterambig} shows a state machine which can detect a string
-which matches \sqsf{README} with 0 to 3 mismatches.
+Figure \ref{shifterambig} shows a state machine that can detect a string
+that matches \sqsf{README} with 0 to 3 mismatches.
 Each additional row of nodes represents a matcher with one error,
 two errors, and three errors, respectively.
 Vertical and diagonal transition edges are added to allow
@@ -796,24 +754,23 @@ is also activated without any input character.
 With these additional links, this expanded machine can detect a text which
 matches \sqsf{README} with 0 to 3 errors.
 
-% \begin{figure}[htb]
-% \includegraphics[width=82mm]{figures/restaurant-ristrante.pdf}
-% \caption{Accepting ``\tsf{ristorante}'' using a matcher for ``\tsf{restaurant}''.}
-% \label{restaurant-ristorante}
-% \end{figure}
+\begin{figure}[htb]
+  \centerline{\includegraphics[width=60mm,bb=0 0 443 282]{figures/readme-reedee.pdf}}
+  \caption{Accepting \sqsf{REEDEE}'' using a matcher for \sqsf{README}.}
+  \label{readme-reedee}
+\end{figure}
 
 The transition of active nodes while reading
-\sqsf{REDDY} is shown in Figure \ref{restaurant-ristorante}.
-After reading \sqsf{REDDY},
+\sqsf{REEDEE} is shown in Figure \ref{readme-reedee}.
+After reading \sqsf{REEDEE},
 only the upper-right node becomes active,
-denoting that \sqsf{REDDY} matches
-\sqsf{README}'' with 3 matching errors.
+denoting that \sqsf{REEDEE} matches
+\sqsf{README}'' with 2 matching errors.
 
 The state transition shown in 
-Figure \ref{restaurant-ristorante} looks complicated, but
+Figure \ref{readme-reedee} looks complicated, but
 the matching state can be represented by only four integer variables, and
-the matching algorithm is not very different from the algorithm
-shown above.
+the matching algorithm can be implemented efficiently.
 
 \subsubsection{Using the matcher for generate-and-filter}
 
@@ -825,40 +782,41 @@ matching state is calculated and stored in the generated node.
 The status pattern is calculated from the status pattern
 stored in the preceding node and the string associated with the edge.
 
-% \begin{figure}[htb]
-% \includegraphics[width=85mm]{figures/ristfrans1.pdf}
-% \caption{A pattern matcher for ``\ttt{rist frans}''.}
-% \label{ristfrans1}
-% \end{figure}
-% 
-% \begin{figure*}[bht]
-% \centerline{\includegraphics[width=110mm]{figures/gentree2.pdf}}
-% \caption{Matching statuses for ``\ttt{rist frans}'' associated with text generation nodes.}
-% \label{gentree2}
-% \end{figure*}
+\begin{figure}[htb]
+  \centerline{\includegraphics[width=50mm,bb=0 0 302 230]{figures/RE_2.pdf}}
+  \caption{A pattern matcher for \sqtt{REE 2}.}
+  \label{RE_2}
+\end{figure}
 
-% Figure \ref{ristfrans1} shows the matcher for \qtt{rist frans}\footnote{
-%   A space (\qtt{ }) in the input is treated as a wildcard character.
-% },
-% and Figure \ref{gentree2} shows how the matching status is calculated while the
-% description strings are generated from the state transition machine
-% shown in Figure \ref{statemachine1}.
-% The matching status at each node is calculated from the matching status
-% stored in the parent node and the string associated with the edge.
-% For example, when the system generates the string
-% \qsf{Find a Chinese restaurant in San Francisco on Yelp.com},
-% the matching status is calculated from the status data at the previous node at
-% \qsf{Find a Chinese restaurant in San Francisco}, and
-% the system can tell that it matches \qtt{rist frans} with two matching errors,
-% as soon as the string is generated.
+\begin{figure*}[bth]
+\centerline{\includegraphics[width=110mm,bb=0 0 643 446]{figures/gentree2.pdf}}
+\caption{Matching statuses for \sqtt{REE 2} associated with text generation nodes.}
+\label{gentree2}
+\end{figure*}
 
-% The system is keeping the list of generated strings
-% which match the pattern with zero to three errors
-% and it displays the list with minimal number of errors
-% when generating menu entries.
+Figure \ref{RE_2} shows the matcher for \sqtt{REE 2}\footnote{
+  A space (\qtt{ }) in the input is treated as a wildcard character.
+},
+and Figure \ref{gentree2} shows how the matching status is calculated while the
+description strings are generated from the state transition machine
+shown in Figure \ref{statemachine1}.
+The matching status at each node is calculated from the matching status
+stored in the parent node and the string associated with the edge.
+For example, when the system generates the string
+\qsf{Compare README.md with the one from 2 versions before},
+the matching status is calculated from the status data at the previous node at
+\qsf{Compare README.md with the one from 2}, and
+the system can tell that it matches \qtt{REE 2} with one matching error,
+as soon as the string is generated.
+
+The system is keeping the list of generated strings
+which match the pattern with zero to three errors
+and it displays the list with minimal number of errors
+when generating menu entries.
 % 
-% Since the pattern matching operation is performed at the time of text generation,
-% the whole generate-and-filter calculation is quick.
+Since the pattern matching operation is performed at the time of text generation,
+the whole generate-and-filter calculation is quick.
+
 % Although current version of ExpandHelp is implemented in MacRuby,
 % the user can always get the result within 1 second.
 % A portion of the help data in Ruby is shown in Figure \ref{helpdata}.
@@ -871,13 +829,12 @@ stored in the preceding node and the string associated with the edge.
 
 \subsection{Sharing the database on the Web}
 
-The data used in {\GH} are represented as ``{\SB}'' documents.
+The data used in {\GH} are represented as ``{\SB}'' documents
+shown in Figure \ref{scrapboxpage}.
 %
 {\SB} is a general-purpose real-time Wiki system for data sharing.
 {\SB} users can edit the contents of Wiki pages directly
 on Web browsers just like using text editors.
-
-The data used for {\GH} is shown in Figure \ref{scrapboxpage}.
 
 % \begin{figure}[htb]
 % \begin{verbatim}
@@ -896,12 +853,12 @@ in addition to the documentation.
 % all other documents can be written just like standard manuals and help documents.
 
 Usage examples are often shown on documents and manuals like Unix man pages,
-they cannot be used as the database of an online help system.
+but they cannot be used as the database of an online help system.
 On the other hand,
 a {\SB} document contains both the manual document and the help database
 in the same place, just like
 writing a source code and the document in the same place
-using the ``Literate Programming''\footnote{
+under the ``Literate Programming''\footnote{
   \ssf{https:{\slash}{\slash}en.wikipedia.org{\slash}wiki{\slash}Literate\_programming}
 } style.
 
@@ -909,25 +866,29 @@ Also, since the database is on the Wiki page, any member of the
 Wiki can correct the document or add additional {\GH} specifications.
 When a user could not get a good support from {\GH}, he can add
 {\EH} specifications to the {\SB} document himself
-so that he and other people can get an appropriate support next time.
+so that he and other people can get better support
+from {\GH} next time.
 
 \section{Related Work}
 
 \subsection{Intelligent help systems}
 
-There have been many researches on intelligent help systems\cite{Delisle:2002:UIH:606412.606415},
+There have long been many researches on
+intelligent help systems\cite{Delisle:2002:UIH:606412.606415},
 but few number of projects seem to be going on these days,
 maybe because now we can use the Internet for getting intelligent help from
 real people,
-either by searching Web pages or 
-by asking in user forums like StackOverflow\footnote{stackoverflow}.
+either by searching existing Web pages or 
+by asking in user forums like StackOverflow\footnote{
+  \textsf{https://stackoverflow.com/}
+}.
 Information on the net is rich these days, and we can easily
-find somebody who can answer questions intelligently.
+find somebody who can give good answers to our questions.
 This is a good news, but 
 asking many trivial questions on the net is not considered to be a
 good manner, and
 using a powerful and flexible local help system like {\EH} is
-preferable before asking other people.
+preferable most of the time.
 
 \subsection{Input Methods}
 
@@ -937,11 +898,13 @@ and they are called as ``Input Methods'' (IMs).
 %
 Many research and development on IMs have been going on for years, and
 people are using them every day for entering texts in their mother language.
+Figure \ref{gyaim} shows an example of a Japanese IM.
 
-\begin{figure}[h]
-  \includegraphics[width=8cm,bb=0 0 976 670]{figures/nyuuryoku-ime.png}
+\begin{figure}[H]
+  % \includegraphics[width=8cm,bb=0 0 976 670]{figures/nyuuryoku-ime.png}
+  \centerline{\includegraphics[width=8cm,bb=0 0 976 670]{figures/nyuuryoku-ime.png}}
   \caption{An IM for Japanese text input.}
-  \label{bash1}
+  \label{gyaim}
 \end{figure}
 
 IMs are one form of translation systems that convert one
@@ -950,36 +913,38 @@ into a textual form of a language.
 In the above example, the pronunciation ``kanji''
 is used for getting ``漢字''.
 
-IMs are very popular in the world these days,
+IMs are very popular in the modern computing environment in the world
 and it is very common for people to 
 use translation systems for using computers.
-
-The behavior of {\GH} is similar to conventional IMs.
+%
+The behavior of {\GH} is similar to conventional IMs, and
+integration of multiple IM-like systems should be challenged in the future.
 
 \subsection{Text and code completion}
 
 On text editors and Unix shells,
-``text completion'' has been available for a long time.
+``text completion'' feature has been available for a long time.
 %
 When a user types the TAB key after typing \sqtt{la} on the Unix shell,
-\sqtt{latex}, \sqtt{latex}, and other Unix commands are shown as candidates.
+\sqtt{latex}, \sqtt{last}, and other Unix commands are shown as candidates.
 When a user types \sqtt{ls RE} and types the TAB key,
 the shell checks the directory, find the \stt{README.md} file, and
 replace the user's input with \sqtt{ls README.md}.
 This behavior is called ``text completion'', and many variations of
 this idea have been proposed and adopted in command shells and text editors.
 
-User's history data can also be used for the completion function.
-The Reactive Keyboard\cite{ReactiveKeyboard}
-accumlates the user's command history and use the data
-for predicting the user's next input.
+% User's history data can also be used for the completion function.
+% The Reactive Keyboard\cite{ReactiveKeyboard}
+% accumlates the user's command history and use the data
+% for predicting the user's next input.
 
 Gitsome\footnote{\textsf{https:{\slash}{\slash}github.com{\slash}donnemartin{\slash}gitsome}}
 helps {\GIT} users by
 dynamically showing possible arguments and related manuals on the Unix shell,
-just like {\GH}.
+just like {\GH} does.
 The goal of Gitsome is alomost the same as {\GH} and we agree with its concept,
-but Gitsome does not support ...
+but Gitsome does not support flexible approximate matching and
+help data sharing.
 
 \subsection{Smart IDEs}
 
@@ -1001,7 +966,7 @@ The system generates the code using a template database and heuristics
 designed for the target system.
 It is useful for a specific environment, but
 users of the system cannot modify the algorithm or the database
-even when appropriate suggestions cannot be give by the system.
+even when no good suggestion was found.
 
 % キーワードの羅列からコマンドを作成するという考えはとても正しいと思うが、実装がいかがなものか?
 % キーワードぐらいは思い出せるプログラマが対象になっている
@@ -1019,8 +984,11 @@ even when appropriate suggestions cannot be give by the system.
 AnyCode\cite{Gvero:2015:SJE:2814270.2814295} is another system
 that generates a complete code snippet from the user's
 input in natural language.
-AnyCode can handle synonyms like ``make'' == ``create'',
-曖昧検索はできず、かなりキーワードを指定する必要はある
+AnyCode can handle synonyms database like ``make'' == ``create'',
+but approximate matching is not supported and
+users cannot modify the help database.
+
+% 曖昧検索はできず、かなりキーワードを指定する必要はある
 
 % [anyCode]というシステム。自然言語キーワードを入力するとコードスニペットが表示される。
 % [[copy fileA fileB]]みたいなキーワードから[[FileUtil.copyFile(new File(fileA), new File(fileB))]]みたいなコード候補を生成する
@@ -1067,7 +1035,10 @@ can be generated from strings like
 It can be very useful as a shorthand for handling long names,
 but users should have a vague knowledge about the correct names
 (e.g. \sqtt{chooser}, \sqtt{dialog}),
-and large code example corpus should exist before
+and large code example corpus should exist before being able to
+create the database.
+{\EH} database can be created by hand at the time of the system development
+and no corpus is required.
 
 % [HMM]を使って正しいコードを予測して提示する
 % `ch opn`みたいなテキトーな入力から`chooser.showOpenDialog()`みたいな正しいコードが候補に出る
@@ -1093,40 +1064,41 @@ they can be used on the developers' IDE.
 
 Using BluePrint\cite{Brandt:2010:EPI:1753326.1753402}
 as a plugin for Adobe Flex Builder,
-users can search sample codes from the Web and use it immediately
-as 
-
+users can search sample codes from the Web and use it immediately.
 %   サンプルコードをすぐ参照して利用できる[IDE]
-
+%
 HelpMeOut\cite{Hartmann:2010:OPS:1753326.1753478} tells users
 how to handle compile errors,
 based on the people's experiences of handling compile errors.
 
+Using resources on the net will become more important
+in the future, and 
+
 %= 他人のヒストリを使ってコンパイルエラー対処法をサジェスト
 
-
-% \subsection{Using user forums}
+% \subsection{Literate Programming}
 % 
-% Qiita, StackOverflow
-%
-
-\subsection{Literate Programming}
-
-Literate Programming\cite{Knuth}
-
-参考文献にすることはないか
-
-JavaDoc
-Jupyter
-Eve
+% Literate Programming\cite{Knuth}
+% 
+% 参考文献にすることはないか
+% 
+% JavaDoc
+% Jupyter
+% Eve
 
 \section{Discussions}
+
+\paragraph{Applications of {\EH}}
 
 Since the translation mechanism of {\EH} is simple and flexible,
 it can be used for a wide range of application domains where
 intelligent help is required.
-{\EH} can be used for 
-
+{\EH} is actuall used as the help page for
+one of our Web services, hoping that
+novice users can easily find the feature they need.
+When a user submits a query that includes vocabularies
+not in the {\EH} document,
+we are able to add themm to the {\SB} database easily.
 
 \paragraph{Order of command and arguments}
 
@@ -1168,29 +1140,40 @@ share the help data between groups of people.
 
 \section{Conclusion}
 
-We have introduced a general-purpose flexible translation framework {\EH}
-and used it for {\GH}, a system for supporting {\GIT} users.
+We have introduced a general-purpose flexible framework {\EH}
+that can translate fragments of user's vague intentions into
+concrete command strings required to control computers and
+other complex artifacts.
+We showed the principles and applications of {\EH} by using it
+for {\GH}, a help system for supporting {\GIT} users
+based on the shared database that any user can edit to share
+translation knowledge between users.
 %
-The database of {\EH} are shared on a real-time general-purpose Wiki system {\SB},
-and all the users can share it to improve the quality of the help system.
+{\EH} framework is useful for any kind of systems that need
+some kind of user support, and we are planning to use it
+for various applications and Web services in the future.
 
-Unlike existing smart IDEs for supporting programming tasks,
-{\EH} framework can be used in wide range of situations
-where translation-based help is required.
 
-We presented a powerful and flexible help system ``ExpandHelp''
-constructed on the generate-and-filter algorithm, where
-the system generates all the possible expressions of
-help entries expanded from regular expressions given by the help data provider,
-while the output expressions are filtered by search keywords using
-an efficient approximate pattern matching algorithm.
-Since the data format is simple and the search algorithm is fast and flexible,
-developers can easily publish useful help data, while
-users can have bigger chances of finding an appropriate
-data from vague knowledges.
+% Unlike existing smart IDEs for supporting programming tasks,
+% {\EH} framework can be used in wide range of situations
+% where translation-based help is required.
+% 
+% We proposed the ``translation paradigm'' for bridging the gap between
+% users' intention and actual operations.
+% 
+% Using the powerful and flexible help system ``{\EH}''
+% constructed on the generate-and-filter algorithm, where
+% the system generates all the possible expressions of
+% help entries expanded from regular expressions,
+% while the output expressions are filtered by search keywords using
+% an efficient approximate pattern matching algorithm.
+% 
+% Since the data format is simple and the search algorithm is fast and flexible,
+% developers can easily publish useful help data, while
+% users can have bigger chances of finding an appropriate
+% data from vague knowledges.
 
 % References must be the same font size as other body text.
-% そうなん?
 \bibliographystyle{SIGCHI-Reference-Format}
 \bibliography{paper}
 

@@ -107,6 +107,7 @@ function get_numbers(patterns){
 }
 
 function addentry(a, cmd){ // 候補を整形してリストに追加
+    console.log(cmd);
     var num = cmd.match(/\s*{(\d+)}$/,"$1")[1]; // 説明ページの番号を取得
     cmd = cmd.replace(/\s*{(\d+)}$/,"");
     if(commands.indexOf(cmd) >= 0) return;
@@ -223,7 +224,7 @@ function init(){
 		var qstr = $('#query').val();
 		g = generator(qstr.split(/\s+/));
 		var pstr = qstr.replace(/'/g,'').replace(/"/g,'');
-		g.filter(` ${pstr} `, addentry, 0);
+		g.filter(` ${pstr} `, addentry, 1);
 	    },500);
 	}
     });
