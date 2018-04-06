@@ -224,7 +224,7 @@ function init(){
 		var qstr = $('#query').val();
 		g = generator(qstr.split(/\s+/));
 		var pstr = qstr.replace(/'/g,'').replace(/"/g,'');
-		g.filter(` ${pstr} `, addentry, 1);
+		g.filter(` ${pstr} `, addentry, 0);
 	    },500);
 	}
     });

@@ -89,7 +89,8 @@
 % re-using, if desired).  Use \emtpyauthor when submitting for review
 % so you remain anonymous.
 \def\plaintitle{Bridging the Translation Gap with ExpandHelp}
-\def\plainauthor{Toshiyuki Masui, Jun Kato}
+% \def\plainauthor{Toshiyuki Masui, Jun Kato}
+\def\plainauthor{}
 \def\emptyauthor{}
 \def\plainkeywords{
   Help systems; Regular expression, Input method, Generate and filter;
@@ -166,14 +167,22 @@
 
 \numberofauthors{3}
 \author{%
-  \alignauthor{Toshiyuki Masui \\
-    \affaddr{Keio University}\\
-    \affaddr{Fujisawa, Japan}\\
-    \email{masui@pitecan.com}}\\
-  \alignauthor{Jun Kato\\
-    \affaddr{AIST}\\
-    \affaddr{Tsukuba, Japan}\\
-    \email{junkato}}\\
+%  \alignauthor{Toshiyuki Masui \\
+%    \affaddr{Keio University}\\
+%    \affaddr{Fujisawa, Japan}\\
+%    \email{masui@pitecan.com}}\\
+%  \alignauthor{Jun Kato\\
+%    \affaddr{AIST}\\
+%    \affaddr{Tsukuba, Japan}\\
+%    \email{junkato}}\\
+  \alignauthor{-- \\
+    \affaddr{--}\\
+    \affaddr{--}\\
+    \email{--}}\\
+  \alignauthor{--\\
+    \affaddr{--}\\
+    \affaddr{--}\\
+    \email{--}}\\
 }
 
 \maketitle
@@ -187,7 +196,7 @@
   % command-line interface (CLI) is still widely used everywhere,
   %
   When people use computers to perform tasks,
-  there is usually a huge mismatch between the users' intention
+  there is often a huge mismatch between the users' intention
   and required actions.
   % the language and vocabularies used for the task are completely different.
   %
@@ -220,7 +229,7 @@
   where such translation is necessary.
   We show how our framework can be used
   in the {\GH} system
-  with which user can easily generate complex {\GIT} commands
+  with which a user can easily generate complex {\GIT} commands
   from fragments of users' intentions in various languages.
 \end{abstract}
 
@@ -358,7 +367,7 @@ However, nothing happens here because
 specifies a file included in the older commit,
 and the command in figure \ref{gitdiff} only compares the
 \stt{README.md} with the file included in an old commit, where
-\stt{README.md} has not been changed since then.
+\stt{README.md} might not have changed since then.
 
 If {\GH} is installed,
 the user can type a special shortcut key
@@ -408,11 +417,12 @@ entries related to \stt{README.md} file are listed because
 
 A Japanese {\GIT} user can do the same thing just like
 English-speaking users (Figure \ref{example3}).
-He can user the term \qtt{比}, etc. to find how he can perform the job.
+He can use the term \qtt{表}, etc. to find how he can perform the job.
 
 \begin{figure}[t]
   % bb=0 0 1290 866
-  \includegraphics[width=12cm,bb=-100 -100 1190 766]{figures/githelp1.png}
+  % \includegraphics[width=12cm,bb=-100 -100 1190 766]{figures/githelp1.png}
+  \includegraphics[width=12cm,bb=-100 -100 1190 766]{figures/example4.png}
   \caption{Invoking {\GH} in Japanese environment.}
   \label{example3}
 \end{figure}
@@ -428,7 +438,7 @@ the command part is preceded by ``\texttt{\%}''.
 
 \begin{figure}[t]
 % \centerline{\includegraphics[width=100mm,bb=0 0 1428 1288]{figures/scrapbox1.png}}
-  \centerline{\includegraphics[width=100mm,bb=-50 -50 1100 950]{figures/scrapbox2.png}}
+  \centerline{\includegraphics[width=100mm,bb=-50 -50 1100 950]{figures/scrapbox3.png}}
   \caption{A {\SB} page for \tt{git diff}.}
   \label{scrapboxpage}
 \end{figure}
@@ -458,7 +468,7 @@ current file and older file can be defined like this:
   {\smallfont\verb| -- #{$1}|}
 \end{quote}
 
-Special symbol like \stt{\#\{files\}} in the description part is expanded to
+Special symbols like \stt{\#\{files\}} in the description part is expanded to
 the list of filenames like \stt{README.md|index.html}.
 The first regular expression, the description part,
 is for generating texts like
@@ -470,7 +480,8 @@ In the first example, \sqsf{README.md} and \sqsf{1}
 match the first and second parentheses of the regular expression, and
 these values are assigned to \tt{\$1} and \tt{\$2}
 for the command part, generating a command
-``{\smallfont\verb|$ git diff $(git rev-list -n #{$2} HEAD -- #{$1})^ -- #{$1}|}''.
+``{\smallfont\verb|$ git diff $(git rev-list -n #{$2} HEAD -- #{$1})^|}
+{\smallfont\verb|-- #{$1}|}''.
 
 The description part can be written in any natural language.
 For example,
@@ -615,7 +626,7 @@ and eventually generates all the strings described above.
 Of course, it is impossible to generate all the strings
 from a regular expression like ``\tt{(0|1)+}'' that represents infinite length of
 strings consisting of \tt{0}s and \tt{1}s, so the generation should be
-terminated at certain generation.
+terminated at a certain generation.
 
 \begin{figure}[htb]
 \includegraphics[width=85mm,bb=0 0 643 398]{figures/gentree1.pdf}
@@ -956,7 +967,7 @@ Little's system\cite{Little:2006:TKC:1166253.1166275}
 generates a complete JavaScript code snippet from keyword fragments
 give by users.
 For example, a code snippet
-\sqtt{ActiveDocument .PageSetup .LeftMargin = InchesToPoints(2)}
+\sqtt{ActiveDocument.PageSetup.LeftMargin = InchesToPoints(2)}
 can be generated from keywords like
 \sqsf{left},
 \sqsf{margin},
@@ -1070,9 +1081,9 @@ users can search sample codes from the Web and use it immediately.
 HelpMeOut\cite{Hartmann:2010:OPS:1753326.1753478} tells users
 how to handle compile errors,
 based on the people's experiences of handling compile errors.
-
-Using resources on the net will become more important
-in the future, and 
+%
+Resources on the net are precious, and such data can be
+easily incorporated to {\EH} databases.
 
 %= 他人のヒストリを使ってコンパイルエラー対処法をサジェスト
 
@@ -1088,7 +1099,7 @@ in the future, and
 
 \section{Discussions}
 
-\paragraph{Applications of {\EH}}
+\paragraph{Applications of ExpandHelp}
 
 Since the translation mechanism of {\EH} is simple and flexible,
 it can be used for a wide range of application domains where
@@ -1099,6 +1110,25 @@ novice users can easily find the feature they need.
 When a user submits a query that includes vocabularies
 not in the {\EH} document,
 we are able to add them to the {\SB} database easily.
+
+Figure \ref{mac1} and Figure \ref{mac2} shows how
+{\EH} can be used as a launcher for MacOS.
+Like {\GH}, users can execute concrete commands only by
+showing small fragments of their intentions to the system.
+
+\begin{figure}[h]
+  %\centerline{\includegraphics[width=8cm,bb=0 0 397 247]{figures/clock.png}}
+  \centerline{\includegraphics[width=8cm,bb=0 0 300 200]{figures/mac1.png}}
+  \caption{Using {\EH} in the menu bar of MacOS.}
+  \label{mac1}
+\end{figure}
+
+\begin{figure}[h]
+  %\centerline{\includegraphics[width=8cm,bb=0 0 392 185]{figures/mac2.png}}
+  \centerline{\includegraphics[width=8cm,bb=0 0 300 130]{figures/mac2.png}}
+  \caption{Using {\EH} in the menu bar of MacOS.}
+  \label{mac2}
+\end{figure}
 
 \paragraph{Order of command and arguments}
 
@@ -1120,26 +1150,16 @@ it is fairly easy for users to write description texts.
 People can easily write a help description like
 \sqtt{(Start|Run) Firefox browser}
 without having a knowledge of automata or formal grammar.
-We can use arbitrary texts for the database of Expand Help.
+We can use arbitrary texts for the database of {\EH}.
 For example,
 we can collect hundreds of books titled ``Windows tips'' from the market
-and convert all the title of the tips into help data of ExpandHelp.
-
-\paragraph{Toward more general help system}
-
-Since a user can activate a command or access a Web page
-from ExpandHelp only by typing keywords,
-it can be used as a command launcher rather than a help system.
-Adding data to an existing help system is usually a hard task,
-but adding data so ExpandHelp is very simple.
-It would also be convenient to use a Wiki page for providing the help
-data for ExpandHelp, since users can easily edit the description
-for their needs.
-We are planning to distribute Wiki-based ExpandHelp to the public and
-share the help data between groups of people.
+and convert all the title of the tips into help data of {\EH}.
 
 \section{Conclusion}
 
+We proposed the ``translation paradigm'' for bridging the gap between
+users' intention and actual operations.
+%
 We have introduced a general-purpose flexible framework {\EH}
 that can translate fragments of user's vague intentions into
 concrete command strings required to control computers and
@@ -1153,13 +1173,9 @@ translation knowledge between users.
 some kind of user support, and we are planning to use it
 for various applications and Web services in the future.
 
-
 % Unlike existing smart IDEs for supporting programming tasks,
 % {\EH} framework can be used in wide range of situations
 % where translation-based help is required.
-% 
-% We proposed the ``translation paradigm'' for bridging the gap between
-% users' intention and actual operations.
 % 
 % Using the powerful and flexible help system ``{\EH}''
 % constructed on the generate-and-filter algorithm, where
